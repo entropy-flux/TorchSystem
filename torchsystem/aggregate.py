@@ -7,11 +7,13 @@ from typing import Callable
 
 from torch import Tensor
 from torch.nn import Module
+from torch.utils.data import Dataset
 
 from pybondi.aggregate import Root
 
 class Loader(Protocol):
-
+    dataset: Dataset
+    
     def __iter__(self) -> Iterator[Any]:...
 
     @overload
@@ -19,6 +21,7 @@ class Loader(Protocol):
 
 
 class Aggregate(Module, ABC):
+
     def __init__(self, id: Any):
         super().__init__()
         self.root = Root(id=id)

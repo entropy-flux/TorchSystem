@@ -1,7 +1,6 @@
 from os import makedirs
 from os import path, makedirs
 from logging import getLogger
-from abc import ABC, abstractmethod
 from torch import save, load
 from torch.nn import Module
 
@@ -31,6 +30,8 @@ class Weights[T: Module]:
         '''
         logger.info(f'Storing weights of {module.__class__.__name__} in {folder}/{filename}.pth')	
         location = path.join(self.location, folder)
+        if not path.exists(location):
+            makedirs(location)  
         save(module.state_dict(), path.join(location, filename + '.pth'))
         logger.info(f'Weights stored successfully')
         

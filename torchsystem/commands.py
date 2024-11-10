@@ -47,7 +47,6 @@ class Iterate(Command):
     It determines the phase of the aggregate and calls the fit or evaluate method accordingly.
     After iterating over the loaders, it bumps the epoch.
     '''
-
     aggregate: Aggregate
     loaders: Sequence[tuple[str, Loader]]
     callback: Callback
