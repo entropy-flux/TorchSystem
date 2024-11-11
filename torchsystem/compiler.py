@@ -1,6 +1,7 @@
 from typing import Callable
 from torch import compile
 from torchsystem.aggregate import Aggregate
+from torchsystem.settings import Settings
 from logging import getLogger
 
 logger = getLogger(__name__)
@@ -14,7 +15,8 @@ class Compiler:
         or a function that initializes and returns an aggregate.
     '''
 
-    def __init__(self, factory: Callable):
+    def __init__(self, factory: Callable, settings: Settings = None):
+        self.settings = settings or Settings()
         self.factory = factory
 
     def compile(self, *args, **kwargs) -> Aggregate:
@@ -35,5 +37,7 @@ class Compiler:
             return compiled
         except Exception as error:
             logger.error(f'Error compiling the aggregate: {error}')
+            if self.settings.compilation.raise_on_error:
+                raise error
             logger.info(f'Returning the uncompiled aggregate')
             return aggregate
