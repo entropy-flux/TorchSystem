@@ -1,1 +1,0 @@
-The classes defined here are not definitive, they should be refactored for allowing any kind of machine learning aggregate.

@@ -1,14 +1,6 @@
-from typing import Any
 from torch import Tensor
-from torch import argmax
 from pybondi.callbacks import Callback
-from mlbodega.schemas import Metric
-
-def accuracy(predictions: Tensor, target: Tensor) -> float:
-    return (predictions == target).float().mean().item()
-
-def predictions(output: Tensor) -> Tensor:
-    return argmax(output, dim=1)
+from torchsystem.callbacks.metrics import Metric, accuracy, predictions
 
 class Average:
     def __init__(self):

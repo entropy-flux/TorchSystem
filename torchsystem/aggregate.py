@@ -4,14 +4,15 @@ from typing import Iterator
 from typing import Protocol
 from typing import overload
 from typing import Callable
-
 from torch import Tensor
 from torch.nn import Module
 from torch.utils.data import Dataset
-
 from pybondi.aggregate import Root
 
 class Loader(Protocol):
+    '''
+    Interface for the DataLoader class.     
+    '''
     dataset: Dataset
     
     def __iter__(self) -> Iterator[Any]:...
