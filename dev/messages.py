@@ -5,8 +5,8 @@ from dataclasses import dataclass, asdict
 from torchsystem.aggregate import Loader, Aggregate
 from torchsystem.loaders import Loaders
 from mlregistry import get_metadata, get_date_hash
-
 from typing import Protocol
+
 class Aggregate(Protocol):
     epoch: int
     model: Any

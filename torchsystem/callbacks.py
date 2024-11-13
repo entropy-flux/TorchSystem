@@ -1,7 +1,7 @@
 from typing import Any
 from torch import Tensor
 from torch import argmax
-from pybondi.callbacks import Callback, Callbacks
+from pybondi.callbacks import Callback
 from mlbodega.schemas import Metric
 
 def accuracy(predictions: Tensor, target: Tensor) -> float:

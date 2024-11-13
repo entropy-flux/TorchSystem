@@ -1,5 +1,6 @@
 from typing import Callable
 from torch import compile
+from pybondi.aggregate import Factory
 from torchsystem.aggregate import Aggregate
 from torchsystem.settings import Settings
 from logging import getLogger
@@ -12,10 +13,10 @@ class Compiler:
 
     Parameters:
         factory (Callable): A callable that returns an aggregate. Could be the aggregate's type
-        or a function that initializes and returns an aggregate.
+        a function that initializes and returns an aggregate or a callable instance of a factory.
     '''
 
-    def __init__(self, factory: Callable, settings: Settings = None):
+    def __init__(self, factory: Factory, settings: Settings = None):
         self.settings = settings or Settings()
         self.factory = factory
 
@@ -27,7 +28,6 @@ class Compiler:
             *args: The positional arguments to pass to the factory.
             **kwargs: The keyword arguments to pass to the factory.
         '''
-
         logger.info(f'Building and compiling the aggregate')
         aggregate = self.factory(*args, **kwargs)
         try:

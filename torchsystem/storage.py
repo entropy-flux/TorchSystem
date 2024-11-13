@@ -9,6 +9,9 @@ from mlregistry import Registry
 from mlregistry import get_hash
 
 class Storage[T]:
+    '''
+    Base class for storage classes. It is responsible for coordinating the registry and weights of objects. 
+    '''
     registry: Registry[T]
     weights: Weights[T]
     category: str
@@ -18,6 +21,15 @@ class Storage[T]:
         return cls.registry.register(type, cls.category)
         
     def get(self, name: str, *args, **kwargs) -> Optional[T]:
+        '''
+        Get an object from the registry and restore it's weights if available.
+
+        Parameters:
+            name (str): The name of the object.
+            *args: Positional arguments for initializing the object.
+            **kwargs: Keyword arguments for initializing the object.
+        '''
+
         if not name in self.registry.keys():
             return None
         object = self.registry.get(name)(*args, **kwargs)
@@ -25,11 +37,28 @@ class Storage[T]:
             self.weights.restore(object, f'{self.category}:{get_hash(object)}')
         return object
     
-    def save(self, object: T):
+    def store(self, object: T):
+        '''
+        Store the weights of an object in a given category, an assertion error is raised if the object is not registered.
+
+        Parameters:
+            object (T): The object to store.
+        '''
         assert object.__class__.__name__ in self.registry.keys(), f'{object.__class__.__name__} not registered in {self.category}'
         if hasattr(self, 'weights'):
             self.weights.store(object, f'{self.category}:{get_hash(object)}')
-    
+
+    def restore(self, object: T):
+        '''
+        Restore the weights of an object from a given category, an assertion error is raised if the object is not registered.
+
+        Parameters:
+            object (T): The object to restore.
+        '''
+        assert object.__class__.__name__ in self.registry.keys(), f'{object.__class__.__name__} not registered in {self.category}'
+        if hasattr(self, 'weights'):
+            self.weights.restore(object, f'{self.category}:{get_hash(object)}')
+
 class Models(Storage[Module]):
     category = 'model'
     registry = Registry()
