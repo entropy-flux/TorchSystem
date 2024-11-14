@@ -1,3 +1,4 @@
+from typing import Callable
 from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
@@ -9,11 +10,12 @@ class CompilerSettings(BaseSettings):
     raise_on_error: bool = Field(default=False)
     fullgraph: bool = Field(default=False)
     dynamic: bool = Field(default=False)
-    backend: str | None = Field(default='inductor')
-    mode: str | None = Field(default='jit')
-    options: dict = Field(default_factory=dict)
+    backend: str | Callable = Field(default='inductor')
+    mode: str | None = Field(default=None)
+    options: dict | None = Field(default=None)
     disable: bool = Field(default=False)
     model_config = SettingsConfigDict(env_prefix='COMPILATION_')
+
 
 class LoaderSettings(BaseSettings):
     pin_memory: bool = Field(default=False)
