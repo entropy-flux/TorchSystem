@@ -1,14 +1,16 @@
 from os import path
 from typing import Optional
 from typing import Any
+from logging import getLogger
+from mlregistry import Registry
+from mlregistry import get_hash, get_metadata
+from abc import ABC
 from torch.nn import Module
 from torch.optim import Optimizer
 from torch.utils.data import Dataset
 from torchsystem.settings import Settings
 from torchsystem.weights import Weights
-from mlregistry import Registry
-from mlregistry import get_hash, get_metadata
-from logging import getLogger
+from torchsystem.aggregate import Aggregate
 
 logger = getLogger(__name__)
 

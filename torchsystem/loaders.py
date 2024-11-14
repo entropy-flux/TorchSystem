@@ -42,7 +42,7 @@ class Loaders:
             shuffle=shuffle, 
             pin_memory=self.settings.loaders.pin_memory,
             pin_memory_device=self.settings.loaders.pin_memory_device,
-            num_workers=self.settings.loaders.num_of_workers
+            num_workers=self.settings.loaders.num_of_workers,
             **kwargs
         )
         self.list.append((phase, loader))
