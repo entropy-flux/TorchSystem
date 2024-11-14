@@ -1,7 +1,6 @@
 from os import makedirs
 from os import path, makedirs
 from logging import getLogger
-from abc import ABC, abstractmethod
 from torch import save, load
 from torch.nn import Module
 
@@ -20,7 +19,7 @@ class Weights[T: Module]:
             makedirs(self.location)
 
     
-    def store(self, module: T, folder: str, filename: str):
+    def store(self, module: T, filename: str):
         '''
         Store the weights of a module.
 
@@ -29,13 +28,12 @@ class Weights[T: Module]:
             folder (str): The folder to store the weights.
             filename (str): The filename to store the
         '''
-        logger.info(f'Storing weights of {module.__class__.__name__} in {folder}/{filename}.pth')	
-        location = path.join(self.location, folder)
-        save(module.state_dict(), path.join(location, filename + '.pth'))
+        logger.info(f'Storing weights of {module.__class__.__name__} in {filename}.pth')	
+        save(module.state_dict(), path.join(self.location, filename + '.pth'))
         logger.info(f'Weights stored successfully')
         
 
-    def restore(self, module: T, folder: str, filename: str):
+    def restore(self, module: T, filename: str):
         '''
         Restore the weights of a module.
 
@@ -44,10 +42,9 @@ class Weights[T: Module]:
             folder (str): The folder to restore the weights.
             filename (str): The filename to restore the weights.
         '''
-        logger.info(f'Restoring weights of {module.__class__.__name__} from {folder}/{filename}.pth')
-        location = path.join(self.location, folder, filename)
+        logger.info(f'Restoring weights of {module.__class__.__name__} from {filename}.pth')
         try:
-            state_dict = load(path.join(location, filename + '.pth'), weights_only=True)
+            state_dict = load(path.join(self.location, filename + '.pth'), weights_only=True)
             module.load_state_dict(state_dict)
             logger.info(f'Weights restored successfully')
         except FileNotFoundError as error:
