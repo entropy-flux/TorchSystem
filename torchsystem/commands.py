@@ -3,10 +3,10 @@ from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from pybondi import Command
 from pybondi.callbacks import Callback
+from torchsystem import events
 from torchsystem.callbacks import Default
 from torchsystem.aggregate import Aggregate
 from torchsystem.aggregate import Loader
-from torchsystem import events
 
 @dataclass
 class Train(Command):
