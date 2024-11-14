@@ -1,4 +1,5 @@
 from pybondi import Repository
+from pybondi import Publisher
 from torchsystem.aggregate import Aggregate
 from torchsystem.aggregate import Loader
 from torchsystem.loaders import Loaders
