@@ -1,5 +1,4 @@
 from logging import getLogger
-from pybondi import Session
 from torchsystem.events import Trained, Evaluated, Iterated
 from torchsystem.callbacks.metrics import Metric
 
@@ -18,7 +17,3 @@ def log_iterated(event: Iterated):
 
 def log_average_metric(metric: Metric):
     logger.info(f'Average {metric.name}: {metric.value} on metric {metric.batch} batches in epoch {metric.epoch} phase {metric.phase}')
-
-Session.event_handlers[Trained].append(log_evaluated)
-Session.event_handlers[Evaluated].append(log_trained)
-Session.event_handlers[Iterated].append(log_iterated)
