@@ -5,6 +5,8 @@ from torchsystem.aggregate import Loader
 from torchsystem.settings import Settings
 from mlregistry import Registry
 
+#TODO: Add more infrastructure parameters here and in the settings. All
+# DataLoader infrastructure parameters should be configurable.
 INFRASTRUCTURE_PARAMETERS = {'dataset', 'pin_memory', 'pin_memory_device' ,'num_workers'}
 
 class Loaders:
@@ -33,7 +35,6 @@ class Loaders:
             settings: Settings: The settings to be used for the dataloader. If None, the default settings are used.
             **kwargs: Any: Additional keyword arguments to be passed to the DataLoader.
         '''
-
         settings = settings or self.settings
         loader = DataLoader(
             dataset, 

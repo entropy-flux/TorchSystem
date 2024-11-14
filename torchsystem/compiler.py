@@ -1,4 +1,3 @@
-from typing import Callable
 from torch import compile
 from pybondi.aggregate import Factory
 from torchsystem.aggregate import Aggregate
@@ -26,12 +25,27 @@ class Compiler:
 
         Parameters:
             *args: The positional arguments to pass to the factory.
-            **kwargs: The keyword arguments to pass to the factory.
+            **kwargs: The keyword arguments to pass to the factory.                    
         '''
         logger.info(f'Building and compiling the aggregate')
         aggregate = self.factory(*args, **kwargs)
         try:
-            compiled = compile(aggregate)
+            logger.info(f'Compiling the aggregate with settings:')
+            logger.info(f'-Fullgraph: {self.settings.compilation.fullgraph}')
+            logger.info(f'-Dynamic: {self.settings.compilation.dynamic}')
+            logger.info(f'-Backend: {self.settings.compilation.backend}')
+            logger.info(f'-Mode: {self.settings.compilation.mode}')
+            logger.info(f'-Options: {self.settings.compilation.options}')
+            logger.info(f'-Disable: {self.settings.compilation.disable}')
+            logger.info(f'-Raise on error: {self.settings.compilation.raise_on_error}')
+            compiled = compile(aggregate,
+                fullgraph=self.settings.compilation.fullgraph,
+                dynamic=self.settings.compilation.dynamic,
+                backend=self.settings.compilation.backend,
+                mode=self.settings.compilation.mode,
+                options=self.settings.compilation.options,
+                disable=self.settings.compilation.disable,
+            )
             logger.info(f'Aggregate compiled successfully')
             logger.info(f'Aggregate: {compiled}')
             return compiled

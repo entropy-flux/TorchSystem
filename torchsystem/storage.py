@@ -1,12 +1,18 @@
 from os import path
 from typing import Optional
+from typing import Any
+from logging import getLogger
+from mlregistry import Registry
+from mlregistry import get_hash, get_metadata
+from abc import ABC
 from torch.nn import Module
 from torch.optim import Optimizer
 from torch.utils.data import Dataset
 from torchsystem.settings import Settings
 from torchsystem.weights import Weights
-from mlregistry import Registry
-from mlregistry import get_hash
+from torchsystem.aggregate import Aggregate
+
+logger = getLogger(__name__)
 
 class Storage[T]:
     '''
@@ -18,7 +24,8 @@ class Storage[T]:
     
     @classmethod
     def register(cls, type: type):
-        return cls.registry.register(type, cls.category)
+        logger.info(f'Registering {type.__name__} in category {cls.category}')
+        cls.registry.register(type, cls.category)
         
     def get(self, name: str, *args, **kwargs) -> Optional[T]:
         '''
@@ -44,6 +51,7 @@ class Storage[T]:
         Parameters:
             object (T): The object to store.
         '''
+        logger.info(f'Storing {object.__class__.__name__} in category {self.category}')
         assert object.__class__.__name__ in self.registry.keys(), f'{object.__class__.__name__} not registered in {self.category}'
         if hasattr(self, 'weights'):
             self.weights.store(object, f'{self.category}:{get_hash(object)}')
@@ -55,6 +63,7 @@ class Storage[T]:
         Parameters:
             object (T): The object to restore.
         '''
+        logger.info(f'Restoring {object.__class__.__name__} in category {self.category}')
         assert object.__class__.__name__ in self.registry.keys(), f'{object.__class__.__name__} not registered in {self.category}'
         if hasattr(self, 'weights'):
             self.weights.restore(object, f'{self.category}:{get_hash(object)}')

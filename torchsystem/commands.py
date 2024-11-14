@@ -1,11 +1,12 @@
 from typing import Sequence
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from pybondi import Command
 from pybondi.callbacks import Callback
+from torchsystem.callbacks import Default
 from torchsystem.aggregate import Aggregate
 from torchsystem.aggregate import Loader
-from torchsystem.events import Trained, Evaluated, Iterated
+from torchsystem import events
 
 @dataclass
 class Train(Command):
@@ -15,7 +16,7 @@ class Train(Command):
     '''
     aggregate: Aggregate
     loaders: Sequence[Loader]
-    callback: Callback
+    callback: Callback = field(default_factory=Default)
     
     def execute(self):
         self.aggregate.phase = 'train'
@@ -25,7 +26,7 @@ class Train(Command):
         for loader in self.loaders:
             self.aggregate.fit(loader, self.callback)
         end = datetime.now(timezone.utc)
-        self.aggregate.root.publish(event=Trained(
+        self.aggregate.root.publish(event=events.Trained(
             epoch=self.aggregate.epoch,
             start=start,
             end=end,
@@ -42,7 +43,7 @@ class Evaluate(Command):
     '''
     aggregate: Aggregate
     loaders: Sequence[Loader]
-    callback: Callback
+    callback: Callback = field(default_factory=Default)
     
     def execute(self):
         self.aggregate.phase = 'evaluation'
@@ -52,7 +53,7 @@ class Evaluate(Command):
         for loader in self.loaders:
             self.aggregate.evaluate(loader, self.callback)
         end = datetime.now(timezone.utc)
-        self.aggregate.root.publish(event=Evaluated(
+        self.aggregate.root.publish(event=events.Evaluated(
             epoch=self.aggregate.epoch,
             start=start,
             end=end,
@@ -69,7 +70,7 @@ class Iterate(Command):
     '''
     aggregate: Aggregate
     loaders: Sequence[tuple[str, Loader]]
-    callback: Callback
+    callback: Callback = field(default_factory=Default)
     
     def execute(self):
         self.callback.set('epoch', self.aggregate.epoch)
@@ -79,7 +80,7 @@ class Iterate(Command):
             self.callback.set('phase', self.aggregate.phase )
             self.aggregate.iterate(loader, self.callback)
         end = datetime.now(timezone.utc)
-        self.aggregate.root.publish(event=Iterated(
+        self.aggregate.root.publish(event=events.Iterated(
             epoch=self.aggregate.epoch,
             start=start,
             end=end,
