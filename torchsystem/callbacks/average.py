@@ -1,23 +1,28 @@
+from typing import Any
 from torch import Tensor
 from pybondi.callbacks import Callback
+from pybondi.publisher import Message
 from torchsystem.callbacks.metrics import Metric, accuracy, predictions
 
 class Average:
     '''
-    Class to calculate the moving average of a series of samples.    
+    Class to calculate the moving average of a series of samples    
     '''
     def __init__(self):
-        self.value = 0.0
+        self.values = {}
 
-    def update(self, sample: int, value: float) -> float:
+    def update(self, id: Any, sample: int, value: float) -> float:
         '''
         Update the average with a new value given a sample index.
         '''
-        self.value = (self.value * (sample - 1) + value) / sample
-        return self.value
+        self.values[id] = (self.values[id]  * (sample - 1) + value) / sample
+        return self.values[id]
 
     def reset(self):
-        self.value = 0.0
+        '''
+        Reset the average.
+        '''
+        self.values = {}
 
 class Loss(Callback):
     def __init__(self, topic: str = 'result'):
@@ -27,12 +32,13 @@ class Loss(Callback):
         self.average = Average()
         self.topic = topic
 
-    def __call__(self, batch: int, loss: float, *args, **kwargs):
+    def __call__(self, id: Any, batch: int, loss: float, *args, **kwargs):
         self.batch = batch
-        self.average.update(batch, loss)        
+        self.average.update(id, batch, loss)        
 
     def flush(self):
-        self.publisher.publish(self.topic, Metric('loss', self.average.value, self.batch, self.epoch, self.phase))
+        for sender, value in self.average.values.items():
+            self.publisher.publish(self.topic, Message(str(sender), Metric('loss', value, self.batch, self.epoch, self.phase)))
         self.average.reset()
         
     def reset(self):
@@ -46,12 +52,13 @@ class Accuracy(Callback):
         self.average = Average()
         self.topic = topic
         
-    def __call__(self, batch: int, _, output: Tensor, target: Tensor, *args, **kwargs):
+    def __call__(self, id: Any, batch: int, _, output: Tensor, target: Tensor, *args, **kwargs):
         self.batch = batch
-        self.average.update(batch, accuracy(predictions(output), target))
+        self.average.update(id, batch, accuracy(predictions(output), target))
 
     def flush(self):
-        self.publisher.publish(self.topic, Metric('accuracy', self.average.value, self.batch, self.epoch, self.phase))
+        for sender, value in self.average.values.items():
+            self.publisher.publish(self.topic, Message(str(sender), Metric('loss', value, self.batch, self.epoch, self.phase)))
         self.average.reset()
 
     def reset(self):
