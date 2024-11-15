@@ -15,7 +15,7 @@ class Average:
         '''
         Update the average with a new value given a sample index.
         '''
-        self.values[id] = (self.values[id]  * (sample - 1) + value) / sample
+        self.values[id] = (self.values.get(id, 0)  * (sample - 1) + value) / sample
         return self.values[id]
 
     def reset(self):
