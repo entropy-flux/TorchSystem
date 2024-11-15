@@ -2,27 +2,27 @@
 
 [[package]]
 name = "mlregistry"
-version = "1.0.2"
+version = "1.0.3"
 description = "Register, retrieve and get metadata from machine learning models."
 optional = false
 python-versions = "<4.0,>=3.12"
 files = [
-    {file = "mlregistry-1.0.2-py3-none-any.whl", hash = "sha256:d6a1afc81ec90bc644cdbe169af292a32da5592343c3cb84fb1f91c6476eca37"},
-    {file = "mlregistry-1.0.2.tar.gz", hash = "sha256:5b5f6378e6564a8e8fead6031fb429003a652541ca9ec2f7de633d8f9e3b7951"},
+    {file = "mlregistry-1.0.3-py3-none-any.whl", hash = "sha256:917019ecb7df4b26de63241f580b32fbf621351173138d59469be1d13adbb964"},
+    {file = "mlregistry-1.0.3.tar.gz", hash = "sha256:c935ef64331ce7c7dac657a032f6a4bb6d48ae05636101723930600d57a7ecb8"},
 ]
 
 [[package]]
 name = "pybondi"
-version = "0.3.2"
+version = "1.0.1"
 description = "A lightweight library for creating event driven systems using domain driven design."
 optional = false
 python-versions = "<4.0,>=3.12"
 files = [
-    {file = "pybondi-0.3.2-py3-none-any.whl", hash = "sha256:4d93bec9e34e5884979ed26693b2df52d070e79eeafadfa4e7353a1c5b272ee5"},
-    {file = "pybondi-0.3.2.tar.gz", hash = "sha256:f8049466fda9e2c516803e0c511fd24c9f067882c1de03bbc6df3ddb1e501d3c"},
+    {file = "pybondi-1.0.1-py3-none-any.whl", hash = "sha256:7b81ffa9c6f9d664ab84777471fc7f39d6e9ab5682e179cf3918a8946c30ee38"},
+    {file = "pybondi-1.0.1.tar.gz", hash = "sha256:f315bddeb30e192bf0a881bb635694b1fcfb6f3cc25a1d4f58609fd213cb8ad3"},
 ]
 
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.12"
-content-hash = "c6a1e903c9bd52617ac2a9a25a2941252b9b43b0941235c8647016854563c99a"
+content-hash = "47a00c4116a1f3c31bc9e0476df96dbd18049ff5b6d296a55f0e5d5138ef254d"

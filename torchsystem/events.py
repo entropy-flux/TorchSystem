@@ -2,6 +2,7 @@ from typing import Sequence
 from datetime import datetime
 from dataclasses import dataclass
 from pybondi import Event
+from pybondi.events import Event, Added, RolledBack, Saved
 from torchsystem.aggregate import Aggregate, Loader
 
 @dataclass
