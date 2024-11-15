@@ -26,6 +26,10 @@ class Aggregate(Module, ABC):
         super().__init__()
         self.root = Root(id=id)
         self.epoch = 0
+
+    @property
+    def id(self) -> Any:
+        return self.root.id
     
     @property
     def phase(self) -> str:

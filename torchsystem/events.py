@@ -5,7 +5,7 @@ from pybondi import Event
 from torchsystem.aggregate import Aggregate, Loader
 
 @dataclass
-class Trained(Event):
+class Trained[T: Aggregate](Event):
     '''
     The Trained event is used to signal that the aggregate has been trained.
     over a sequence of loaders.
@@ -14,10 +14,10 @@ class Trained(Event):
     start: datetime
     end: datetime
     loaders: Sequence[Loader]
-    aggregate: Aggregate
+    aggregate: T
     
 @dataclass
-class Evaluated(Event):
+class Evaluated[T: Aggregate](Event):
     '''
     The Evaluated event is used to signal that the aggregate has been evaluated
     over a sequence of loaders.
@@ -26,10 +26,10 @@ class Evaluated(Event):
     start: datetime
     end: datetime
     loaders: Sequence[Loader]
-    aggregate: Aggregate
+    aggregate: T
 
 @dataclass
-class Iterated(Event):
+class Iterated[T: Aggregate](Event):
     '''
     The Iterated event is used to signal that the aggregate has been iterated
     over a sequence of loaders.
@@ -38,4 +38,4 @@ class Iterated(Event):
     start: datetime
     end: datetime
     loaders: Sequence[tuple[str, Loader]]
-    aggregate: Aggregate
+    aggregate: T

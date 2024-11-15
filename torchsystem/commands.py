@@ -9,12 +9,12 @@ from torchsystem.aggregate import Aggregate
 from torchsystem.aggregate import Loader
 
 @dataclass
-class Train(Command):
+class Train[T: Aggregate](Command):
     '''
     The Train command is used to train the aggregate using the sequence of loaders provided. 
     It bumps the epoch after training the aggregate.
     '''
-    aggregate: Aggregate
+    aggregate: T
     loaders: Sequence[Loader]
     callback: Callback = field(default_factory=Default)
     
@@ -37,12 +37,12 @@ class Train(Command):
         self.aggregate.epoch += 1
 
 @dataclass
-class Evaluate(Command):
+class Evaluate[T: Aggregate](Command):
     '''
     The Evaluate command is used to evaluate the aggregate using the sequence of loaders provided. 
     The aggregate is put on evaluation mode. It does not bump the epoch since it is not training the aggregate. 
     '''
-    aggregate: Aggregate
+    aggregate: T
     loaders: Sequence[Loader]
     callback: Callback = field(default_factory=Default)
     
@@ -64,13 +64,13 @@ class Evaluate(Command):
         ))
 
 @dataclass
-class Iterate(Command):
+class Iterate[T: Aggregate](Command):
     '''
     The Iterate command is used to iterate over the sequence of loaders provided.
     It determines the phase of the aggregate and calls the fit or evaluate method accordingly.
     After iterating over the loaders, it bumps the epoch.
     '''
-    aggregate: Aggregate
+    aggregate: T
     loaders: Sequence[tuple[str, Loader]]
     callback: Callback = field(default_factory=Default)
     
