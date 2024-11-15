@@ -16,7 +16,6 @@ class CompilerSettings(BaseSettings):
     disable: bool = Field(default=False)
     model_config = SettingsConfigDict(env_prefix='COMPILATION_')
 
-
 class LoaderSettings(BaseSettings):
     pin_memory: bool = Field(default=False)
     pin_memory_device: str = Field(default='')

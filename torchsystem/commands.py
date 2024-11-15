@@ -26,6 +26,7 @@ class Train(Command):
         for loader in self.loaders:
             self.aggregate.fit(loader, self.callback)
         end = datetime.now(timezone.utc)
+        self.callback.flush()
         self.aggregate.root.publish(event=events.Trained(
             epoch=self.aggregate.epoch,
             start=start,
@@ -53,6 +54,7 @@ class Evaluate(Command):
         for loader in self.loaders:
             self.aggregate.evaluate(loader, self.callback)
         end = datetime.now(timezone.utc)
+        self.callback.flush()
         self.aggregate.root.publish(event=events.Evaluated(
             epoch=self.aggregate.epoch,
             start=start,
@@ -80,6 +82,7 @@ class Iterate(Command):
             self.callback.set('phase', self.aggregate.phase )
             self.aggregate.iterate(loader, self.callback)
         end = datetime.now(timezone.utc)
+        self.callback.flush()
         self.aggregate.root.publish(event=events.Iterated(
             epoch=self.aggregate.epoch,
             start=start,
