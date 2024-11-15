@@ -46,25 +46,28 @@ class Storage[T]:
     
     def store(self, object: T):
         '''
-        Store the weights of an object in a given category, an assertion error is raised if the object is not registered.
+        Store the weights of an object in a given category, a warning is logged if the object is not registered.
 
         Parameters:
             object (T): The object to store.
         '''
         logger.info(f'Storing {object.__class__.__name__} in category {self.category}')
-        assert object.__class__.__name__ in self.registry.keys(), f'{object.__class__.__name__} not registered in {self.category}'
+        if not object.__class__.__name__ in self.registry.keys():
+            logger.warning(f'{object.__class__.__name__} not registered in {self.category}')
         if hasattr(self, 'weights'):
             self.weights.store(object, f'{self.category}:{get_hash(object)}')
 
     def restore(self, object: T):
         '''
-        Restore the weights of an object from a given category, an assertion error is raised if the object is not registered.
+        Restore the weights of an object from a given category, a warning is logged if the object is not registered.
 
         Parameters:
             object (T): The object to restore.
         '''
         logger.info(f'Restoring {object.__class__.__name__} in category {self.category}')
-        assert object.__class__.__name__ in self.registry.keys(), f'{object.__class__.__name__} not registered in {self.category}'
+        if not object.__class__.__name__ in self.registry.keys():
+            logger.warning(f'{object.__class__.__name__} not registered in {self.category}')
+            
         if hasattr(self, 'weights'):
             self.weights.restore(object, f'{self.category}:{get_hash(object)}')
 
