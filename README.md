@@ -66,7 +66,11 @@ class Classifier(Aggregate):
             callback(self.id, batch, loss.item(), output, target)
 ```
 
-Then, we can create a compiled instance of the aggregate using the compiler class. Let's say we have a model named `MLP`.
+- ** Compiler **
+
+In DDD, aggregates can be complex, with multiple fields or dependencies that require specific rules for instantiation. Factories manage this complexity by encapsulating the creation logic. In modern machine learning frameworks, model creating go hand in hand with model compilation, so it makes sense to encapsulate the compilation process as a factory alike object that produces compiled aggregates.
+
+In torchsystem can create a compiled instance of the aggregate using the compiler class. Let's say we have a model named `MLP`.
 
 ```python
 
@@ -74,14 +78,16 @@ model = MLP(784, 128, 10, p=0.2, activation='relu')
 criterion = CrossEntropyLoss()
 optimizer = Adam(model.parameters(), lr=0.001)
 compiler = Compiler(Classifier) # You pass a factory funcion or class to the compiler to create instances of the aggregate
-                                # in this case we use the the constructor of the Classifier class as the factory function
-                                # for simplicity. But anything can be used, in the case you need complex creation logic.
+                                # in this case, for simplicity we use the the constructor of the Classifier class as the factory
+                                # But any factory you design can be used, in the case you need complex creation logic.
 classifier = compiler.compile('1', model, criterion, optimizer)
 ```
 
 But what about configuration? torch configurations can be very complex to manage, for example compilers have a set of parameters
-that can be configured, but we are not seeing them in the example above. Every object in the torchsytem has a settings object instance
-by default, that can be used to configure them. For example, if you want to change the configuration of the compiler, you can do it like this:
+that can be configured, but we are not seeing them in the example above. 
+
+- **Centralized settings**
+Every object in the torchsytem has a settings object instance initialized by default that can be used to configure them. For example, if you want to change the configuration of the compiler, you can do it like this:
 
 ```python
 
@@ -91,7 +97,6 @@ settings = Settings(compiler=CompilerSettings(fullgraph=True))
 compiler = Compiler(Classifier, settings=settings)
 
 ```
-
 But if you don't want to be messing around passing settings objects to every object you create, you can define enviroment variables
 that will be readed automatically thanks to pydantic-settings. For example, you can define a `.env` file in the root of your project.
 
@@ -104,7 +109,9 @@ LOADER_PIN_MEMORY_DEVICE='cuda:0'
 LOADER_NUM_WORKERS=4
 ```
 
-And that's it, the settings will be readed automatically when you create the compiler object, without manually passing the settings object to every object you create. For more complex usage cases, you will need to create your own settings object to pass to your
+And that's it, the settings will be readed automatically when you create the compiler object, without manually passing the settings object to every object you create. 
+
+For more complex usage cases, you will need to create your own settings object to pass to your
 defined aggregates. This can be done simply by inheriting from the `BaseSettings` class and defining the settings you need.
 
 By default, the Settings object has an `AggregateSettings` object specifying the device for your aggregate. So you can refactor your aggregate to use it in it's training loop.
@@ -119,14 +126,12 @@ class Classifier(Aggregate):
         self.criterion = criterion
         self.optimizer = optimizer
         self.settings = settings or Settings()
-
     ...
-
 
     def fit(self, loader: Loader, callback: Callable):
         device = self.settings.aggregate.device
         for batch, (input, target) in enumerate(loader, start=1):
-            input, target = input.to(self.settings.aggregate.device), target.to(self.settings.aggregate.device)
+            input, target = input.to(device), target.to(device)
             ...         
 ```
 And in your `.env` file you can define the device for your aggregate.
@@ -135,8 +140,11 @@ And in your `.env` file you can define the device for your aggregate.
 AGGREGATE_DEVICE='cuda:0'
 ```
 
+
+- **Loaders**
+
 Now let's train the classifier using loaders. The `Loaders` are a way to encapsulate the data loading process. You can use raw
-data loaders from pytorch if you want:
+data loaders from pytorch if you want, just like you were doing:
 
 ```python
 from torch.utils.data import DataLoader
@@ -148,50 +156,59 @@ loaders = [
 
 ```
 
-But the `Loaders` class will automatically track the parameters of you dataloaders using
+But if you decide to use the `Loaders` class will automatically track the parameters of you dataloaders using
 the `mlregistry` library.  
 
 ```python
 
 from torchsystem import Loaders
 
-loaders = Loaders() #This also accepts a settings object
-loaders.add('train', Digits(train=True), batch_size=32, shuffle=True)
-loaders.add('eval', Digits(train=False), batch_size=32, shuffle=False)
+loaders = Loaders() #This has a default Settings object initialized reading .env files.
+loaders.add('train', Digits(train=True), batch_size=32, shuffle=True) 
 
+settings = Settings(loaders=LoadersSettings(num_of_workers=2)) # If you need something more fine grained.
+loaders.add('eval', Digits(train=False), batch_size=32, shuffle=False, settings=settings) #Settings can also be passed to each loader
+                                                                                          #individually.
 ```
+
+-**Sessions (Unit of work)**
+
 Finally, you can train the classifier using predefined training and evaluation loops in the commands. Let's
 start a training session.
 
 ```python
-
 from torchsystem import Session
 from torchsystem.commands import Iterate # Iterates over the loaders class
 from torchsystem.commands import Train, Evaluate # If you want a more fine grained control over the training process
                                                  # you can use the Train and Evaluate commands that will accept a single
-                                                 # loader given the task.
+                                                 # loader given the task and configure the aggregate accordingly.
 
 with Session() as session:
     session.add(classifier)
     for epoch in range(1, 10):
-        session.execute(Iterate(classifier, loaders))
+        session.execute(Iterate(classifier, loaders)) #Will fit the aggregate for training loaders and evaluate them otherwise.
 ```
 
 The `Session` class is a context manager that will automatically start and stop a pub/sub system, commit or rollback it in case of errors,
 store or restore the state of the aggregates given a defined repository, handle the events produced by the aggregates during the execution
 of the commands using a messagebus and handlers you define, and will not be restricted to the default command handlers, you can also use your own with handlers you define. 
 
-"But what about metrics? I'm just seeing the loss being logged". That's what callbacks are for. By default, torchsystem tracks the loss of your model, but this can be extended to any metric you want with callbacks. There are some predefined callbacks in the `torchsystem.callbacks`.
+
+- **Callbacks**
+
+"But what about metrics? I'm just seeing the loss being logged in my terminal". That's what callbacks are for. By default, torchsystem tracks the loss of your model, but this can be extended to any metric you want with callbacks. There are some predefined callbacks in the `torchsystem.callbacks`.
 
 ```python
 from torchsystem.callbacks import Callbacks # This will let you use several callbacks at once
 from torchsystem.callbacks.average import Loss, Accuracy # You can use predefined callbacks for loss and accuracy averages
 
-callbacks = Callbacks(Loss(), Accuracy())
+callbacks = Callbacks([Loss(), Accuracy()])
 ...
     for epoch in range(1, 10):
         session.execute(Iterate(classifier, loaders, callbacks))
 ```
+
+- **Message Publishers**
 
 You can publish the metrics produced in the callbacks using a publisher. The publisher will publish the metrics in a topic, and you can subscribe to that topic to get the metrics. A publisher will be automatically created by the session and you can add subscribers fron there, but you can also pass your own publisher to the session, as you can with a repository or even a messagebus.
 
@@ -220,10 +237,11 @@ There are event more stuff you can do with the torchsystem. Let's say you don't 
 
 ```python
 
-from mlregistry import get_metadata
+from mlregistry import get_metadata #This is also avaliable under the torchsystem.storage namespace
 from torchsystem.storage import Models, Criterions, Optimizers
 from torchsystem.events import Added, RolledBack, Saved
-
+from torchsystem.events import Iterated # Use this if you want to persist data of for example, datasets
+                                        # that you used to train-evaluate an object.
 
 Models.register(MLP)
 Criterions.register(CrossEntropyLoss)
@@ -249,6 +267,11 @@ def persist_optimizer(event: Added[Classifier], optimizers: Optimizers):
     criterions.store(event.aggregate.criterion)
     ...
 
+def print_datasets(event: Iterated[Classifier]):
+    for phase, loader in event.loaders:
+        metadata = get_metadata(loader.dataset)
+        ...
+        #Do anything you want here.
 
 Session.add_event_handler(Added, persist_model)
 Session.add_event_handler(Added, lambda event: persist_optimizer(event, Optimizers())) # This is just a way to pass dependencies to the event handler. You can also do it with functools.partial. 
