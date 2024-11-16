@@ -26,7 +26,7 @@ It also provides out of the box tools for managing the training process, model c
 
 The main concepts of the torch-system are:
 
-- **Aggregate**: A cluster of related objects, for example neural networks, optimizers, optimizers, etc.. Each aggregate has a unique identifier and a state that can publish domain events. For example, let's say we need to model a classifier, we can define an aggregate called `Classifier` that contains a neural network, an optimizer, a loss function, etc.
+- **Aggregate**: A cluster of related objects, for example neural networks, optimizers, optimizers, etc.. Each aggregate has a unique identifier and a root that can publish domain events. For example, let's say we need to model a classifier, we can define an aggregate called `Classifier` that contains a neural network, an optimizer, a loss function, etc.
 
 ```python	
 from typing import Any
