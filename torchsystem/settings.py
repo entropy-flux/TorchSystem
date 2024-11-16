@@ -2,7 +2,7 @@ from typing import Callable
 from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
-class ModelSettings(BaseSettings):
+class AggregateSettings(BaseSettings):
     device: str = Field(default='cpu')
     model_config = SettingsConfigDict(env_prefix='MODEL_')
 
@@ -27,7 +27,7 @@ class WeightsSettings(BaseSettings):
     model_config = SettingsConfigDict(env_prefix='WEIGHTS_')
 
 class Settings(BaseSettings):
-    model: BaseSettings = Field(default_factory=ModelSettings)
+    aggregate: BaseSettings = Field(default_factory=AggregateSettings)
     loaders: LoaderSettings = Field(default_factory=LoaderSettings)
     compilation: CompilerSettings = Field(default_factory=CompilerSettings)
     weights: WeightsSettings = Field(default_factory=WeightsSettings)
