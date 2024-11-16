@@ -32,6 +32,7 @@ The main concepts of the torch-system are:
 from typing import Any
 from typing import Callable
 from torch import Tensor
+from torch import inferece_mode
 from torch.nn import Module
 from torch.optim import Optimizer
 from torchsystem import Aggregate
@@ -59,6 +60,7 @@ class Classifier(Aggregate):
             self.optimizer.step()
             callback(self.id, batch, loss.item(), output, target)
 
+    @inference_mode()
     def evaluate(self, loader: Loader, callback: Callable):
         for batch, (input, target) in enumerate(loader, start=1):
             output = self.forward(input)
@@ -66,7 +68,7 @@ class Classifier(Aggregate):
             callback(self.id, batch, loss.item(), output, target)
 ```
 
--**Compilers**
+- **Compilers**
 
 In DDD, aggregates can be complex, with multiple fields or dependencies that require specific rules for instantiation. Factories manage this complexity by encapsulating the creation logic. In modern machine learning frameworks, model creating go hand in hand with model compilation, so it makes sense to encapsulate the compilation process as a factory alike object that produces compiled aggregates.
 
@@ -83,10 +85,11 @@ compiler = Compiler(Classifier) # You pass a factory funcion or class to the com
 classifier = compiler.compile('1', model, criterion, optimizer)
 ```
 
+- **Centralized settings**
+ 
 But what about configuration? torch configurations can be very complex to manage, for example compilers have a set of parameters
 that can be configured, but we are not seeing them in the example above. 
 
-- **Centralized settings**
 Every object in the torchsytem has a settings object instance initialized by default that can be used to configure them. For example, if you want to change the configuration of the compiler, you can do it like this:
 
 ```python
@@ -171,17 +174,17 @@ loaders.add('eval', Digits(train=False), batch_size=32, shuffle=False, settings=
                                                                                           #individually.
 ```
 
--**Sessions (Unit of work)**
+- **Sessions (Unit of work)**
 
-Finally, you can train the classifier using predefined training and evaluation loops in the commands. Let's
-start a training session.
+Finally, you can train the classifier using predefined training and evaluation loops in the commands (or something defined by you in
+a command handler). Let's start a training session.
 
 ```python
 from torchsystem import Session
 from torchsystem.commands import Iterate # Iterates over the loaders class
 from torchsystem.commands import Train, Evaluate # If you want a more fine grained control over the training process
                                                  # you can use the Train and Evaluate commands that will accept a single
-                                                 # loader given the task and configure the aggregate accordingly.
+                                                 # and configure the aggregate accordingly in training or inference mode.
 
 with Session() as session:
     session.add(classifier)
