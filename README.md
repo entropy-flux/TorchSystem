@@ -232,6 +232,7 @@ with Session(repository, publisher) as session:
         if epoch % 5 == 0:
             raise Exception('Something went wrong') # Everything will be rolled back to the last commit point.
 ```
+- **Events**
 
 There are event more stuff you can do with the torchsystem. Let's say you don't want to use repositories but persist your aggregates with events instead. Let's see an example of how you can do this using also the `mlregistry` library for metadata tracking.
 
