@@ -123,8 +123,8 @@ By default, the Settings object has an `AggregateSettings` object specifying the
 from torchsystem.settings import Settings
 
 class Classifier(Aggregate):
-    def __init__(self, id: Any, model: Module, criterion: Module, optimizer: Optimizer, settings: Settings):
-        super().__init__(id, settings=settings)
+    def __init__(self, id: Any, model: Module, criterion: Module, optimizer: Optimizer, settings: Settings = None):
+        super().__init__(id)
         self.model = model
         self.criterion = criterion
         self.optimizer = optimizer
