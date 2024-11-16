@@ -66,7 +66,7 @@ class Classifier(Aggregate):
             callback(self.id, batch, loss.item(), output, target)
 ```
 
-- ** Compiler **
+-**Compilers**
 
 In DDD, aggregates can be complex, with multiple fields or dependencies that require specific rules for instantiation. Factories manage this complexity by encapsulating the creation logic. In modern machine learning frameworks, model creating go hand in hand with model compilation, so it makes sense to encapsulate the compilation process as a factory alike object that produces compiled aggregates.
 
