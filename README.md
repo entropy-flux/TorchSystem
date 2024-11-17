@@ -12,7 +12,13 @@ Then, you can install the package using pip:
 pip install torchsystem
 ```
 
-Soon I will be adding the package to conda-forge when the package is more stable.
+Soon I will be adding the package to conda-forge when the package is more stable. Meanwhile you can install it with conda pip
+
+```bash
+conda install pip
+pip install torchsystem
+```
+
 
 ## Introduction
 
