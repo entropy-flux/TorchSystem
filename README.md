@@ -54,7 +54,7 @@ class Classifier(Aggregate):
     def fit(self, loader: Loader, callback: Callable):
         for batch, (input, target) in enumerate(loader, start=1):
             self.optimizer.zero_grad()
-            output = self.forward(input)
+            output = self(input)
             loss = self.loss(output, target)
             loss.backward()
             self.optimizer.step()
@@ -63,7 +63,7 @@ class Classifier(Aggregate):
     @inference_mode()
     def evaluate(self, loader: Loader, callback: Callable):
         for batch, (input, target) in enumerate(loader, start=1):
-            output = self.forward(input)
+            output = self(input)
             loss = self.loss(output, target)
             callback(self.id, batch, loss.item(), output, target)
 ```
