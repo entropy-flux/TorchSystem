@@ -13,7 +13,7 @@ class Default(Callback):
     def __call__(self, id: Any, batch: int, loss: float, *args, **kwargs):
         self.batch = batch
         if batch == 100:
-            logger.info(f'Epoch: {self.epoch}, Phase: {self.phase}, Batch: {batch}, Loss: {loss} from aggregate with {id}')
+            logger.info(f'Epoch: {self.epoch}, Phase: {self.phase}, Batch: {batch}, Loss: {loss} from aggregate with ID {id}')
 
     def flush(self):
         logger.info(f'End of epoch {self.epoch}, Phase: {self.phase}')
