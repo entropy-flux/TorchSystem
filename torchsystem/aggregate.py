@@ -20,6 +20,7 @@ class Loader(Protocol):
     @overload
     def __iter__(self) -> Iterator[tuple[Tensor, Tensor]]:...
 
+
 class Aggregate(Module, ABC):
 
     def __init__(self, id: Any):

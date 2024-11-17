@@ -6,7 +6,7 @@ from logging import getLogger
 
 logger = getLogger(__name__)
 
-class Compiler:
+class Compiler[T: Aggregate]:
     '''
     The Compiler class is used to compile several modules into a single aggregate.    
 
@@ -19,7 +19,7 @@ class Compiler:
         self.settings = settings or Settings()
         self.factory = factory
 
-    def compile(self, *args, **kwargs) -> Aggregate:
+    def compile(self, *args, **kwargs) -> T:
         '''
         Builds and compiles the aggregate using the factory provided.
 

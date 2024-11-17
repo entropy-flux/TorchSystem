@@ -26,8 +26,8 @@ class WeightsSettings(BaseSettings):
     directory: str = Field(default='data/weights')
     model_config = SettingsConfigDict(env_prefix='WEIGHTS_')
 
-class Settings(BaseSettings):
-    aggregate: BaseSettings = Field(default_factory=AggregateSettings)
+class Settings[T: BaseSettings](BaseSettings):
+    aggregate: T = Field(default_factory=AggregateSettings)
     loaders: LoaderSettings = Field(default_factory=LoaderSettings)
     compilation: CompilerSettings = Field(default_factory=CompilerSettings)
     weights: WeightsSettings = Field(default_factory=WeightsSettings)
