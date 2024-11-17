@@ -52,8 +52,7 @@ class Storage[T]:
             object (T): The object to store.
         '''
         logger.info(f'Storing {object.__class__.__name__} in category {self.category}')
-        if not object.__class__.__name__ in self.registry.keys():
-            logger.warning(f'{object.__class__.__name__} not registered in {self.category}')
+        assert object.__class__.__name__ in self.registry.keys(), f'{object.__class__.__name__} not registered in {self.category}'
         if hasattr(self, 'weights'):
             self.weights.store(object, f'{self.category}:{get_hash(object)}')
 
@@ -65,9 +64,7 @@ class Storage[T]:
             object (T): The object to restore.
         '''
         logger.info(f'Restoring {object.__class__.__name__} in category {self.category}')
-        if not object.__class__.__name__ in self.registry.keys():
-            logger.warning(f'{object.__class__.__name__} not registered in {self.category}')
-            
+        assert object.__class__.__name__ in self.registry.keys(), f'{object.__class__.__name__} not registered in {self.category}'
         if hasattr(self, 'weights'):
             self.weights.restore(object, f'{self.category}:{get_hash(object)}')
 

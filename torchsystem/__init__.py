@@ -8,3 +8,4 @@ from torchsystem.compiler import Compiler
 from torchsystem.commands import Command
 from torchsystem.events import Event
 from torchsystem.loggings import Session
+from torchsystem.settings import Settings
