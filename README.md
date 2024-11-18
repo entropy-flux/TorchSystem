@@ -38,7 +38,7 @@ The main concepts of the torch-system are:
 from typing import Any
 from typing import Callable
 from torch import Tensor
-from torch import inferece_mode
+from torch import inference_mode
 from torch.nn import Module
 from torch.optim import Optimizer
 from torchsystem import Aggregate
