@@ -265,7 +265,8 @@ optimizer = Adam(model.parameters(), lr=0.001)
 
 def persist_model(event: Added[Classifier]):
     metadata = get_metadata(event.aggregate.model) 
-    print(f'Persisting model {metadata.name} with parameters {metadata.parameters}') # {'in_features': 784, 'out_features': 128, 'p': 0.2, 'activation': 'relu'} # Do whatever you want with this. Print it, store it in a database, etc.
+    print(f'Persisting model {metadata.name} with parameters {metadata.parameters}')
+    # {'in_features': 784, 'out_features': 128, 'p': 0.2, 'activation': 'relu'} # Do whatever you want with this. Print it, store it in a database, etc.
     # This is recorded thanks to the mlregistry library embedded in the Models class.
     models = Models()
     models.store(event.aggregate.model) 
@@ -284,7 +285,8 @@ def print_datasets(event: Iterated[Classifier]):
         #Do anything you want here.
 
 Session.add_event_handler(Added, persist_model)
-Session.add_event_handler(Added, lambda event: persist_optimizer(event, Optimizers())) # This is just a way to pass dependencies to the event handler. You can also do it with functools.partial. 
+Session.add_event_handler(Added, lambda event: persist_optimizer(event, Optimizers()))
+# This is just a way to pass dependencies to the event handler. You can also do it with functools.partial. 
 
 with Session() as session:
     session.add(classifier) # Will trigger the Added event
