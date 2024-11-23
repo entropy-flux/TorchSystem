@@ -249,7 +249,7 @@ There are even more stuff you can do with the torchsystem. Let's say you don't w
 
 from mlregistry import get_metadata #This is also avaliable under the torchsystem.storage namespace
 from torchsystem.storage import Models, Criterions, Optimizers
-from torchsystem.events import Added, RolledBack, Saved
+from torchsystem.events import Added, RolledBack, Commited
 from torchsystem.events import Iterated # Use this if you want to persist data of for example, datasets
                                         # that you used to train-evaluate an object.
 
@@ -292,7 +292,7 @@ with Session() as session:
     session.add(classifier) # Will trigger the Added event
     for epoch in range(1, 10):
         session.execute(Iterate(classifier, loaders, callbacks))
-        session.commit() # Will trigger the Saved event
+        session.commit() # Will trigger the Commited event
 ```
 
 A messagebus can be used to inject all the event and command handlers into the session. You can use it with decorators in your service layers.
@@ -320,7 +320,7 @@ with Session(messagebus=messagebus) as session:
         session.commit() # Will trigger the Saved event
 ```
 
-In the future I will see if I can add a dependency injection mecanism like the one in the `fastapi` library to the torchsystem.
+In the future I will see if I can add a dependency injection mecanism like the one in the `fastapi` library to the torchsystem, to inject dependencies and override them in the messagebus.
 
 And that's it, you have a complete training system using DDD and EDA principles. You can define your own aggregates, commands, events, repositories, and handlers to create a complex training system that can be easily maintained and extended. There are event more stuff you can do with the torchsystem. 
 
