@@ -295,6 +295,33 @@ with Session() as session:
         session.commit() # Will trigger the Saved event
 ```
 
+A messagebus can be used to inject all the event and command handlers into the session. You can use it with decorators in your service layers.
+
+```python
+
+from torchsystem import Messagebus
+from torchsystem.events import Added, RolledBack, Iterated
+
+messagebus = Messagebus()
+
+@messagebus.subscribe(Added, Commited)
+def bring_current_epoch(event: Added[Classifier] | RolledBack[Classifier]):
+    '''
+    When you add a classifier to the session or if the session is rolled back
+    you need to bring the current epoch of the classifier to the current state.
+    '''
+    event.aggregate.epoch = get_current_epoch(event.aggregate.id) # or something like that.
+
+
+with Session(messagebus=messagebus) as session:
+    session.add(classifier) # Will trigger the Added event
+    for epoch in range(1, 10):
+        session.execute(Iterate(classifier, loaders, callbacks))
+        session.commit() # Will trigger the Saved event
+```
+
+In the future I will see if I can add a dependency injection mecanism like the one in the `fastapi` library to the torchsystem.
+
 And that's it, you have a complete training system using DDD and EDA principles. You can define your own aggregates, commands, events, repositories, and handlers to create a complex training system that can be easily maintained and extended. There are event more stuff you can do with the torchsystem. 
 
 This is a very first working version of the torchsystem. The idea is to deploy real time machine learning systems not only for inference, but also for training in servers using REST apis. A lot of wild ideas come to my mind when I think about the possibilities of this system, like deploy distributed multi-model agents that can train them selves, models that raise events containing embeddings similar to a brain reacting to something, etc.

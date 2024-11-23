@@ -13,16 +13,16 @@ files = [
 
 [[package]]
 name = "pybondi"
-version = "1.0.1"
+version = "1.1.0"
 description = "A lightweight library for creating event driven systems using domain driven design."
 optional = false
 python-versions = "<4.0,>=3.12"
 files = [
-    {file = "pybondi-1.0.1-py3-none-any.whl", hash = "sha256:7b81ffa9c6f9d664ab84777471fc7f39d6e9ab5682e179cf3918a8946c30ee38"},
-    {file = "pybondi-1.0.1.tar.gz", hash = "sha256:f315bddeb30e192bf0a881bb635694b1fcfb6f3cc25a1d4f58609fd213cb8ad3"},
+    {file = "pybondi-1.1.0-py3-none-any.whl", hash = "sha256:72b502ed73cbac1ae71cd69aff82ff3dc92f99915d20629230ed105e207090b1"},
+    {file = "pybondi-1.1.0.tar.gz", hash = "sha256:87eb91bcd40a066ac2ed410ea84b9696006b93b67b130d7e87699385f5c70028"},
 ]
 
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.12"
-content-hash = "47a00c4116a1f3c31bc9e0476df96dbd18049ff5b6d296a55f0e5d5138ef254d"
+content-hash = "d644ababa5307b31e37444db04776d4c4a923213f86995966352bd68dd57f5e6"
