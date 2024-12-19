@@ -287,7 +287,7 @@ from torchsystem import Publisher
 
 publisher = Publisher()
 
-@publisher.subscribe('metrics')
+@publisher.subscribe('result')
 def print_metrics(metric):
     print(metric) #Use the tracking library you want to store
                   # the metrics like tensorboard
