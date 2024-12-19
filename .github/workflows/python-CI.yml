@@ -1,5 +1,16 @@
 name: CI
-on: [push, pull_request]
+on:
+  push:
+    paths:
+      - '**/*.py'  
+      - 'torchsystem/**' 
+      - 'tests/**' 
+      
+  pull_request:
+    paths:
+      - '**/*.py' 
+      - 'torchsystem/**'   
+      - 'tests/**'   
 
 jobs:
   tests:

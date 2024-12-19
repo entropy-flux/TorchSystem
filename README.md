@@ -1,6 +1,5 @@
-# torch-system
-
-The beta version of IA training system, created using domain driven design and an event driven architecture.
+# TorchSystem
+An IA training system based on event driven programming, unit of work pattern, pubsub and domain driven desing.
 
 ## Installation
 
@@ -12,27 +11,21 @@ Then, you can install the package using pip:
 pip install torchsystem
 ```
 
-Soon I will be adding the package to conda-forge when the package is more stable. Meanwhile you can install it with conda pip
-
-```bash
-conda install pip
-pip install torchsystem
-```
-
-
 ## Introduction
 
 Machine learning systems are getting more and more complex, and the need for a more organized and structured way to build and maintain them is becoming more evident. Training a neural network requires to define a cluster of related objects that should be treated as a single unit, this defines an aggregate. The training process mutates the state of the aggregate producing data that should be stored  alongside the state of the aggregate in a transactional way. This establishes a clear bounded context that should be modeled using Domain Driven Design (DDD) principles.
 
-The torch-system is a framework based on DDD and Event Driven Architecture (EDA) principles, using the [pybondi](https://github.com/mapache-software/py-bondi) library. It aims to provide a way to model complex machine models using aggregates and training flows using commands and events, and persist states and results using the repositories, the unit of work pattern and pub/sub.
+The torch-system is a framework based on DDD and Event Driven Architecture (EDA) principles. It aims to provide a way to model complex machine models using aggregates and training flows using commands and events, and persist states and results using the repositories, the unit of work pattern and pub/sub.
 
-It also provides out of the box tools for managing the training process, model compilation, centralized settings with enviroments variables using [pydantic-settings](https://github.com/pydantic/pydantic-settings), automatic parameter tracking using [mlregistry](https://github.com/mapache-software/ml-registry). 
+It also provides out of the box tools for managing the training process, model compilation, centralized settings with enviroments variables using pydantic-sttings, and automatic parameter tracking.
 
 ## Getting Started
 
 The main concepts of the torch-system are:
 
-- **Aggregate**: A cluster of related objects, for example neural networks, optimizers, optimizers, etc.. Each aggregate has a unique identifier and a root that can publish domain events. For example, let's say we need to model a classifier, we can define an aggregate called `Classifier` that contains a neural network, an optimizer, a loss function, etc.
+**Aggregates**
+
+A cluster of related objects, for example neural networks, optimizers, optimizers, etc.. Each aggregate has a unique identifier and a root that can publish domain events. For example, let's say we need to model a classifier, we can define an aggregate called `Classifier` that contains a neural network, an optimizer, a loss function, etc.
 
 ```python	
 from typing import Any
@@ -74,19 +67,20 @@ class Classifier(Aggregate):
             callback(self.id, batch, loss.item(), output, target)
 ```
 
-- **Compilers**
+**Compilers**
 
 In DDD, aggregates can be complex, with multiple fields or dependencies that require specific rules for instantiation. Factories manage this complexity by encapsulating the creation logic. In modern machine learning frameworks, model creating go hand in hand with model compilation, so it makes sense to encapsulate the compilation process as a factory alike object that produces compiled aggregates.
 
 In torchsystem can create a compiled instance of the aggregate using the compiler class. Let's say we have a model named `MLP`.
 
 ```python
-
 model = MLP(784, 128, 10, p=0.2, activation='relu')
 criterion = CrossEntropyLoss()
 optimizer = Adam(model.parameters(), lr=0.001)
-compiler = Compiler(Classifier) # You pass a factory funcion or class to the compiler to create instances of the aggregate
-                                # in this case, for simplicity we use the the constructor of the Classifier class as the factory
+compiler = Compiler(Classifier) # You pass a factory funcion or class to the compiler 
+                                # to create instances of the aggregate
+                                # in this case, for simplicity we use the the constructor of the Classifier class 
+                                # as the factory
                                 # But any factory you design can be used, in the case you need complex creation logic.
 classifier = compiler.compile('1', model, criterion, optimizer)
 ```
@@ -180,7 +174,7 @@ loaders.add('eval', Digits(train=False), batch_size=32, shuffle=False, settings=
                                                                                           #individually.
 ```
 
-- **Sessions (Unit of work)**
+**Sessions (Unit of work)**
 
 Finally, you can train the classifier using predefined training and evaluation loops in the commands (or something defined by you in
 a command handler). Let's start a training session.
@@ -203,7 +197,7 @@ store or restore the state of the aggregates given a defined repository, handle 
 of the commands using a messagebus and handlers you define, and will not be restricted to the default command handlers, you can also use your own with handlers you define. 
 
 
-- **Callbacks**
+**Callbacks**
 
 "But what about metrics? I'm just seeing the loss being logged in my terminal". That's what callbacks are for. By default, torchsystem tracks the loss of your model, but this can be extended to any metric you want with callbacks. There are some predefined callbacks in the `torchsystem.callbacks`.
 
@@ -217,7 +211,59 @@ callbacks = Callbacks([Loss(), Accuracy()])
         session.execute(Iterate(classifier, loaders, callbacks))
 ```
 
-- **Message Publishers**
+**Repositories**
+
+Build repositories for your models. The repository is a way to store the state of the aggregates in a transactional way.
+
+
+```python
+from torchsystem import Repository
+from torchsystem import Settings
+from torchsystem.storage import Models, Criterions, Optimizers
+
+class Classifiers(Repository):
+    def __init__(self, settings: Settings):
+        super().__init__()
+        path_to_weights = 'data/weights'
+        # This will allow you to do more than just store the weights of the model.
+        # If you don't need to store metadata of objects you can use the Weight[T] class from the torchsystem.weights module. It will store the weights of the object in a file.
+        self.models = Models(path_to_weights, settings)
+        self.criterions = Criterions(path_to_weights, settings)
+        self.optimizers = Optimizers(path_to_weights, settings)
+
+    def store(self, classifier: Classifier):
+        self.models.store(classifier.model)
+        # Sometimes your criterion may have a state
+        # self.criterions.store(classifier.criterion)
+
+    def restore(self, classifier: Classifier):
+        self.models.restore(classifier.model)
+        # Sometimes your criterion may have a state
+        # self.criterions.restore(classifier.criterion)
+```
+
+Repositories can be used to store the state of the aggregates but they are also provided with a metadata injection mechanism that will allow you to save the metadata of the objects that you register in the repository. This is done using the `mlregistry` library. 
+
+```python
+
+classifiers = Classifiers(Settings())
+classifiers.models.register(MLP)
+classifiers.criterions.register(CrossEntropyLoss)
+classifiers.optimizers.register(Adam)
+
+model = MLP(784, 128, 10, p=0.2, activation='relu')
+criterion = CrossEntropyLoss()
+optimizer = Adam(model.parameters(), lr=0.001)
+
+optimizer_metadata = get_metadata(optimizer) # This will return a dictionary with the metadata of the optimizer!
+
+### You can retrieve instances of the objects you registered in the repository using the get method.
+
+optimizer_type = classifiers.optimizers.get('Adam')
+optimizer_new_instance = optimizer_type(model.parameters(), lr=0.002) # This will return an optimizer instance since it is registered in the repository.
+```
+
+**Message Publishers**
 
 You can publish the metrics produced in the callbacks using a publisher. The publisher will publish the metrics in a topic, and you can subscribe to that topic to get the metrics. A publisher will be automatically created by the session and you can add subscribers fron there, but you can also pass your own publisher to the session, as you can with a repository or even a messagebus.
 
@@ -225,9 +271,13 @@ You can publish the metrics produced in the callbacks using a publisher. The pub
 from torchsystem import Publisher
 
 publisher = Publisher()
-publisher.subscribe('metrics', lambda metric: print(metric)) # Use the tracking library you want to store the metrics like tensorboard
 
-repository = MyRepository() # Your own repository class with store, and restore methods implemented for your aggregates
+@publisher.subscribe('metrics')
+def print_metrics(metric):
+    print(metric) #Use the tracking library you want to store
+                  # the metrics like tensorboard
+
+repository = MyRepository() # Your can roll your own repository class with store, and restore methods implemented for your aggregates
 
 callbacks.bind(publisher)
 
@@ -245,82 +295,70 @@ with Session(repository, publisher) as session:
 
 There are even more stuff you can do with the torchsystem. Let's say you don't want to use repositories but persist your aggregates with events instead. Let's see an example of how you can do this using also the `mlregistry` library for metadata tracking.
 
+A messagebus can be used to inject all the event and command handlers into the session. You can use it with decorators in your service layers.
+
+
 ```python
 
-from mlregistry import get_metadata #This is also avaliable under the torchsystem.storage namespace
+from torchsystem import get_metadata 
+from torchsystem import Depends
+from torchsystem import Messagebus
 from torchsystem.storage import Models, Criterions, Optimizers
 from torchsystem.events import Added, RolledBack, Commited
-from torchsystem.events import Iterated # Use this if you want to persist data of for example, datasets
-                                        # that you used to train-evaluate an object.
+from torchsystem.events import Iterated 
 
 Models.register(MLP)
 Criterions.register(CrossEntropyLoss)
-Optimizers.register(Adam)
-# If you don't need to track the metada of the model, you can skip the register step and
-# just store the weights using the Weight[T] class from the torchsystem.weights module.
+Optimizers.register(Adam) ### Optional. This will allow you to store the metadata of the objects you register.
 
 model = MLP(784, 128, 10, p=0.2, activation='relu')
 criterion = CrossEntropyLoss()
 optimizer = Adam(model.parameters(), lr=0.001)
 
-def persist_model(event: Added[Classifier]):
-    metadata = get_metadata(event.aggregate.model) 
-    print(f'Persisting model {metadata.name} with parameters {metadata.parameters}')
-    # {'in_features': 784, 'out_features': 128, 'p': 0.2, 'activation': 'relu'} # Do whatever you want with this. Print it, store it in a database, etc.
-    # This is recorded thanks to the mlregistry library embedded in the Models class.
-    models = Models()
-    models.store(event.aggregate.model) 
-    ... # You are free to do whatever you want with the model. I suggest just doing one thing per event handler.
-    # And add several event handlers to the same event if you need to do several things with the same event.
-
-def persist_optimizer(event: Added[Classifier], optimizers: Optimizers):
-    metadata = get_metadata(event.aggregate.criterion) 
-    criterions.store(event.aggregate.criterion)
-    ...
-
-def print_datasets(event: Iterated[Classifier]):
-    for phase, loader in event.loaders:
-        metadata = get_metadata(loader.dataset)
-        ...
-        #Do anything you want here.
-
-Session.add_event_handler(Added, persist_model)
-Session.add_event_handler(Added, lambda event: persist_optimizer(event, Optimizers()))
-# This is just a way to pass dependencies to the event handler. You can also do it with functools.partial. 
-
-with Session() as session:
-    session.add(classifier) # Will trigger the Added event
-    for epoch in range(1, 10):
-        session.execute(Iterate(classifier, loaders, callbacks))
-        session.commit() # Will trigger the Commited event
-```
-
-A messagebus can be used to inject all the event and command handlers into the session. You can use it with decorators in your service layers.
-
-```python
-
-from torchsystem import Messagebus
-from torchsystem.events import Added, RolledBack, Iterated
-
 messagebus = Messagebus()
 
-@messagebus.subscribe(Added, Commited)
-def bring_current_epoch(event: Added[Classifier] | RolledBack[Classifier]):
+def epoch_dependency() -> int:
+    # You can pass dependencies to the event handlers using this pattern.
+    # They can be overriden later just like in FastAPI.
+    return 10
+
+@messagebus.on(Added, RolledBack)
+def bring_current_epoch(event: Added[Classifier] | RolledBack[Classifier], epoch: int = Depends(epoch_dependency)):
+    # Use generics to have pep484 type hints.
     '''
     When you add a classifier to the session or if the session is rolled back
     you need to bring the current epoch of the classifier to the current state.
     '''
-    event.aggregate.epoch = get_current_epoch(event.aggregate.id) # or something like that.
+    event.aggregate.epoch = epoch 
 
+def get_models() -> Models:
+    return Models()
 
-with Session(messagebus=messagebus) as session:
+@messagebus.on(Commited)
+def persist_model(event: Commited[Classifier], models: Models = Depends(get_models)):
+    metadata = get_metadata(event.aggregate.model) 
+    print(f'Persisting model {metadata.name} with parameters {metadata.parameters}')
+    models.store(event.aggregate.model) 
+    # {'in_features': 784, 'out_features': 128, 'p': 0.2, 'activation': 'relu'} # Do whatever you want with this. Print it, store it in a database, etc.
+    # This is recorded thanks to the mlregistry library embedded in the Models class.
+    # You are free to do whatever you want with the model. I suggest just doing one thing per event handler.
+    # And add several event handlers to the same event if you need to do several things with the same event.
+
+@messagebus.on(Iterated)
+def print_datasets(event: Iterated[Classifier]):
+    for phase, loader in event.loaders:
+        metadata = get_metadata(loader.dataset)
+        print(f'Iterated over {metadata.name} dataset with parameters {metadata.parameters}')
+        ...
+        #Do anything you want here.
+
+with Session(messagebus) as session:
     session.add(classifier) # Will trigger the Added event
     for epoch in range(1, 10):
         session.execute(Iterate(classifier, loaders, callbacks))
-        session.commit() # Will trigger the Saved event
+        session.commit() # Will trigger the Commited event if something goes
+                         # wrong it will trigger the RolledBack event.
 ```
-
-In the future I will see if I can add a dependency injection mecanism like the one in the `fastapi` library to the torchsystem, to inject dependencies and override them in the messagebus.
 
 And that's it, you have a complete training system using DDD and EDA principles. You can define your own aggregates, commands, events, repositories, and handlers to create a complex training system that can be easily maintained and extended. There are event more stuff you can do with the torchsystem. 
 
