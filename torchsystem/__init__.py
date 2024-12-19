@@ -3,6 +3,7 @@ from pybondi import Publisher as Publisher
 from pybondi import Messagebus as Messagebus
 from pybondi import Depends as Depends
 from pybondi import Session as Session
+from pybondi import Message as Message
 from mlregistry import get_hash as get_hash
 from mlregistry import get_metadata as get_metadata
 from torchsystem.aggregate import Aggregate as Aggregate

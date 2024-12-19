@@ -5,11 +5,13 @@ from typing import Protocol
 from typing import overload
 from typing import Literal
 from typing import Callable
+from typing import runtime_checkable
 from torch import Tensor
 from torch.nn import Module
 from torch.utils.data import Dataset
 from pybondi.aggregate import Root
 
+@runtime_checkable
 class Loader(Protocol):
     '''
     Interface for the DataLoader class.     
