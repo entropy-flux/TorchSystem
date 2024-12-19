@@ -22,6 +22,8 @@ It also provides out of the box tools for managing the training process, model c
     - [Sessions (Unit of Work)](#sessions-unit-of-work)
     - [Callbacks](#callbacks)
     - [Repositories](#repositories)
+    - [Publishers](#message-publishers)
+    - [Messagebus](#messagebus)
 
 ## Getting Started
 
