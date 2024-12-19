@@ -296,7 +296,7 @@ repository = MyRepository() # Your can roll your own repository class with store
 
 callbacks.bind(publisher)
 
-with Session(repository, publisher) as session:
+with Session(repository=repository, publisher=publisher) as session:
     session.add(classifier)
     for epoch in range(1, 10):
         session.execute(Iterate(classifier, loaders, callbacks))
