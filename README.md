@@ -377,7 +377,8 @@ with Session(messagebus) as session:
 ```
 
 
-Roll your own logic with custom commands or events you define.
+Finally, you can roll your own logic with custom commands or events you define. This will allow you to create
+systems as complex as you want. You can chain events, early stop, send notifications, anything you want. 
 
 
 ```python
