@@ -27,9 +27,6 @@ It also provides out of the box tools for managing the training process, model c
 
 ## Getting Started
 
-The main concepts of the torch-system are:
-
-
 ### **Installation**
 
 Make sure you have a pytorch distribution installed. If you don't, go to the [official website](https://pytorch.org/) and follow the instructions.
@@ -39,6 +36,8 @@ Then, you can install the package using pip:
 ```bash
 pip install torchsystem
 ```
+
+The main concepts of the torch-system are:
 
 ### **Aggregates**
 
