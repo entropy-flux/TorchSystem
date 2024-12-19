@@ -393,7 +393,7 @@ class CustomTrain(Command):
         ...
 
 @dataclass
-class ModelConverged(Command):
+class ModelConverged(Event):
     custom_model: CustomModel
 
 ```
