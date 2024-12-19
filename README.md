@@ -306,7 +306,8 @@ with Session(repository=repository, publisher=publisher) as session:
         if epoch % 5 == 0:
             raise Exception('Something went wrong') # Everything will be rolled back to the last commit point.
 ```
-### **Events, Commands and the Messagebus**
+
+### **Messagebus**
 
 There are even more stuff you can do with the torchsystem. Let's say you don't want to use repositories but persist your aggregates with events instead. Let's see an example of how you can do this using also the `mlregistry` library for metadata tracking.
 
@@ -374,6 +375,29 @@ with Session(messagebus) as session:
         session.commit() # Will trigger the Commited event if something goes
                          # wrong it will trigger the RolledBack event.
 ```
+
+
+Roll your own logic with custom commands or events you define.
+
+
+```python
+from torchsystem import Event, Command
+from dataclasses import dataclass
+
+@dataclass
+class CustomTrain(Command):
+    custom_aggregate: CustomAggregate
+
+    def execute(self): ### Override the execute method or add a handler later.
+        ### Custom training logic implementation
+        ...
+
+@dataclass
+class ModelConverged(Command):
+    custom_model: CustomModel
+
+```
+
 
 And that's it, you have a complete training system using DDD and EDA principles. You can define your own aggregates, commands, events, repositories, and handlers to create a complex training system that can be easily maintained and extended. There are event more stuff you can do with the torchsystem. 
 
