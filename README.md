@@ -1,7 +1,34 @@
 # TorchSystem
 An IA training system based on event driven programming, unit of work pattern, pubsub and domain driven desing.
 
-## Installation
+## Introduction
+
+Machine learning systems are getting more and more complex, and the need for a more organized and structured way to build and maintain them is becoming more evident. Training a neural network requires to define a cluster of related objects that should be treated as a single unit, this defines an aggregate. The training process mutates the state of the aggregate producing data that should be stored  alongside the state of the aggregate in a transactional way. This establishes a clear bounded context that should be modeled using Domain Driven Design (DDD) principles.
+
+The torch-system is a framework based on DDD and Event Driven Architecture (EDA) principles. It aims to provide a way to model complex machine models using aggregates and training flows using commands and events, and persist states and results using the repositories, the unit of work pattern and pub/sub.
+
+It also provides out of the box tools for managing the training process, model compilation, centralized settings with enviroments variables using pydantic-sttings, and automatic parameter tracking.
+
+## Table of contents
+
+1. [TorchSystem](#torchsystem)
+2. [Introduction](#introduction)
+3. [Getting Started](#getting-started)
+    - [Installation](#installation)
+    - [Aggregates](#aggregates)
+    - [Compilers](#compilers)
+    - [Centralized Settings](#centralized-settings)
+    - [Loaders](#loaders)
+    - [Sessions (Unit of Work)](#sessions-unit-of-work)
+    - [Callbacks](#callbacks)
+    - [Repositories](#repositories)
+
+## Getting Started
+
+The main concepts of the torch-system are:
+
+
+### **Installation**
 
 Make sure you have a pytorch distribution installed. If you don't, go to the [official website](https://pytorch.org/) and follow the instructions.
     
@@ -11,19 +38,7 @@ Then, you can install the package using pip:
 pip install torchsystem
 ```
 
-## Introduction
-
-Machine learning systems are getting more and more complex, and the need for a more organized and structured way to build and maintain them is becoming more evident. Training a neural network requires to define a cluster of related objects that should be treated as a single unit, this defines an aggregate. The training process mutates the state of the aggregate producing data that should be stored  alongside the state of the aggregate in a transactional way. This establishes a clear bounded context that should be modeled using Domain Driven Design (DDD) principles.
-
-The torch-system is a framework based on DDD and Event Driven Architecture (EDA) principles. It aims to provide a way to model complex machine models using aggregates and training flows using commands and events, and persist states and results using the repositories, the unit of work pattern and pub/sub.
-
-It also provides out of the box tools for managing the training process, model compilation, centralized settings with enviroments variables using pydantic-sttings, and automatic parameter tracking.
-
-## Getting Started
-
-The main concepts of the torch-system are:
-
-**Aggregates**
+### **Aggregates**
 
 A cluster of related objects, for example neural networks, optimizers, optimizers, etc.. Each aggregate has a unique identifier and a root that can publish domain events. For example, let's say we need to model a classifier, we can define an aggregate called `Classifier` that contains a neural network, an optimizer, a loss function, etc.
 
@@ -67,7 +82,7 @@ class Classifier(Aggregate):
             callback(self.id, batch, loss.item(), output, target)
 ```
 
-**Compilers**
+### **Compilers**
 
 In DDD, aggregates can be complex, with multiple fields or dependencies that require specific rules for instantiation. Factories manage this complexity by encapsulating the creation logic. In modern machine learning frameworks, model creating go hand in hand with model compilation, so it makes sense to encapsulate the compilation process as a factory alike object that produces compiled aggregates.
 
@@ -85,7 +100,7 @@ compiler = Compiler(Classifier) # You pass a factory funcion or class to the com
 classifier = compiler.compile('1', model, criterion, optimizer)
 ```
 
-- **Centralized settings**
+### **Centralized settings**
  
 But what about configuration? torch configurations can be very complex to manage, for example compilers have a set of parameters
 that can be configured, but we are not seeing them in the example above. 
@@ -144,7 +159,7 @@ AGGREGATE_DEVICE='cuda:0'
 ```
 
 
-- **Loaders**
+### **Loaders**
 
 Now let's train the classifier using loaders. The `Loaders` are a way to encapsulate the data loading process. You can use raw
 data loaders from pytorch if you want, just like you were doing:
@@ -174,7 +189,7 @@ loaders.add('eval', Digits(train=False), batch_size=32, shuffle=False, settings=
                                                                                           #individually.
 ```
 
-**Sessions (Unit of work)**
+### **Sessions (Unit of work)**
 
 Finally, you can train the classifier using predefined training and evaluation loops in the commands (or something defined by you in
 a command handler). Let's start a training session.
@@ -197,7 +212,7 @@ store or restore the state of the aggregates given a defined repository, handle 
 of the commands using a messagebus and handlers you define, and will not be restricted to the default command handlers, you can also use your own with handlers you define. 
 
 
-**Callbacks**
+### **Callbacks**
 
 "But what about metrics? I'm just seeing the loss being logged in my terminal". That's what callbacks are for. By default, torchsystem tracks the loss of your model, but this can be extended to any metric you want with callbacks. There are some predefined callbacks in the `torchsystem.callbacks`.
 
@@ -211,7 +226,7 @@ callbacks = Callbacks([Loss(), Accuracy()])
         session.execute(Iterate(classifier, loaders, callbacks))
 ```
 
-**Repositories**
+### **Repositories**
 
 Build repositories for your models. The repository is a way to store the state of the aggregates in a transactional way.
 
@@ -263,7 +278,7 @@ optimizer_type = classifiers.optimizers.get('Adam')
 optimizer_new_instance = optimizer_type(model.parameters(), lr=0.002) # This will return an optimizer instance since it is registered in the repository.
 ```
 
-**Message Publishers**
+### **Message Publishers**
 
 You can publish the metrics produced in the callbacks using a publisher. The publisher will publish the metrics in a topic, and you can subscribe to that topic to get the metrics. A publisher will be automatically created by the session and you can add subscribers fron there, but you can also pass your own publisher to the session, as you can with a repository or even a messagebus.
 
@@ -291,7 +306,7 @@ with Session(repository, publisher) as session:
         if epoch % 5 == 0:
             raise Exception('Something went wrong') # Everything will be rolled back to the last commit point.
 ```
-- **Events**
+### **Events, Commands and the Messagebus**
 
 There are even more stuff you can do with the torchsystem. Let's say you don't want to use repositories but persist your aggregates with events instead. Let's see an example of how you can do this using also the `mlregistry` library for metadata tracking.
 
