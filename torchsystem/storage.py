@@ -19,7 +19,7 @@ class Storage[T]:
     Base class for storage classes. It is responsible for coordinating the registry and weights of objects. 
     '''
     registry: Registry[T]
-    weights: Weights[T]
+    weights: Optional[Weights[T]]
     category: str
     
     @classmethod
@@ -31,7 +31,7 @@ class Storage[T]:
         '''
         Get an object from the registry and restore it's weights if available.
 
-        Parameters:
+        Args:
             name (str): The name of the object.
             *args: Positional arguments for initializing the object.
             **kwargs: Keyword arguments for initializing the object.
@@ -48,7 +48,7 @@ class Storage[T]:
         '''
         Store the weights of an object in a given category, a warning is logged if the object is not registered.
 
-        Parameters:
+        Args:
             object (T): The object to store.
         '''
         logger.info(f'Storing {object.__class__.__name__} in category {self.category}')
@@ -60,7 +60,7 @@ class Storage[T]:
         '''
         Restore the weights of an object from a given category, a warning is logged if the object is not registered.
 
-        Parameters:
+        Args:
             object (T): The object to restore.
         '''
         logger.info(f'Restoring {object.__class__.__name__} in category {self.category}')
@@ -72,7 +72,7 @@ class Models(Storage[Module]):
     category = 'model'
     registry = Registry()
 
-    def __init__(self, folder: str | None = None, settings: Settings = None):
+    def __init__(self, settings: Settings = None, folder: str | None = None):
         self.settings = settings or Settings()
         self.weights = Weights(path.join(self.settings.weights.directory, folder) if folder else self.settings.weights.directory)
 
@@ -80,7 +80,7 @@ class Criterions(Storage[Module]):
     category = 'criterion'
     registry = Registry()
 
-    def __init__(self, folder: str | None = None, settings: Settings = None):
+    def __init__(self, settings: Settings = None, folder: str | None = None):
         self.settings = settings or Settings()
         self.weights = Weights(path.join(self.settings.weights.directory, folder) if folder else self.settings.weights.directory)
 
@@ -88,7 +88,7 @@ class Optimizers(Storage[Optimizer]):
     category = 'optimizer'
     registry = Registry(excluded_positions=[0], exclude_parameters={'params'})
     
-    def __init__(self, folder: str | None = None, settings: Settings = None):
+    def __init__(self, settings: Settings = None, folder: str | None = None):
         self.settings = settings or Settings()
         self.weights = Weights(path.join(self.settings.weights.directory, folder) if folder else self.settings.weights.directory)
 

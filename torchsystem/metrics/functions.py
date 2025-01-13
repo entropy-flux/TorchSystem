@@ -1,16 +1,5 @@
-from dataclasses import dataclass
-from typing import Any
-from typing import Any
 from torch import Tensor
 from torch import argmax
-
-@dataclass
-class Metric:
-    name: str
-    value: Any
-    batch: int
-    epoch: int
-    phase: str
     
 def accuracy(predictions: Tensor, target: Tensor) -> float:
     return (predictions == target).float().mean().item()

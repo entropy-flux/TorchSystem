@@ -3,6 +3,7 @@ from os import path, makedirs
 from logging import getLogger
 from torch import save, load
 from torch.nn import Module
+from torchsystem.settings import Settings
 
 logger = getLogger(__name__)
 
@@ -23,9 +24,8 @@ class Weights[T: Module]:
         '''
         Store the weights of a module.
 
-        Parameters:
+        Args:
             module (Module): The module to store the weights.
-            folder (str): The folder to store the weights.
             filename (str): The filename to store the
         '''
         logger.info(f'Storing weights of {module.__class__.__name__} in {filename}.pth')	
@@ -33,18 +33,17 @@ class Weights[T: Module]:
         logger.info(f'Weights stored successfully')
         
 
-    def restore(self, module: T, filename: str):
+    def restore(self, module: T, filename: str, extension: str = '.pth'):
         '''
         Restore the weights of a module.
 
-        Parameters:
+        Args:
             module (Module): The module to restore the weights.
-            folder (str): The folder to restore the weights.
             filename (str): The filename to restore the weights.
         '''
         logger.info(f'Restoring weights of {module.__class__.__name__} from {filename}.pth')
         try:
-            state_dict = load(path.join(self.location, filename + '.pth'), weights_only=True)
+            state_dict = load(path.join(self.location, filename + extension), weights_only=True)
             module.load_state_dict(state_dict)
             logger.info(f'Weights restored successfully')
         except FileNotFoundError as error:

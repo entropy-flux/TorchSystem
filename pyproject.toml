@@ -8,12 +8,16 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.12"
+pydantic-settings = "^2.7.1"
+pybondi = "^2.0.1"
 mlregistry = "^1.0.3"
-pybondi = "^1.2.3"
 
 
 [tool.poetry.group.tests.dependencies]
 pytest = "^8.3.4"
+torch = "^2.5.1"
+numpy = "^2.2.1"
+torchvision = "^0.20.1"
 
 [build-system]
 requires = ["poetry-core"]
