@@ -1,10 +1,12 @@
 from abc import ABC, abstractmethod
 from typing import Any
 from typing import Literal
+from datetime import datetime, timezone
 from torch.nn import Module
 from pymsgbus import Producer
-from pymsgbus import Publisher, Message
+from pymsgbus import Publisher
 from pymsgbus import Subscriber, Consumer
+from torchsystem.schemas import Message
 
 class Aggregate(Module, ABC):
     """
@@ -29,9 +31,9 @@ class Aggregate(Module, ABC):
     def phase(self, value: Literal['train', 'evaluation']):
         self.train() if value == 'train' else self.eval()
     
-    def publish(self, message: Message, topic: str):
+    def publish(self, message: Any, topic: str):
         """
-        Deliver a message to all subscribers of a given topic.
+        Deliver a data to all subscribers of a given topic.
 
         Args:
             message (Message): The message to deliver.  
@@ -39,6 +41,28 @@ class Aggregate(Module, ABC):
         """
         self.publisher.publish(topic=topic, message=message)
     
+    def deliver(self, data: Any, topic: str):
+        """
+        Deliver data to all consumers of a given topic in form
+        of a message with the AGGREGATE as the sender.
+
+        Args:
+            data (Any): The data to deliver.
+            topic (str): The topic to deliver the data to.
+        """
+        message = Message(payload=data, sender=self.id, timestamp=datetime.now(timezone.utc), topic=topic)    
+        self.publish(message, topic)
+
+    def emit(self, event: Any):
+        """
+        Emit an event to all consumers of the AGGREGATE.
+
+        Args:
+            event (Any): The event to emit.
+        """
+        self.producer.emit(event)
+        
+
     @property 
     @abstractmethod
     def id(self) -> Any:
@@ -47,15 +71,18 @@ class Aggregate(Module, ABC):
         """
         ...
 
-    def bind(self, observer: Subscriber | Consumer):
+    def bind(self, *observers: Subscriber | Consumer):
         """
-        Bind an observer to the AGGREGATE. The observer will receive messages
-        from the AGGREGATE.
+        Bind a group of observers to the AGGREGATE. Each observer will receive MESSAGES
+        or consume EVENTS from the AGGREGATE.
 
         Args:
             observer (Subscriber | Consumer): The observer to bind.
         """
-        if isinstance(observer, Subscriber):
-            self.publisher.register(observer)
-        elif isinstance(observer, Consumer):
-            self.producer.register(observer)
+        for observer in observers:
+            if isinstance(observer, Subscriber):
+                self.publisher.register(observer)
+            elif isinstance(observer, Consumer):
+                self.producer.register(observer)
+            else:
+                raise ValueError(f"Observer {observer} is not a valid observer type.")

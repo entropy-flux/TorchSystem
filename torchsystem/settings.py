@@ -26,8 +26,17 @@ class CompilerSettings(BaseSettings):
         env_prefix='COMPILER_',
         arbitrary_types_allowed=True,
     )
+
+
+class DatasetsSettings(BaseSettings):
+
+    model_config = SettingsConfigDict(
+        env_prefix='DATASETS_',
+        arbitrary_types_allowed=True,
+    )
     
-class LoadersSettings(BaseSettings):
+class LoadersSettings[T: DatasetsSettings](BaseSettings):
+    dataset: Optional[T] = Field(default=None)
     sampler: Union[Sampler, Iterable, None] = Field(default=None)
     batch_sampler: Union[Sampler[list], Iterable[list], None] = Field(default=None)
     num_workers: int = Field(default=0)
@@ -40,11 +49,18 @@ class LoadersSettings(BaseSettings):
     pin_memory_device: str = Field(default='')
     
     model_config = SettingsConfigDict(
-        env_prefix='LOADER_',
+        env_prefix='LOADERS_',
         arbitrary_types_allowed=True,
     )
 
-class Settings[T: BaseSettings](BaseSettings):
+class AggregateSettings(BaseSettings):
+
+    model_config = SettingsConfigDict(
+        env_prefix='AGGREGATE_',
+        arbitrary_types_allowed=True,
+    )
+
+class Settings[T: AggregateSettings](BaseSettings):
     storage: StorageSettings = Field(default_factory=StorageSettings)
     loaders: LoadersSettings = Field(default_factory=LoadersSettings)
     compiler: CompilerSettings = Field(default_factory=CompilerSettings)

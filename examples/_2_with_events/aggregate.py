@@ -1,4 +1,4 @@
-from typing import Literal
+from uuid import UUID
 from typing import Callable
 from torch import Tensor
 from torch import inference_mode
@@ -6,26 +6,25 @@ from torch.nn import Module
 from torch.optim import Optimizer
 from torchsystem import Aggregate
 from torchsystem import Loader
-from torchsystem.settings import BaseSettings
-from torchsystem.schemas import Metric
+from torchsystem import Settings
+from torchsystem.storage import get_hash
+from torchsystem.settings import AggregateSettings
 
-# Sometimes more complicated settings are needed.
-class ClassifierSettings(BaseSettings): 
-    device: str = 'cpu' # Since this is a pydantic-settings class, you can define this values in a .env file if you prefer.
+class ClassifierSettings(AggregateSettings): 
+    device: str
 
 class Classifier(Aggregate):
-    def __init__(self, model: Module, criterion: Module, optimizer: Optimizer, settings: ClassifierSettings = None):
+    def __init__(self, model: Module, criterion: Module, optimizer: Optimizer, settings: Settings[ClassifierSettings] = None):
         super().__init__()
         self.epoch = 0
         self.model = model
         self.criterion = criterion
         self.optimizer = optimizer
-        self.device = settings.device
-    
+        self.device = settings.aggregate.device
     
     @property
-    def id(self) -> None:
-        return self.model.__class__.__name__
+    def id(self) -> str:
+        return get_hash(self.model)
 
     def forward(self, input: Tensor) -> Tensor:
         return self.model(input)
@@ -42,11 +41,9 @@ class Classifier(Aggregate):
             loss = self.loss(output, target)
             loss.backward()
             self.optimizer.step()
-            for name, value in callback(loss=loss, output=output, target=target):
-                self.publish(Metric(name, value, self.phase, self.epoch, batch), topic='metrics')
-                
-            # You define the callback you want outside the aggregate. This returns
-            # a Sequence[tuple[str, float]] with the name of the metric and its value.
+            metrics = callback(loss=loss.item(), output=output, target=target)
+            if batch % 200 == 0:
+                self.publish((batch, [(name, value) for name, value in metrics]), topic='metrics')
 
     @inference_mode()
     def evaluate(self, loader: Loader, callback: Callable):
@@ -55,5 +52,6 @@ class Classifier(Aggregate):
             input, target = input.to(self.device), target.to(self.device)
             output = self(input)
             loss = self.loss(output, target)
-            for name, value in callback(loss=loss, output=output, target=target):
-                self.publish(Metric(name, value, self.phase, self.epoch, batch), topic='metrics')
+            metrics = callback(loss=loss.item(), output=output, target=target)
+            if batch % 200 == 0:
+                self.publish((batch, [(name, value) for name, value in metrics]), topic='metrics')

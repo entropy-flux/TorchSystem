@@ -1,7 +1,7 @@
 from torchsystem.storage import Weights
 from torchsystem.repository import Repository
 from torchsystem.settings import Settings
-from examples.simple_mnist.aggregate import Classifier
+from examples._1_simple_mnist.aggregate import Classifier
 
 class Classifiers(Repository):
     def __init__(self, settings: Settings = None):

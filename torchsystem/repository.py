@@ -48,7 +48,7 @@ class Repository[T: Aggregate](ABC):
         self.commited.clear()
         self.uncommited.clear()
 
-    def save(self, aggregate: T):
+    def put(self, aggregate: T):
         """
         Put an aggregate in the repository. If the aggregate is already in the repository, it will be replaced.
 

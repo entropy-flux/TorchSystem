@@ -8,3 +8,4 @@ from torchsystem.aggregate import Aggregate as Aggregate
 from torchsystem.loaders import Loader as Loader
 from torchsystem.repository import Repository as Repository
 from torchsystem.settings import Settings as Settings
+from torchsystem.compiler import Compiler

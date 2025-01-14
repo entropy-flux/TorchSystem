@@ -6,6 +6,7 @@ from dataclasses import dataclass
 @dataclass
 class Message[T]:
     payload: T
+    topic: Optional[str] = None
     sender: Optional[Any] = None
     headers: Optional[dict] = None
     timestamp: Optional[datetime] = None
