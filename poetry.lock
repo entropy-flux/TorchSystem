@@ -606,20 +606,6 @@ dev = ["pre-commit", "tox"]
 testing = ["pytest", "pytest-benchmark"]
 
 [[package]]
-name = "pybondi"
-version = "2.0.1"
-description = "A lightweight library for creating message driven systems."
-optional = false
-python-versions = "<4.0,>=3.12"
-files = [
-    {file = "pybondi-2.0.1-py3-none-any.whl", hash = "sha256:c20e14ec2ba20ea32d3dcfea720d844265ade076f4e7a50abaeaf8d254c33f2e"},
-    {file = "pybondi-2.0.1.tar.gz", hash = "sha256:5c4570650b8b93459e543bec18c1c44680569656ce4cc87e56ca4d9acb68ce5f"},
-]
-
-[package.dependencies]
-fast-depends = ">=2.4.12,<3.0.0"
-
-[[package]]
 name = "pydantic"
 version = "2.10.5"
 description = "Data validation using Python type hints"
@@ -770,6 +756,20 @@ python-dotenv = ">=0.21.0"
 azure-key-vault = ["azure-identity (>=1.16.0)", "azure-keyvault-secrets (>=4.8.0)"]
 toml = ["tomli (>=2.0.1)"]
 yaml = ["pyyaml (>=6.0.1)"]
+
+[[package]]
+name = "pymsgbus"
+version = "0.1.0"
+description = "A lightweight libary for event driven systems."
+optional = false
+python-versions = "<4.0,>=3.12"
+files = [
+    {file = "pymsgbus-0.1.0-py3-none-any.whl", hash = "sha256:04518f9ca5207f3ca86a7ec4ee1d8c9663bf0d1f6fbd89ea5d2179e52c323bf2"},
+    {file = "pymsgbus-0.1.0.tar.gz", hash = "sha256:5e90ce86160b5fcaa21846cfc6d77e2230fc8dfa784e4028af97bb47fd9ea3cb"},
+]
+
+[package.dependencies]
+fast-depends = ">=2.4.12,<3.0.0"
 
 [[package]]
 name = "pytest"
@@ -975,4 +975,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.12"
-content-hash = "3168349c24faa4af8c37638d411202e91761105183f4699ce457dd2214f7e87f"
+content-hash = "6e29498c28f80521286e6d24cea2af5027a178011133dd670b2b22d0a0ba4e14"

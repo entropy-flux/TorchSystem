@@ -8,8 +8,8 @@ from abc import ABC
 from torch.nn import Module
 from torch.optim import Optimizer
 from torch.utils.data import Dataset
-from torchsystem.settings import Settings
 from torchsystem.weights import Weights
+from torchsystem.settings import Settings
 from torchsystem.aggregate import Aggregate
 
 logger = getLogger(__name__)
@@ -72,25 +72,27 @@ class Models(Storage[Module]):
     category = 'model'
     registry = Registry()
 
-    def __init__(self, settings: Settings = None, folder: str | None = None):
+    def __init__(self, settings: Settings = None):
         self.settings = settings or Settings()
-        self.weights = Weights(path.join(self.settings.weights.directory, folder) if folder else self.settings.weights.directory)
+        self.weights = Weights(self.settings)
 
 class Criterions(Storage[Module]):
     category = 'criterion'
     registry = Registry()
 
-    def __init__(self, settings: Settings = None, folder: str | None = None):
+
+    def __init__(self, settings: Settings = None):
         self.settings = settings or Settings()
-        self.weights = Weights(path.join(self.settings.weights.directory, folder) if folder else self.settings.weights.directory)
+        self.weights = Weights(self.settings)
+
 
 class Optimizers(Storage[Optimizer]):
     category = 'optimizer'
     registry = Registry(excluded_positions=[0], exclude_parameters={'params'})
     
-    def __init__(self, settings: Settings = None, folder: str | None = None):
+    def __init__(self, settings: Settings = None):
         self.settings = settings or Settings()
-        self.weights = Weights(path.join(self.settings.weights.directory, folder) if folder else self.settings.weights.directory)
+        self.weights = Weights(self.settings)
 
 class Datasets(Storage[Dataset]):
     category = 'dataset'

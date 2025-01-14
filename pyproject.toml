@@ -9,8 +9,8 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = "^3.12"
 pydantic-settings = "^2.7.1"
-pybondi = "^2.0.1"
 mlregistry = "^1.0.3"
+pymsgbus = "^0.1.0"
 
 
 [tool.poetry.group.tests.dependencies]

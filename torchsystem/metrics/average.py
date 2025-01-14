@@ -1,5 +1,5 @@
 from typing import Any
-from typing import Literal
+from typing import NamedTuple
 from typing import Optional
 from torch import Tensor
 from torchsystem.schemas import Metric
@@ -37,23 +37,26 @@ class Cumulative:
         self.samples += samples
 
 class Loss:
+    name = 'loss'
     def __init__(self):
         self.average = Cumulative()
 
-    def __call__(self, *, loss: float, **kwargs) -> Metric:
+    def __call__(self, *, loss: float, **kwargs) -> tuple[str, float]:
         self.average.update(loss)
-        return Metric(name='loss', value=self.average.value)
+        return self.name, self.average.value
 
     def reset(self):
         self.average.reset()
 
 class Accuracy:
+    name = 'accuracy'
+
     def __init__(self):
         self.average = Cumulative()
 
-    def __call__(self, *, output: Tensor, target: Tensor, **kwargs):
+    def __call__(self, *, output: Tensor, target: Tensor, **kwargs) -> tuple[str, float]:
         self.average.update(accuracy(predictions(output), target))
-        return Metric(name='accuracy', value=self.average.value)
+        return self.name, self.average.value
 
     def reset(self):
         self.average.reset()
