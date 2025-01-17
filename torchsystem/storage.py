@@ -16,7 +16,41 @@ logger = getLogger(__name__)
 
 class Storage[T]:
     '''
-    Base class for storage classes. It is responsible for coordinating the registry and weights of objects. 
+    Base class for storage classes. It is responsible for coordinating the registry and weights of objects.
+    
+    Args:
+        registry (Registry[T]): The registry of objects.
+        weights (Optional[Weights[T]]): The weights of the objects.
+        category (str): The category of the objects.
+
+    Methods:
+
+        register: 
+            Register a type in the registry. Necessary for retrieving the object from the registry.
+
+        build:
+            Build an object from the registry with the given arguments.
+
+        get:
+            Get an object from the registry with the given arguments and restore it's weights.
+
+        store:
+            Store the weights of an object in the weights object.
+
+        restore:
+            Restore the weights of an object from the weights object.
+
+    Example:
+
+        .. code-block:: python
+        
+        class Models(Storage[Module]):
+            category = 'model'
+            registry = Registry()
+
+            def __init__(self, settings: Settings = None):
+                self.settings = settings or Settings()
+                self.weights = Weights(self.settings)
     '''
     registry: Registry[T]
     weights: Optional[Weights[T]]
@@ -26,6 +60,22 @@ class Storage[T]:
     def register(cls, type: type):
         logger.info(f'Registering {type.__name__} in category {cls.category}')
         cls.registry.register(type, cls.category)
+        return type
+
+    @classmethod
+    def build(cls, name: str, *args, **kwargs) -> Optional[T]:
+        '''
+        Build an object from the registry.
+
+        Args:
+            name (str): The name of the object.
+            *args: Positional arguments for initializing the object.
+            **kwargs: Keyword arguments for initializing the object.
+        '''
+        if not name in cls.registry.keys():
+            return None
+        object = cls.registry.get(name)(*args, **kwargs)
+        return object
         
     def get(self, name: str, *args, **kwargs) -> Optional[T]:
         '''

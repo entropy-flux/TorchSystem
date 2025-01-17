@@ -10,10 +10,17 @@ logger = getLogger(__name__)
 
 class Weights[T: Module]:
     '''
-    Weights class is responsible for storing and restoring the weights of a module.
+    Weights class is responsible for storing and restoring the weights of a module. The weights are stored
+    in the directory specified in the settings file within the storage folder.
 
     Args:
         directory (str): The directory to store the weights.    
+
+    Methods:
+        store: 
+            Store the weights of a module.
+        restore: 
+            Restore the weights of a module.
     '''
     def __init__(self, settings: Settings):
         self.settings = settings

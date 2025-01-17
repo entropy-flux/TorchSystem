@@ -31,4 +31,3 @@ def test_repository():
         repository.put(aggregate)
         aggregate.name = 'example 2'
     assert db[1] == 'example 2'
-

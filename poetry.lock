@@ -759,13 +759,13 @@ yaml = ["pyyaml (>=6.0.1)"]
 
 [[package]]
 name = "pymsgbus"
-version = "0.1.0"
+version = "0.1.3"
 description = "A lightweight libary for event driven systems."
 optional = false
 python-versions = "<4.0,>=3.12"
 files = [
-    {file = "pymsgbus-0.1.0-py3-none-any.whl", hash = "sha256:04518f9ca5207f3ca86a7ec4ee1d8c9663bf0d1f6fbd89ea5d2179e52c323bf2"},
-    {file = "pymsgbus-0.1.0.tar.gz", hash = "sha256:5e90ce86160b5fcaa21846cfc6d77e2230fc8dfa784e4028af97bb47fd9ea3cb"},
+    {file = "pymsgbus-0.1.3-py3-none-any.whl", hash = "sha256:48714feeba47a7894529d9a2449c1c927d2c3ea8dc4df5006f595aae58ee546a"},
+    {file = "pymsgbus-0.1.3.tar.gz", hash = "sha256:f2af9acd955171b21e0e6e08d84e993692b98232c737aaa9d7233259ce01567c"},
 ]
 
 [package.dependencies]
@@ -975,4 +975,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.12"
-content-hash = "6e29498c28f80521286e6d24cea2af5027a178011133dd670b2b22d0a0ba4e14"
+content-hash = "deb417421ffaeb52babcc77c7b9a6de2ee1d1db70524e9d51d3ccf53304ef9e9"

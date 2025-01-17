@@ -6,12 +6,16 @@ from torch.nn import Dropout
 from torch.nn import ReLU
 
 class MLP(Module):
-    def __init__(self, input_size: int, hidden_size: int, output_size: int, p: float):
+    activations = {
+        'relu': lambda: ReLU()
+    }
+
+    def __init__(self, input_size: int, hidden_size: int, output_size: int, p: float, activation: str):
         super().__init__()
         self.flatten = Flatten()
         self.input_layer = Linear(input_size, hidden_size)
         self.dropout = Dropout(p=p)
-        self.activation = ReLU()
+        self.activation = self.activations.get(activation)()
         self.hidden_layer = Linear(hidden_size, hidden_size)
         self.output_layer = Linear(hidden_size, output_size)
 
