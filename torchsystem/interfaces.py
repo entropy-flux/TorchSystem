@@ -1,41 +1,31 @@
-from typing import Any
-from typing import Iterator
-from typing import overload
-from typing import Protocol
-from typing import runtime_checkable
 from torch import Tensor
+from typing import Protocol
+from typing import Iterator
+from typing import Any
+from typing import overload
 
-@runtime_checkable
 class Loader(Protocol):
     """
-    A runtime checkable protocol for pytorch data loaders with type hints. This fixes the issue with
-    the `torch.utils.data.DataLoader` class not having type hints for the `__iter__` method. Use this
-    as an interface for passing around data loaders with type hints.
+    The Loader protocol defines the interface for loading data. DataLoaders are an infrastructure
+    concern and lack of PEP 484 support for them is a known issue. The Loader protocol provides
+    a simple interface to be used in the service layer without mixing infrastructure concerns with
+    the business logic.
 
     Example:
 
         .. code-block:: python
 
-        from torchsystem.loaders import Loader
+        from torchsystem import Loader
 
-        def train(model: Module, loader: Loader):
+        def iterate(loader: Loader):
             for input, target in loader:
-                input, target = input.to(device), target.to(device)  # Now these are type hinted
-                ...
+                input, target = input.to(device), target.to(device) # input and target have type hints.
     """
 
-    def __iter__(self) -> Any:...
-
-    @overload
-    def __iter__(self) -> Iterator[Tensor]:...
+    def __iter__(self) -> Iterator[Any]:...
 
     @overload
     def __iter__(self) -> Iterator[tuple[Tensor, Tensor]]:...
 
-
-@runtime_checkable
-class Metrics(Protocol):
-    
-    def __call__(self, **kwargs) -> Any:...
-
-    def reset(self):...
+    @overload
+    def __iter__(self) -> Iterator[tuple[Tensor, Tensor, Tensor]]:...

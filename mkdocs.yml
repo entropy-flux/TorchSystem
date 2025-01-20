@@ -1,0 +1,18 @@
+site_name: "mlregistry"
+
+theme:
+  name: "readthedocs"
+
+nav:
+  - Home: index.md
+  - Aggregates: aggregates.md
+  - Compiler: compiler.md
+  - Storage: storage.md
+  - Repository: repository.md
+
+plugins:
+  - mkdocstrings:
+      handlers:
+        python:
+          selection:
+            docstring_style: "google" 

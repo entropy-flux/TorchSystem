@@ -1,29 +1,23 @@
-from torchsystem import Depends
+from torchsystem.compiler import Depends
 from torchsystem.compiler import Compiler
 
 compiler = Compiler()
 
-def device():
-    return 'cuda'
-
-def epoch():
-    return 100
+def four():
+    raise NotImplementedError
 
 @compiler.step
-def build_aggregate(model, criterion, optimizer, device = Depends(device)):
-    assert device == 'cuda'
-    return (model, criterion, optimizer)
+def add_one_of_tree(a,b,c,d=Depends(four)):
+    return a, b + c, d
 
 @compiler.step
-def retrieve_epoch(aggregate, epoch=Depends(epoch)):
-    return (aggregate, epoch)
+def square(a, b, d):
+    return a * b * d
+
+@compiler.step
+def cuadruple(a, x=Depends(four)):
+    return a * x
 
 def test_compiler():
-    model = 'model'
-    criterion = 'criterion'
-    optimizer = 'optimizer'
-    (model, criterion, optimizer), epoch = compiler(model, criterion, optimizer)
-    assert model == 'model'
-    assert criterion == 'criterion'
-    assert optimizer == 'optimizer'
-    assert epoch == 100 
+    compiler.dependency_overrides[four] = lambda: 4
+    assert compiler.compile(1, 2, 3) == 80

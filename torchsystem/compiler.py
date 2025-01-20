@@ -1,14 +1,14 @@
 from typing import Callable
 from typing import Any
-from torch import compile
+from torch import compile as compile
+from pymsgbus.depends import Depends as Depends
 from pymsgbus.depends import inject
 from pymsgbus.depends import Provider
-from torchsystem.settings import Settings
-from torchsystem.aggregate import Aggregate
+from torchsystem.aggregate import Aggregate as Compiled
 
-class Compiler[T: Aggregate]:
+class Compiler[T: Compiled]:
     """
-    In DDD, AGGREGATEs usually have a complex structure and are built from multiple components. The
+    AGGREGATES usually have a complex initialization and are built from multiple components. The
     process of building an AGGREGATE can be broken down into multiple steps. In the context of
     neural networks, AGGREGATEs not only should be built but also compiled. Compilation is the
     process of converting a high-level neural network model into a low-level representation that can
@@ -16,29 +16,38 @@ class Compiler[T: Aggregate]:
     of building an AGGREGATE.
 
     A `Compiler` is a class that compiles a pipeline of functions to be executed in sequence in order
-    to build an AGGREGATE and has the ability to compile the AGGREGATE to a low-level representation for
-    execution on a specific hardware platform. It acts as the builder pattern for AGGREGATEs.
+    to build an a low-level representation of the AGGREGATE. Since some compilation steps sometimes
+    requires runtime information, the `Compiler` provides a mechanism to inject dependencies into
+    the pipeline.
 
     Attributes:
         pipeline (list[Callable[..., Any]]): A list of functions to be executed in sequence.
-        settings (Settings): The settings used by the compiler. Defaults to the pytorch's default settings.
 
     Methods:
         compile:
-            Compiles and AGGREGATE to a low-level representation for execution on a specific hardware platform
-            using the settings provided to the compiler.
+            Execute the pipeline of functions in sequence. The output of each function is passed as
+            input to the next function. The compiled AGGREGATE should be returned by the last function
+            in the pipeline.
 
         step:
-            Add a function to the compilation pipeline.
+            A decorator that adds a function to the pipeline. The function should take as input the
+            output of the previous function in the pipeline and return the input of the next function
+            in the pipeline.
 
     Example:
 
         .. code-block:: python
         from logging import getLogger
         from torch import cuda
-        
+        from torchsystem.compiler import Compiler
+        from torchsystem.compiler import Depends
+        from torchsystem.compiler import compiler
+
         compiler = Compiler[Classifier]()
         logger = getLogger(__name__)
+
+        def device():
+            raise NotImplementedError
 
         @compiler.step
         def build_classifier(model, criterion, optimizer):
@@ -49,99 +58,66 @@ class Compiler[T: Aggregate]:
             return Classifier(model, criterion, optimizer)
 
         @compiler.step
-        def move_to_device(classifier: Classifier):
-            device = 'cuda' if cuda.is_available() else 'cpu'
+        def move_to_device(classifier: Classifier, device = Depends(device)):
             logger.info(f'Moving classifier to device: {device}')
             return classifier.to(device)
 
         @compiler.step
         def compile_classifier(classifier: Classifier):
             logger.info(f'Compiling classifier')
-            return compiler.compile(classifier)
+            return compile(classifier)
         ...
 
-        classifier = compiler(model, criterion, optimizer)
+        compiler.dependency_overrides[device] = lambda: 'cuda' if cuda.is_available() else 'cpu'
+        classifier = compiler.compie(model, criterion, optimizer)
     """
+    def __init__(
+        self,
+        provider: Provider = None,
+        cast: bool = True
+    ):
+        """
+        Initialize the Compiler.
 
-    def __init__(self, settings: Settings = None, provider: Provider = None, cast: bool = False):
+        Args:
+            provider (Provider, optional): The dependency provider. Defaults to None.
+            cast (bool, optional): Whether to cast the dependencies during injection. Defaults to True.
+        """
+        self.pipeline = list[Callable]()
         self.provider = provider or Provider()
-        self.pipeline = list[Callable[..., Any]]()
         self.cast = cast
-        """
-        Initialize the Compiler with the given settings. If no settings are provided, the default
-        settings are used, wich are the same as the pytorch's default settings for compilation.
-
-        Args:
-            settings (Settings | None, optional): The settings used by the compiler. Defaults to None.
-        """
-        self.settings = settings or Settings()
-
-    def compile(self, compilable: Any) -> Any:
-        """
-        Compiles an AGGREGATE to a low-level representation for execution on a specific hardware platform
-        using the CompilerSettings or pytorch's default settings for compilation.
-
-        Args:
-            compilable (T): The module or function to be compiled.
-
-        Returns:
-            T: The compiled module or function.
-        """
-        return compile(
-            compilable,
-            fullgraph=self.settings.compiler.fullgraph,
-            dynamic=self.settings.compiler.dynamic,
-            backend=self.settings.compiler.backend,
-            mode=self.settings.compiler.mode,
-            disable=self.settings.compiler.disable
-        )
-
-    def step(self, callable: Callable[..., Any]) -> Callable[..., Any]:
-        """
-        A decorator that adds a function to the compilation pipeline. The function will be executed in
-        sequence when the pipeline is compiled. 
-
-        Args:
-            callable (Callable[..., Any]): The function to be added to the compilation pipeline.
-
-        Returns:
-            Callable[..., Any]: The function added to the compilation pipeline.
-
-        Example:
-
-        .. code-block:: python
-        
-        from torchsystem import Depends
-        from torchsystem.compiler import Compiler
-
-        compiler = Compiler()
-
-        ...
-        def device():
-            return 'cuda' if cuda.is_available() else 'cpu
-        
-        @compiler.step
-        def build_classifier(model, criterion, optimizer, device=Depends(device)):
-            logger.info(f'Building classifier')
-            classifier = Classifier(model, criterion, optimizer).to(device)
-            return compiler.compile(classifier)
-        """
-        injected = inject(dependency_overrides_provider=self.provider, cast=self.cast)(callable)
-        self.pipeline.append(injected)
-        return injected
     
-    def __call__(self, *args, **kwargs) -> T:
-        """
-        Executes the compilation pipeline in sequence. The output of each function is passed as input to
-        the next function in the pipeline. The first function in the pipeline receives the arguments
-        passed to the compiler.
+    @property
+    def dependency_overrides(self) -> dict:
+        return self.provider.dependency_overrides
 
-        The result of the last function in the pipeline is returned and should be the compiled AGGREGATE.
+    def step(self, callable: Callable) -> Any:
+        """
+        Add a function to the pipeline. The function should take as input the output of the previous
+        function in the pipeline and return the input of the next function in the pipeline.
+
+        Args:
+            callable (Callable): The function to be added to the pipeline.
+
+        Returns:
+            Any: The requirements for the next step in the pipeline.
+        """
+        injected = inject(callable, dependency_overrides_provider=self.provider, cast=self.cast)
+        self.pipeline.append(injected)
+        return self
+    
+    def compile(self, *args, **kwargs) -> T:
+        """
+        Execute the pipeline of functions in sequence. The output of each function is passed as input
+        to the next function. The compiled AGGREGATE should be returned by the last function in the pipeline.
         
         Returns:
             T: The compiled AGGREGATE.
         """
         result = None
         for step in self.pipeline:
-            result = step(*args, **kwargs) if not result else step(result) #TODO: This doesn't work with Depends.
+            if not result:
+                result = step(*args, **kwargs)
+            else:
+                result = step(*result) if isinstance(result, tuple) else step(result)
         return result

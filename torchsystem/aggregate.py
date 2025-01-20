@@ -1,9 +1,10 @@
-from abc import ABC, abstractmethod
+from abc import ABC
 from typing import Any
 from typing import Literal
 from torch.nn import Module
-from pymsgbus import Producer, Consumer
-from pymsgbus.models import Event
+from pymsgbus.events import Events
+from pymsgbus.pubsub import Publisher, Subscriber
+from pymsgbus.exceptions import Exceptions
 
 class Aggregate(Module, ABC):
     """
@@ -13,7 +14,8 @@ class Aggregate(Module, ABC):
 
     An AGGREGATE is responsible for maintaining the consistency of the data within its boundary
     and enforcing invariants that apply to the AGGREGATE as a whole. It can communicate data
-    to the outside world and execute complex logic using domain events.
+    to the outside world and execute complex logic using domain events or messages through in 
+    memory message patterns.
 
     In deep learning, an AGGREGATE consist not only of a neural network, but also several other
     components such as optimizers, schedulers, tokenizers, etc. In order to perform complex tasks.
@@ -72,7 +74,10 @@ class Aggregate(Module, ABC):
     """
     def __init__(self):
         super().__init__()
-        self.producer = Producer()
+        self.epochs = 0
+        self.events = Events()
+        self.publisher = Publisher()
+        self.exceptions = Exceptions()
 
     @property
     def id(self) -> Any:
@@ -80,134 +85,77 @@ class Aggregate(Module, ABC):
         The id of the AGGREGATE ROOT. It should be unique within the AGGREGATE boundary.
         """
         raise NotImplementedError("The id property must be implemented.")
+    
+    @property
+    def epoch(self) -> int:
+        """
+        The current epoch of the AGGREGATE. The epoch is a property on a machine learning aggregate
+        and it's determined by the epoch of it's AGGREGATE ROOT. Secondary effects can be triggered
+        by the epoch change overriding the `onepoch` method.
+
+        Returns:
+            int: The current epoch.
+        """
+        return self.epochs
+    
+    @epoch.setter
+    def epoch(self, value: int):
+        with self.exceptions:
+            self.epochs = value
+            self.onepoch()
+
+    def onepoch(self):
+        """
+        A hook that is called when the epoch changes. Implement this method to add custom behavior.
+        """
+        pass
         
     @property
     def phase(self) -> Literal['train', 'evaluation']:
+        """
+        The phase of the AGGREGATE. The phase is a property of neural networks that not only describes
+        the current state of the network, but also determines how the network should behave. During the
+        training phase, the network stores the gradients of the weights and biases, and uses them to update
+        the weights and biases. During the evaluation phase, the network does not store the gradients of the
+        weights and biases, and does not update the weights and biases.
+
+        Returns:
+            Literal['train', 'evaluation']: The current phase of the AGGREGATE.
+        """
         return 'train' if self.training else 'evaluation'
     
     @phase.setter
     def phase(self, value: Literal['train', 'evaluation']):
-        self.train() if value == 'train' else self.eval()
+        with self.exceptions:
+            self.train() if value == 'train' else self.eval()
+            self.onphase()
 
-    def publish(self, event: Event):
+    def onphase(self):
         """
-        Emit an event to all consumers of the AGGREGATE. The event is put on an event queue
-        and triggers the execution of a chain of event with handlers for all events that
-        are enqueued or being emitted in this process.
+        A hook that is called when the phase changes. Implement this method to add custom behavior.
+        """
+        pass
+
+    def publish(self, message: Any, topic: str):
+        """
+        Publish a message to all subscribers of a given topic.
 
         Args:
-            event (Any): The event to emit.
-
-        Example:
-
-            .. code-block:: python
-            from dataclasses import dataclass
-            from torchsystem import Consumer
-
-            @dataclass
-            class SomeEvent:
-                message: str
-
-            consumer = Consumer()
-
-            @consumer.handler
-            def on_event(event: SomeEvent):
-                print(f"Event message: {event.message}")
-
-            classifier.bind(consumer)
-            classifier.publish(SomeEvent(message="Hello World!"))
+            message (Any): The message to publish.
+            topic (str): The topic to publish the message.
         """
-        self.producer.emit(event)
+        with self.exceptions:
+            self.publisher.publish(message, topic)
 
 
-    def bind(self, *consumers: Consumer):
+    def register(self, *observers: Subscriber):
         """
         Bind a group of observers to the AGGREGATE. Each observer will consumer EVENTS
-        from the AGGREGATE.
+        from the AGGREGATE. You can register an observer from here or you can observe this
+        AGGREGATE from an observer since observers also implement the logic registration logic.
 
         Args:
             consumers (Consumer): The consumers to bind.
         """
-        for consumer in consumers:
-            assert isinstance(consumer, Consumer), f"Consumer {consumer} is not a valid observer type."
-            self.producer.register(consumer)
-
-    def fit(self, *args, **kwargs) -> Any:
-        """
-        Fit the defined model to the given data. This method should be overriden by the user. 
-
-        
-        Example:
-
-            .. code-block:: python
-
-            class Classifier(Aggregate):
-                def __init__(self, model: Module, criterion: Module, optimizer: Optimizer):
-                    super().__init__()
-                    self.model = model
-                    self.criterion = criterion
-                    self.optimizer = optimizer
-                
-                def loss(self, output: Tensor, target: Tensor) -> Tensor:
-                    return self.criterion(output, target)
-
-                def fit(self, input: Tensor, target: Tensor) -> tuple[Tensor, float]:
-                    self.optimizer.zero_grad()
-                    output = self(input)
-                    loss = self.loss(output, target)
-                    loss.backward()
-                    self.optimizer.step()
-                    return output, loss.item()
-
-
-
-        """
-        raise NotImplementedError("The fit method must be implemented.")
-    
-    def evaluate(self, *args, **kwargs) -> Any:
-        """
-        Evaluate the defined model on the given data. This method should be overriden by the user.
-
-        
-        Example:
-
-            .. code-block:: python
-
-            class Classifier(Aggregate):
-                def __init__(self, model: Module, criterion: Module, optimizer: Optimizer):
-                    super().__init__()
-                    self.model = model
-                    self.criterion = criterion
-                    self.optimizer = optimizer
-                    
-                def loss(self, output: Tensor, target: Tensor) -> Tensor:
-                    return self.criterion(output, target)
-
-                def evaluate(self, input: Tensor, target: Tensor) -> tuple[Tensor, float]: 
-                    output = self(input)
-                    loss = self.loss(output, target)
-                    return output, loss.item()
-        """
-        raise NotImplementedError("The evaluate method must be implemented.")
-    
-    def predict(self, *args, **kwargs) -> Any:
-        """
-        Predict the output of the model on the given data. This method should be overriden by the user.
-
-        
-        Example:
-
-            .. code-block:: python
-            from torch import argmax
-
-            class Classifier(Aggregate):
-                def __init__(self, model: Module, criterion: Module, optimizer: Optimizer):
-                    super().__init__()
-                    self.model = model
-                    self.criterion = criterion
-                    self.optimizer = optimizer
-
-                def predict(self, input: Tensor) -> Tensor:
-                    return argmax(self(input), dim=1)
-        """
-        raise NotImplementedError("The predict method must be implemented.")
+        for observer in observers:
+            self.publisher.register(observer)
