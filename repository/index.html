@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="shortcut icon" href="../img/favicon.ico" />
+    <title>Repository - mlregistry</title>
+    <link rel="stylesheet" href="../css/theme.css" />
+    <link rel="stylesheet" href="../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+        <link href="../assets/_mkdocstrings.css" rel="stylesheet" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Repository";
+        var mkdocs_page_input_path = "repository.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href=".." class="icon icon-home"> mlregistry
+        </a>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="..">Home</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../aggregates/">Aggregates</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../compiler/">Compiler</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../storage/">Storage</a>
+                </li>
+              </ul>
+              <ul class="current">
+                <li class="toctree-l1 current"><a class="reference internal current" href="#">Repository</a>
+    <ul class="current">
+    </ul>
+                </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="..">mlregistry</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href=".." class="icon icon-home" aria-label="Docs"></a></li>
+      <li class="breadcrumb-item active">Repository</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h3 id="build-repositories-for-you-aggregates">Build Repositories for you Aggregates.</h3>
+
+
+<div class="doc doc-object doc-module">
+
+
+
+<a id="torchsystem.storage.repository"></a>
+    <div class="doc doc-contents first">
+
+
+
+
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-class">
+
+
+
+<h2 id="torchsystem.storage.repository.Repository" class="doc doc-heading">
+            <code>Repository</code>
+
+
+</h2>
+
+
+    <div class="doc doc-contents ">
+
+
+        <p>In DDD, the REPOSITORY is a design pattern that provides an abstraction for data access andis used to separate
+the business logic from the underlying data access logic, and have the ability of storing and restoring entire AGGREGATES.</p>
+<p>Some storage workflows are complex and may require from EVENTS, since it's logic may not be known during the
+implementation of the REPOSITORY. This base class for repositories implements the PRODUCER protocol stated in the pymsgbus
+library to provide a mechanism for dispatching EVENTS to CONSUMERS.</p>
+<p>A CONSUMER can listen to the REPOSITORY and consume the EVENTS produced by it to help it to persist the AGGREGATE or restore it
+from the underlying storage, for example when some data is not directly related to pytorch objects but necessary to mantain the
+consistency of the AGGREGATE.</p>
+
+
+
+
+
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="torchsystem.storage.repository.Repository.dispatch" class="doc doc-heading">
+            <code class="highlight language-python">dispatch(event)</code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Dispatch an event to all consumers registered in the repository</p>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Parameters:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>event</code></b>
+                  (<code><span title="pymsgbus.models.Event">Event</span></code>)
+              –
+              <div class="doc-md-description">
+                <p>The event to be dispatched to the consumers.</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="torchsystem.storage.repository.Repository.register" class="doc doc-heading">
+            <code class="highlight language-python">register(*consumers)</code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Register consumers to consume events produced by the repository.</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="torchsystem.storage.repository.Repository.restore" class="doc doc-heading">
+            <code class="highlight language-python">restore(aggregate)</code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Restore an aggregate. Implement this method to restore the AGGREGATE from the underlying storage. The
+AGGREGATE should be restored entirely in a single operation.</p>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Parameters:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>aggregate</code></b>
+                  (<code>T</code>)
+              –
+              <div class="doc-md-description">
+                <p>The AGGREGATE to be restored.</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="torchsystem.storage.repository.Repository.store" class="doc doc-heading">
+            <code class="highlight language-python">store(aggregate)</code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Implement this method to store the AGGREGATE in the underlying storage. The AGGREGATE should be
+stored entirely in a single operation.
+Args:
+    aggregate (T): The AGGREGATE to be stored.</p>
+
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../storage/" class="btn btn-neutral float-left" title="Storage"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+      <span><a href="../storage/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+  </span>
+</div>
+    <script src="../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "..";</script>
+    <script src="../js/theme_extra.js"></script>
+    <script src="../js/theme.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

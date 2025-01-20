@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="shortcut icon" href="../img/favicon.ico" />
+    <title>Compiler - mlregistry</title>
+    <link rel="stylesheet" href="../css/theme.css" />
+    <link rel="stylesheet" href="../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+        <link href="../assets/_mkdocstrings.css" rel="stylesheet" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Compiler";
+        var mkdocs_page_input_path = "compiler.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href=".." class="icon icon-home"> mlregistry
+        </a>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="..">Home</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../aggregates/">Aggregates</a>
+                </li>
+              </ul>
+              <ul class="current">
+                <li class="toctree-l1 current"><a class="reference internal current" href="#">Compiler</a>
+    <ul class="current">
+    </ul>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../storage/">Storage</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../repository/">Repository</a>
+                </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="..">mlregistry</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href=".." class="icon icon-home" aria-label="Docs"></a></li>
+      <li class="breadcrumb-item active">Compiler</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h3 id="build-complex-compilation-pipelines">Build complex compilation pipelines</h3>
+
+
+<div class="doc doc-object doc-module">
+
+
+
+<a id="torchsystem.compiler"></a>
+    <div class="doc doc-contents first">
+
+
+
+
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-class">
+
+
+
+<h2 id="torchsystem.compiler.Compiler" class="doc doc-heading">
+            <code>Compiler</code>
+
+
+</h2>
+
+
+    <div class="doc doc-contents ">
+
+
+        <p>AGGREGATES usually have a complex initialization and are built from multiple components. The
+process of building an AGGREGATE can be broken down into multiple steps. In the context of
+neural networks, AGGREGATEs not only should be built but also compiled. Compilation is the
+process of converting a high-level neural network model into a low-level representation that can
+be executed on a specific hardware platform and can be seen as an integral part of the process
+of building an AGGREGATE.</p>
+<p>A <code>Compiler</code> is a class that compiles a pipeline of functions to be executed in sequence in order
+to build an a low-level representation of the AGGREGATE. Since some compilation steps sometimes
+requires runtime information, the <code>Compiler</code> provides a mechanism to inject dependencies into
+the pipeline.</p>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Attributes:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>pipeline</code></b>
+                  (<code>list[<span title="typing.Callable">Callable</span>[..., <span title="typing.Any">Any</span>]]</code>)
+              –
+              <div class="doc-md-description">
+                <p>A list of functions to be executed in sequence.</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<p><span class="doc-section-title">Methods:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+            <tr class="doc-section-item">
+              <td><code><a class="autorefs autorefs-internal" title="torchsystem.compiler.Compiler.compile" href="#torchsystem.compiler.Compiler.compile">compile</a></code></td>
+              <td>
+                <div class="doc-md-description">
+                  <p>Execute the pipeline of functions in sequence. The output of each function is passed as
+input to the next function. The compiled AGGREGATE should be returned by the last function
+in the pipeline.</p>
+                </div>
+              </td>
+            </tr>
+            <tr class="doc-section-item">
+              <td><code><a class="autorefs autorefs-internal" title="torchsystem.compiler.Compiler.step" href="#torchsystem.compiler.Compiler.step">step</a></code></td>
+              <td>
+                <div class="doc-md-description">
+                  <p>A decorator that adds a function to the pipeline. The function should take as input the
+output of the previous function in the pipeline and return the input of the next function
+in the pipeline.</p>
+                </div>
+              </td>
+            </tr>
+      </tbody>
+    </table>
+        <p>Example:</p>
+<pre><code>.. code-block:: python
+from logging import getLogger
+from torch import cuda
+from torchsystem.compiler import Compiler
+from torchsystem.compiler import Depends
+from torchsystem.compiler import compiler
+
+compiler = Compiler[Classifier]()
+logger = getLogger(__name__)
+
+def device():
+    raise NotImplementedError
+
+@compiler.step
+def build_classifier(model, criterion, optimizer):
+    logger.info(f'Building classifier')
+    logger.info(f'- model: {model.__class__.__name__}')
+    logger.info(f'- criterion: {criterion.__class__.__name__}')
+    logger.info(f'- optimizer: {optimizer.__class__.__name__}')
+    return Classifier(model, criterion, optimizer)
+
+@compiler.step
+def move_to_device(classifier: Classifier, device = Depends(device)):
+    logger.info(f'Moving classifier to device: {device}')
+    return classifier.to(device)
+
+@compiler.step
+def compile_classifier(classifier: Classifier):
+    logger.info(f'Compiling classifier')
+    return compile(classifier)
+...
+
+compiler.dependency_overrides[device] = lambda: 'cuda' if cuda.is_available() else 'cpu'
+classifier = compiler.compie(model, criterion, optimizer)
+</code></pre>
+
+
+
+
+
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="torchsystem.compiler.Compiler.__init__" class="doc doc-heading">
+            <code class="highlight language-python">__init__(provider=None, cast=True)</code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Initialize the Compiler.</p>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Parameters:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>provider</code></b>
+                  (<code><span title="pymsgbus.depends.Provider">Provider</span></code>, default:
+                      <code>None</code>
+)
+              –
+              <div class="doc-md-description">
+                <p>The dependency provider. Defaults to None.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>cast</code></b>
+                  (<code>bool</code>, default:
+                      <code>True</code>
+)
+              –
+              <div class="doc-md-description">
+                <p>Whether to cast the dependencies during injection. Defaults to True.</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="torchsystem.compiler.Compiler.compile" class="doc doc-heading">
+            <code class="highlight language-python">compile(*args, **kwargs)</code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Execute the pipeline of functions in sequence. The output of each function is passed as input
+to the next function. The compiled AGGREGATE should be returned by the last function in the pipeline.</p>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Returns:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+<b><code>T</code></b>(                  <code>T</code>
+)              –
+              <div class="doc-md-description">
+                <p>The compiled AGGREGATE.</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="torchsystem.compiler.Compiler.step" class="doc doc-heading">
+            <code class="highlight language-python">step(callable)</code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Add a function to the pipeline. The function should take as input the output of the previous
+function in the pipeline and return the input of the next function in the pipeline.</p>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Parameters:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>callable</code></b>
+                  (<code><span title="typing.Callable">Callable</span></code>)
+              –
+              <div class="doc-md-description">
+                <p>The function to be added to the pipeline.</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Returns:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+<b><code>Any</code></b>(                  <code><span title="typing.Any">Any</span></code>
+)              –
+              <div class="doc-md-description">
+                <p>The requirements for the next step in the pipeline.</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../aggregates/" class="btn btn-neutral float-left" title="Aggregates"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../storage/" class="btn btn-neutral float-right" title="Storage">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+      <span><a href="../aggregates/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../storage/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "..";</script>
+    <script src="../js/theme_extra.js"></script>
+    <script src="../js/theme.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>
