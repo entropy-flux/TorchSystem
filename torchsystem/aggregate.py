@@ -2,48 +2,41 @@ from abc import ABC
 from typing import Any
 from typing import Literal
 from torch.nn import Module
-from pymsgbus.events import Events
-from pymsgbus.pubsub import Publisher, Subscriber
-from pymsgbus.exceptions import Exceptions
+from torchsystem.domain import Events
 
 class Aggregate(Module, ABC):
     """
     An AGGREGATE is a cluster of associated objects that we treat as a unit for the purpose
     of data changes. Each AGGREGATE has a root and a boundary. The boundary defines what is
-    inside the AGGREGATE. The root is a single, specific ENTITY contained in the AGGREGATE.
-
-    An AGGREGATE is responsible for maintaining the consistency of the data within its boundary
-    and enforcing invariants that apply to the AGGREGATE as a whole. It can communicate data
-    to the outside world and execute complex logic using domain events or messages through in 
-    memory message patterns.
+    inside the AGGREGATE. The root is a single, specific ENTITY contained in the AGGREGATE and
+    provides the IDENTITY of the AGGREGATE. The root is the only member of the AGGREGATE that
+    outside objects are allowed to hold references to.
 
     In deep learning, an AGGREGATE consist not only of a neural network, but also several other
-    components such as optimizers, schedulers, tokenizers, etc. In order to perform complex tasks.
-
-    For example, a transformer model is just a neural network, and in order to perform tasks such
-    as text completion or translation, it needs to be part of an AGGREGATE that includes other 
-    components like a tokenizer. The AGGREGATE is responsible for coordinating the interactions   
-    between these components.
+    components such as optimizers, schedulers, tokenizers, etc.  For example, a transformer model
+    is just a neural network, and in order to perform tasks such as text completion or translation,
+    it needs to be part of an AGGREGATE that includes other components like a tokenizer. The AGGREGATE
+    is responsible for coordinating the interactions between these components.
 
     Attributes:
         id (Any): The id of the AGGREGATE ROOT. It should be unique within the AGGREGATE boundary.
         phase (Literal['train', 'evaluation']): The phase of the AGGREGATE.
+        events (Events): The domain events of the AGGREGATE.
 
     Methods:
-        emit:
-            Emits an event to all consumers of the AGGREGATE.
+        onphase:
+            A hook that is called when the phase changes. Implement this method to add custom behavior.
 
-        register:
-            Bind a group of consumers to the AGGREGATEs producer.
+        onepoch:
+            A hook that is called when the epoch changes. Implement this method to add custom behavior.
 
     Example:
-
-        .. code-block:: python
-
+        ```python	
         from torch import Tensor
         from torch.nn import Module
         from torch.optim import Optimizer
         from torchsystem import Aggregate
+        from torchsystem.registry import gethash
 
         class Classifier(Aggregate):
             def __init__(self, model: Module, criterion: Module, optimizer: Optimizer):
@@ -53,71 +46,61 @@ class Aggregate(Module, ABC):
                 self.criterion = criterion
                 self.optimizer = optimizer
 
+            @property
+            def id(self) -> str:
+                return gethash(self.model) # See the registry module for more information.
+
+            def onepoch(self):
+                print(f'Epoch: {self.epoch}')
+
+            def onphase(self):
+                print(f'Phase: {self.phase}')
+
             def forward(self, input: Tensor) -> Tensor:
                 return self.model(input)
             
             def loss(self, output: Tensor, target: Tensor) -> Tensor:
                 return self.criterion(output, target)
 
-            def fit(self, input: Tensor, target: Tensor) -> tuple[Tensor, float]:
+            def fit(self, input: Tensor, target: Tensor) -> tuple[Tensor, Tensor]:
                 self.optimizer.zero_grad()
                 output = self(input)
                 loss = self.loss(output, target)
                 loss.backward()
                 self.optimizer.step()
-                return output, loss.item()
+                return output, loss
 
-            def evaluate(self, input: Tensor, target: Tensor) -> tuple[Tensor, float]: 
+            def evaluate(self, input: Tensor, target: Tensor) -> tuple[Tensor, Tensor]: 
                 output = self(input)
                 loss = self.loss(output, target)
-                return output, loss.item()
+                return output, loss
+        ```
     """
+    
     def __init__(self):
         super().__init__()
-        self.epochs = 0
         self.events = Events()
-        self.publisher = Publisher()
-        self.exceptions = Exceptions()
 
     @property
     def id(self) -> Any:
         """
-        The id of the AGGREGATE ROOT. It should be unique within the AGGREGATE boundary.
+        The id of the AGGREGATE ROOT. It should be unique within the AGGREGATE boundary. It's up to the
+        user to define the id of the AGGREGATE ROOT and how it should be generated.
+          
+        The `gethash` function from the `torchsystem.registry` module can usefull for generating unique
+        ids from registered pytorch objects.
         """
         raise NotImplementedError("The id property must be implemented.")
-    
-    @property
-    def epoch(self) -> int:
-        """
-        The current epoch of the AGGREGATE. The epoch is a property on a machine learning aggregate
-        and it's determined by the epoch of it's AGGREGATE ROOT. Secondary effects can be triggered
-        by the epoch change overriding the `onepoch` method.
-
-        Returns:
-            int: The current epoch.
-        """
-        return self.epochs
-    
-    @epoch.setter
-    def epoch(self, value: int):
-        with self.exceptions:
-            self.epochs = value
-            self.onepoch()
-
-    def onepoch(self):
-        """
-        A hook that is called when the epoch changes. Implement this method to add custom behavior.
-        """
-        pass
         
     @property
     def phase(self) -> Literal['train', 'evaluation']:
         """
         The phase of the AGGREGATE. The phase is a property of neural networks that not only describes
-        the current state of the network, but also determines how the network should behave. During the
-        training phase, the network stores the gradients of the weights and biases, and uses them to update
-        the weights and biases. During the evaluation phase, the network does not store the gradients of the
-        weights and biases, and does not update the weights and biases.
+        the current state of the network, but also determines how the network should behave. 
+        
+        During the training phase, the network stores the gradients of the weights and biases, and uses them
+        to update the weights and biases. During the evaluation phase, the network does not store the gradients
+        of the weights and biases, and does not update the weights and biases.
 
         Returns:
             Literal['train', 'evaluation']: The current phase of the AGGREGATE.
@@ -125,37 +108,33 @@ class Aggregate(Module, ABC):
         return 'train' if self.training else 'evaluation'
     
     @phase.setter
-    def phase(self, value: Literal['train', 'evaluation']):
-        with self.exceptions:
-            self.train() if value == 'train' else self.eval()
-            self.onphase()
+    def phase(self, value: str):
+        """
+        Set the phase of the AGGREGATE. When the phase changes, the onphase hook method is called.
+        The phase will be set to 'train' if the value is 'train', otherwise it will be set to 'evaluation'.
+        
+        Changing the phase of the AGGREGATE will set all the modules in the AGGREGATE to the training or
+        evaluation mode respectively.
+
+        Args:
+            value (str): The phase of the AGGREGATE. It can be either 'train' or 'evaluation'.
+        """
+        self.train() if value == 'train' else self.eval()
+        self.onphase()
 
     def onphase(self):
         """
         A hook that is called when the phase changes. Implement this method to add custom behavior.
         """
-        pass
 
-    def publish(self, message: Any, topic: str):
+    def onepoch(self):
         """
-        Publish a message to all subscribers of a given topic.
-
-        Args:
-            message (Any): The message to publish.
-            topic (str): The topic to publish the message.
+        A hook that is called when the epoch changes. Implement this method to add custom behavior.
         """
-        with self.exceptions:
-            self.publisher.publish(message, topic)
 
-
-    def register(self, *observers: Subscriber):
-        """
-        Bind a group of observers to the AGGREGATE. Each observer will consumer EVENTS
-        from the AGGREGATE. You can register an observer from here or you can observe this
-        AGGREGATE from an observer since observers also implement the logic registration logic.
-
-        Args:
-            consumers (Consumer): The consumers to bind.
-        """
-        for observer in observers:
-            self.publisher.register(observer)
+    def __setattr__(self, name, value):
+        if name == 'epoch' and hasattr(self, 'epoch'):
+            super().__setattr__(name, value)
+            self.onepoch()
+        else:        
+            super().__setattr__(name, value)

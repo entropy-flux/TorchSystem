@@ -1,6 +1,6 @@
-### Implement deep learning Aggregates with PyTorch
+### Implement your domain model with pytorch
 
-::: torchsystem.aggregate
+::: torchsystem.domain
     handler: python
     options:
       show_root_heading: false

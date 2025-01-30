@@ -8,8 +8,7 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.12"
-pymsgbus = "^0.3.0"
-mlregistry = "^1.1.1"
+mlregistry = "^1.2.1"
 
 
 [tool.poetry.group.tests.dependencies]
@@ -17,11 +16,18 @@ pytest = "^8.3.4"
 torch = "^2.5.1"
 numpy = "^2.2.1"
 torchvision = "^0.20.1"
+mypy = "^1.14.1"
+torcheval = "^0.0.7"
+attrs = "^25.1.0"
+cattrs = "^24.1.2"
+tinydb = "^4.8.2"
 
 
 [tool.poetry.group.docs.dependencies]
 mkdocs = "^1.6.1"
 mkdocstrings = {extras = ["python"], version = "^0.27.0"}
+mkdocs-material = "^9.5.50"
+pygments = "^2.19.1"
 
 [build-system]
 requires = ["poetry-core"]

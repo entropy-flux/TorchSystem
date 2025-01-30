@@ -1,14 +1,19 @@
-site_name: "mlregistry"
-
+site_name: "TorchSystem" 
+  
 theme:
-  name: "readthedocs"
+  name: material
+  features:
+    - content.code.copy
+    - content.code.select
+    - content.code.annotate 
+    - content.code.highlight
 
-nav:
-  - Home: index.md
-  - Aggregates: aggregates.md
-  - Compiler: compiler.md
-  - Storage: storage.md
-  - Repository: repository.md
+
+markdown_extensions:
+  - pymdownx.highlight:
+      pygments_style: default
+  - pymdownx.superfences
+  - pymdownx.inlinehilite
 
 plugins:
   - mkdocstrings:
@@ -16,3 +21,12 @@ plugins:
         python:
           selection:
             docstring_style: "google" 
+
+
+nav:
+  - Home: index.md
+  - Domain: domain.md
+  - Compiler: compiler.md
+  - Services: services.md
+  - Publisher/Subscriber: pubsub.md
+  - Producer/Consumer: prodcon.md

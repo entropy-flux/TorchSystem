@@ -1,19 +1,22 @@
-from typing import Callable
 from typing import Any
-from torch import compile as compile
-from pymsgbus.depends import Depends as Depends
-from pymsgbus.depends import inject
-from pymsgbus.depends import Provider
-from torchsystem.aggregate import Aggregate as Compiled
+from collections.abc import Callable
 
-class Compiler[T: Compiled]:
+from torch import compile as compile
+from torchsystem.depends import Depends as Depends
+from torchsystem.depends import inject
+from torchsystem.depends import Provider
+
+class Compiler[T]:
     """
-    AGGREGATES usually have a complex initialization and are built from multiple components. The
-    process of building an AGGREGATE can be broken down into multiple steps. In the context of
-    neural networks, AGGREGATEs not only should be built but also compiled. Compilation is the
-    process of converting a high-level neural network model into a low-level representation that can
-    be executed on a specific hardware platform and can be seen as an integral part of the process
-    of building an AGGREGATE.
+    AGGREGATES usually have a complex initialization and are built from multiple components. Sometimes
+    database queries, API calls, or other external resources are required to build it. Each one with it's
+    own lifecycle tath may require some initialization method or cleanup after they are no longer needed.
+     
+    In the context of neural networks, AGGREGATES not only should be built but also compiled. Compilation
+    is the process of converting a high-level neural network model into a low-level representation that can
+    be executed on a specific hardware platform, and can be seen as an integral part of the process of building 
+    the AGGREGATE. This process get even more complex when performing distributed training and
+    a dedicated pipeline is required to build and compile AGGREGATES.
 
     A `Compiler` is a class that compiles a pipeline of functions to be executed in sequence in order
     to build an a low-level representation of the AGGREGATE. Since some compilation steps sometimes
@@ -21,13 +24,13 @@ class Compiler[T: Compiled]:
     the pipeline.
 
     Attributes:
-        pipeline (list[Callable[..., Any]]): A list of functions to be executed in sequence.
+        steps (list[Callable[..., Any]]): A list of functions to be executed in sequence.
 
     Methods:
         compile:
             Execute the pipeline of functions in sequence. The output of each function is passed as
-            input to the next function. The compiled AGGREGATE should be returned by the last function
-            in the pipeline.
+            input to the next function. The compiled AGGREGATE should be returned as a result of the
+            execution of the pipeline.
 
         step:
             A decorator that adds a function to the pipeline. The function should take as input the
@@ -35,22 +38,25 @@ class Compiler[T: Compiled]:
             in the pipeline.
 
     Example:
-
-        .. code-block:: python
+        ```python	
         from logging import getLogger
         from torch import cuda
+        from torch.nn import Module
         from torchsystem.compiler import Compiler
         from torchsystem.compiler import Depends
-        from torchsystem.compiler import compiler
+        from torchsystem.compiler import compile
 
         compiler = Compiler[Classifier]()
         logger = getLogger(__name__)
 
         def device():
-            raise NotImplementedError
+            return 'cuda' if cuda.is_available() else 'cpu'
+
+        def epoch():
+            raise NotImplementedError('Override this function with a concrete implementation')
 
         @compiler.step
-        def build_classifier(model, criterion, optimizer):
+        def build_classifier(model: Module, criterion: Module, optimizer: Module):
             logger.info(f'Building classifier')
             logger.info(f'- model: {model.__class__.__name__}')
             logger.info(f'- criterion: {criterion.__class__.__name__}')
@@ -66,29 +72,51 @@ class Compiler[T: Compiled]:
         def compile_classifier(classifier: Classifier):
             logger.info(f'Compiling classifier')
             return compile(classifier)
+
+        @compiler.step
+        def set_epoch(classifier: Classifier, epoch: int = Depends(epoch)):
+            logger.info(f'Setting classifier epoch: {epoch}')
+            classifier.epoch = epoch
+            return classifier
         ...
 
-        compiler.dependency_overrides[device] = lambda: 'cuda' if cuda.is_available() else 'cpu'
+        compiler.dependency_overrides[epoch] = lambda: 10
         classifier = compiler.compie(model, criterion, optimizer)
+        assert classifier.epoch == 10
+        ```
     """
     def __init__(
         self,
-        provider: Provider = None,
-        cast: bool = True
+        *,
+        provider: Provider = None
     ):
         """
         Initialize the Compiler.
 
         Args:
-            provider (Provider, optional): The dependency provider. Defaults to None.
-            cast (bool, optional): Whether to cast the dependencies during injection. Defaults to True.
+            provider (Provider): The dependency provider. Defaults to None.
         """
-        self.pipeline = list[Callable]()
+        self.steps = list[Callable]()
         self.provider = provider or Provider()
-        self.cast = cast
     
     @property
     def dependency_overrides(self) -> dict:
+        """
+        Get the dependency overrides. Dependency overrides are used to inject dependencies into the
+        pipeline. This is useful for late binding, testing and changing the behavior of the compiler
+        in runtime.
+
+        Returns:
+            dict: The dependency map.
+
+        Example:        
+            ```python	
+            def device():...
+            ...
+
+            compiler.dependency_overrides[device] = lambda: 'cuda' if cuda.is_available() else 'cpu'
+            ```
+        """
         return self.provider.dependency_overrides
 
     def step(self, callable: Callable) -> Any:
@@ -102,9 +130,9 @@ class Compiler[T: Compiled]:
         Returns:
             Any: The requirements for the next step in the pipeline.
         """
-        injected = inject(callable, dependency_overrides_provider=self.provider, cast=self.cast)
-        self.pipeline.append(injected)
-        return self
+        injected = inject(self.provider)(callable)
+        self.steps.append(injected)
+        return injected
     
     def compile(self, *args, **kwargs) -> T:
         """
@@ -115,7 +143,7 @@ class Compiler[T: Compiled]:
             T: The compiled AGGREGATE.
         """
         result = None
-        for step in self.pipeline:
+        for step in self.steps:
             if not result:
                 result = step(*args, **kwargs)
             else:
