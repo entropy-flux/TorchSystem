@@ -1,10 +1,9 @@
 name: CI
 on:
   push:
-    paths:
-      - '**/*.py'  
-      - 'torchsystem/**' 
-      - 'tests/**' 
+    branches:
+      - main
+      - dev
       
   pull_request:
     paths:
