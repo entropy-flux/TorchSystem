@@ -254,7 +254,7 @@ class Classifier(Aggregate):
     def id(self) -> str:
         return gethash(self.nn) # This will return an identifier for the root 
 
-    def forward(self, input: Tensor) -> tuple[Tensor, Tensor]:
+    def forward(self, input: Tensor) -> Tensor:
         input = self.flatten(input)
         return self.nn(input)
     
