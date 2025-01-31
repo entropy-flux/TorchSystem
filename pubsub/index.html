@@ -1,0 +1,1211 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="prev" href="../services/">
+      
+      
+        <link rel="next" href="../prodcon/">
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.50">
+    
+    
+      
+        <title>Publisher/Subscriber - TorchSystem</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.a40c8224.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/_mkdocstrings.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#create-a-complex-a-message-system-for-your-services-with-the-publishersubscriber-pattern" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="TorchSystem" class="md-header__button md-logo" aria-label="TorchSystem" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            TorchSystem
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Publisher/Subscriber
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="TorchSystem" class="md-nav__button md-logo" aria-label="TorchSystem" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    TorchSystem
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Home
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../domain/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Domain
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../compiler/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Compiler
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../registry/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Registry
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../services/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Services
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Publisher/Subscriber
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    Publisher/Subscriber
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#create-a-complex-a-message-system-for-your-services-with-the-publishersubscriber-pattern" class="md-nav__link">
+    <span class="md-ellipsis">
+      Create a complex a message system for your services with the publisher/subscriber pattern.
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#torchsystem.services.pubsub" class="md-nav__link">
+    <span class="md-ellipsis">
+      pubsub
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#torchsystem.services.pubsub.Publisher" class="md-nav__link">
+    <span class="md-ellipsis">
+      Publisher
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Publisher">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#torchsystem.services.pubsub.Publisher.publish" class="md-nav__link">
+    <span class="md-ellipsis">
+      publish
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#torchsystem.services.pubsub.Publisher.register" class="md-nav__link">
+    <span class="md-ellipsis">
+      register
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#torchsystem.services.pubsub.Subscriber" class="md-nav__link">
+    <span class="md-ellipsis">
+      Subscriber
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Subscriber">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#torchsystem.services.pubsub.Subscriber.dependency_overrides" class="md-nav__link">
+    <span class="md-ellipsis">
+      dependency_overrides
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#torchsystem.services.pubsub.Subscriber.receive" class="md-nav__link">
+    <span class="md-ellipsis">
+      receive
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#torchsystem.services.pubsub.Subscriber.register" class="md-nav__link">
+    <span class="md-ellipsis">
+      register
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#torchsystem.services.pubsub.Subscriber.subscribe" class="md-nav__link">
+    <span class="md-ellipsis">
+      subscribe
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../prodcon/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Producer/Consumer
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#create-a-complex-a-message-system-for-your-services-with-the-publishersubscriber-pattern" class="md-nav__link">
+    <span class="md-ellipsis">
+      Create a complex a message system for your services with the publisher/subscriber pattern.
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#torchsystem.services.pubsub" class="md-nav__link">
+    <span class="md-ellipsis">
+      pubsub
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#torchsystem.services.pubsub.Publisher" class="md-nav__link">
+    <span class="md-ellipsis">
+      Publisher
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Publisher">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#torchsystem.services.pubsub.Publisher.publish" class="md-nav__link">
+    <span class="md-ellipsis">
+      publish
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#torchsystem.services.pubsub.Publisher.register" class="md-nav__link">
+    <span class="md-ellipsis">
+      register
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#torchsystem.services.pubsub.Subscriber" class="md-nav__link">
+    <span class="md-ellipsis">
+      Subscriber
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Subscriber">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#torchsystem.services.pubsub.Subscriber.dependency_overrides" class="md-nav__link">
+    <span class="md-ellipsis">
+      dependency_overrides
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#torchsystem.services.pubsub.Subscriber.receive" class="md-nav__link">
+    <span class="md-ellipsis">
+      receive
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#torchsystem.services.pubsub.Subscriber.register" class="md-nav__link">
+    <span class="md-ellipsis">
+      register
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#torchsystem.services.pubsub.Subscriber.subscribe" class="md-nav__link">
+    <span class="md-ellipsis">
+      subscribe
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  <h1>Publisher/Subscriber</h1>
+
+<h3 id="create-a-complex-a-message-system-for-your-services-with-the-publishersubscriber-pattern">Create a complex a message system for your services with the publisher/subscriber pattern.</h3>
+
+
+<div class="doc doc-object doc-module">
+
+
+
+<a id="torchsystem.services.pubsub"></a>
+    <div class="doc doc-contents first">
+
+
+
+
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-class">
+
+
+
+<h2 id="torchsystem.services.pubsub.Publisher" class="doc doc-heading">
+            <code>Publisher</code>
+
+
+</h2>
+
+
+    <div class="doc doc-contents ">
+
+
+        <p>A PUBLISHER is a component that sends messages to one or more SUBSCRIBERS. Unlike a PRODUCER
+It's the PUBLISHER's responsibility to route the messages to the corresponding SUBSCRIBERS.</p>
+
+
+<p><span class="doc-section-title">Methods:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+            <tr class="doc-section-item">
+              <td><code><a class="autorefs autorefs-internal" title="torchsystem.services.pubsub.Publisher.register" href="#torchsystem.services.pubsub.Publisher.register">register</a></code></td>
+              <td>
+                <div class="doc-md-description">
+                  <p>Registers one or more SUBSCRIBERS to the PUBLISHER.</p>
+                </div>
+              </td>
+            </tr>
+            <tr class="doc-section-item">
+              <td><code><a class="autorefs autorefs-internal" title="torchsystem.services.pubsub.Publisher.publish" href="#torchsystem.services.pubsub.Publisher.publish">publish</a></code></td>
+              <td>
+                <div class="doc-md-description">
+                  <p>Publishes a message to one or more SUBSCRIBERS based on the topic.</p>
+                </div>
+              </td>
+            </tr>
+      </tbody>
+    </table>
+
+
+<details class="example" open>
+  <summary>Example</summary>
+  <div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">torchsystem.services</span><span class="w"> </span><span class="kn">import</span> <span class="n">Subscriber</span>
+
+<span class="n">subscriber</span> <span class="o">=</span> <span class="n">Subscriber</span><span class="p">()</span>
+
+<span class="nd">@subscriber</span><span class="o">.</span><span class="n">subscribe</span><span class="p">(</span><span class="s1">&#39;loss&#39;</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">on_loss</span><span class="p">(</span><span class="n">loss</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Loss: </span><span class="si">{</span><span class="n">loss</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="n">publisher</span> <span class="o">=</span> <span class="n">Publisher</span><span class="p">()</span>
+<span class="n">publisher</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">subscriber</span><span class="p">)</span>
+<span class="n">publisher</span><span class="o">.</span><span class="n">publish</span><span class="p">(</span><span class="mf">0.1</span><span class="p">,</span> <span class="s1">&#39;loss&#39;</span><span class="p">)</span>
+</code></pre></div>
+</details>
+
+
+
+
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="torchsystem.services.pubsub.Publisher.publish" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">publish</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="n">topic</span><span class="p">)</span></code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Publishes a message to one or more SUBSCRIBERS based on the topic.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>message</code>
+            </td>
+            <td>
+                  <code><span title="typing.Any">Any</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The message to publish.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>topic</code>
+            </td>
+            <td>
+                  <code>str</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The topic to publish the message to.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="torchsystem.services.pubsub.Publisher.register" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">register</span><span class="p">(</span><span class="o">*</span><span class="n">subscribers</span><span class="p">)</span></code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Registers one or more SUBSCRIBERS to the PUBLISHER.</p>
+
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h2 id="torchsystem.services.pubsub.Subscriber" class="doc doc-heading">
+            <code>Subscriber</code>
+
+
+</h2>
+
+
+    <div class="doc doc-contents ">
+
+
+        <p>A SUBSCRIBER is a component that listens for messages published processes them accordingly.</p>
+<p>Unlike a CONSUMER, a SUBSCRIBER receives messages only from the topics it has subscribed to
+and it's the PUBLISHER's responsibility to route the messages accordingly.</p>
+
+
+<p><span class="doc-section-title">Methods:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+            <tr class="doc-section-item">
+              <td><code><a class="autorefs autorefs-internal" title="torchsystem.services.pubsub.Subscriber.register" href="#torchsystem.services.pubsub.Subscriber.register">register</a></code></td>
+              <td>
+                <div class="doc-md-description">
+                  <p>Registers a message type and its corresponding handler function.</p>
+                </div>
+              </td>
+            </tr>
+            <tr class="doc-section-item">
+              <td><code><a class="autorefs autorefs-internal" title="torchsystem.services.pubsub.Subscriber.subscribe" href="#torchsystem.services.pubsub.Subscriber.subscribe">subscribe</a></code></td>
+              <td>
+                <div class="doc-md-description">
+                  <p>Decorator for registering a handler function to one or more topics.</p>
+                </div>
+              </td>
+            </tr>
+            <tr class="doc-section-item">
+              <td><code><a class="autorefs autorefs-internal" title="torchsystem.services.pubsub.Subscriber.receive" href="#torchsystem.services.pubsub.Subscriber.receive">receive</a></code></td>
+              <td>
+                <div class="doc-md-description">
+                  <p>Receives a message from a given topic and triggers the corresponding handler functions
+to process it.</p>
+                </div>
+              </td>
+            </tr>
+      </tbody>
+    </table>
+
+
+<details class="example" open>
+  <summary>Example</summary>
+  <div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">torchsystem</span><span class="w"> </span><span class="kn">import</span> <span class="n">Depends</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">torchsystem.services</span><span class="w"> </span><span class="kn">import</span> <span class="n">Subscriber</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">torchsystem.services</span><span class="w"> </span><span class="kn">import</span> <span class="n">Publisher</span>
+
+<span class="n">subscriber</span> <span class="o">=</span> <span class="n">Subscriber</span><span class="p">()</span>
+<span class="n">metricsdb</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">metrics</span><span class="p">():</span>
+    <span class="k">return</span> <span class="n">metricsdb</span>
+
+<span class="nd">@subscriber</span><span class="o">.</span><span class="n">subscribe</span><span class="p">(</span><span class="s1">&#39;loss&#39;</span><span class="p">,</span> <span class="s1">&#39;accuracy&#39;</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">store_metric</span><span class="p">(</span><span class="n">metric</span><span class="p">,</span> <span class="n">metrics</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">metrics</span><span class="p">)):</span>
+    <span class="n">metrics</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">metric</span><span class="p">)</span>
+
+<span class="nd">@subscriber</span><span class="o">.</span><span class="n">subscribe</span><span class="p">(</span><span class="s1">&#39;accuracy&#39;</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">on_accuracy_to_high</span><span class="p">(</span><span class="n">metric</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">metric</span> <span class="o">&gt;</span> <span class="mf">0.99</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">StopIteration</span>
+
+<span class="n">publisher</span> <span class="o">=</span> <span class="n">Publisher</span><span class="p">()</span>
+<span class="n">publisher</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">subscriber</span><span class="p">)</span>
+
+<span class="n">publisher</span><span class="o">.</span><span class="n">publish</span><span class="p">(</span><span class="mf">0.1</span><span class="p">,</span> <span class="s1">&#39;loss&#39;</span><span class="p">)</span>
+<span class="n">publisher</span><span class="o">.</span><span class="n">publish</span><span class="p">(</span><span class="mf">0.9</span><span class="p">,</span> <span class="s1">&#39;accuracy&#39;</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">metricsdb</span> <span class="o">==</span> <span class="p">[</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">]</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="n">publisher</span><span class="o">.</span><span class="n">publish</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="s1">&#39;accuracy&#39;</span><span class="p">)</span>
+<span class="k">except</span> <span class="ne">StopIteration</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Early stopping&quot;</span><span class="p">)</span> 
+</code></pre></div>
+</details>
+
+
+
+
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="torchsystem.services.pubsub.Subscriber.dependency_overrides" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">dependency_overrides</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-property"><code>property</code></small>
+  </span>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Returns the dependency overrides for the subscriber. This is useful for late binding,
+testing and changing the behavior of the subscriber in runtime.</p>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+<th>Name</th>          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+<td><code>dict</code></td>            <td>
+                  <code>dict</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>A dictionary of the dependency map.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+<details class="example" open>
+  <summary>Example</summary>
+  <div class="highlight"><pre><span></span><code><span class="n">subscriber</span> <span class="o">=</span> <span class="n">Subscriber</span><span class="p">()</span>
+<span class="o">...</span>
+
+<span class="n">subscriber</span><span class="o">.</span><span class="n">dependency_overrides</span><span class="p">[</span><span class="n">db</span><span class="p">]</span> <span class="o">=</span> <span class="k">lambda</span><span class="p">:</span> <span class="p">[]</span>
+</code></pre></div>
+</details>    </div>
+
+</div>
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="torchsystem.services.pubsub.Subscriber.receive" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">receive</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="n">topic</span><span class="p">)</span></code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Receives a message from a given topic and triggers the corresponding handler functions
+to process it. This is called by the PUBLISHER but is also useful for deliver messages
+between handlers directly.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>message</code>
+            </td>
+            <td>
+                  <code><span title="typing.Any">Any</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The message to process.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>topic</code>
+            </td>
+            <td>
+                  <code>str</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The topic to process the message from.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+<details class="example" open>
+  <summary>Example</summary>
+  <div class="highlight"><pre><span></span><code><span class="n">subscriber</span> <span class="o">=</span> <span class="n">Subscriber</span><span class="p">()</span>
+
+<span class="nd">@subscriber</span><span class="o">.</span><span class="n">subscribe</span><span class="p">(</span><span class="s1">&#39;metrics&#39;</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">store_metric</span><span class="p">(</span><span class="n">metrics</span><span class="p">:</span> <span class="nb">list</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">metric</span> <span class="ow">in</span> <span class="n">metrics</span><span class="p">:</span>
+        <span class="n">subscriber</span><span class="o">.</span><span class="n">receive</span><span class="p">(</span><span class="n">metric</span><span class="p">,</span> <span class="n">metric</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">])</span>
+
+<span class="nd">@subscriber</span><span class="o">.</span><span class="n">subscribe</span><span class="p">(</span><span class="s1">&#39;loss&#39;</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">on_loss</span><span class="p">(</span><span class="n">loss</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Loss: </span><span class="si">{</span><span class="n">loss</span><span class="p">[</span><span class="s1">&#39;value&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="nd">@subscriber</span><span class="o">.</span><span class="n">subscribe</span><span class="p">(</span><span class="s1">&#39;accuracy&#39;</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">on_accuracy</span><span class="p">(</span><span class="n">accuracy</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Accuracy: </span><span class="si">{</span><span class="n">accuracy</span><span class="p">[</span><span class="s1">&#39;value&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="n">subscriber</span><span class="o">.</span><span class="n">receive</span><span class="p">([</span>
+    <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;loss&#39;</span><span class="p">,</span> <span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="mf">0.1</span><span class="p">},</span> 
+    <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;accuracy&#39;</span><span class="p">,</span> <span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="mf">0.9</span><span class="p">}],</span> 
+<span class="n">topic</span><span class="o">=</span><span class="s1">&#39;metrics&#39;</span><span class="p">)</span>
+
+<span class="c1"># Output:</span>
+<span class="c1"># Loss: 0.1</span>
+<span class="c1"># Accuracy: 0.9</span>
+</code></pre></div>
+</details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="torchsystem.services.pubsub.Subscriber.register" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">register</span><span class="p">(</span><span class="n">topic</span><span class="p">,</span> <span class="n">wrapped</span><span class="p">)</span></code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Registers a handler function with a given topic.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>topic</code>
+            </td>
+            <td>
+                  <code>str</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The topic to register the handler function to.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>wrapped</code>
+            </td>
+            <td>
+                  <code><span title="collections.abc.Callable">Callable</span>[..., None]</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The handler function to register.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="torchsystem.services.pubsub.Subscriber.subscribe" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">subscribe</span><span class="p">(</span><span class="o">*</span><span class="n">topics</span><span class="p">)</span></code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Decorator for registering a handler function to one or more topics. </p>
+<p>Args:</p>
+<div class="highlight"><pre><span></span><code>*topics (str): The topics to register the handler function to.
+</code></pre></div>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="collections.abc.Callable">Callable</span>[..., None]</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Callable[..., None]: The decorated handler function.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+<details class="example" open>
+  <summary>Example</summary>
+  <div class="highlight"><pre><span></span><code><span class="n">subscriber</span> <span class="o">=</span> <span class="n">Subscriber</span><span class="p">()</span>
+
+<span class="nd">@subscriber</span><span class="o">.</span><span class="n">subscribe</span><span class="p">(</span><span class="s1">&#39;loss&#39;</span><span class="p">,</span> <span class="s1">&#39;accuracy&#39;</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">store_metric</span><span class="p">(</span><span class="n">metric</span><span class="p">,</span> <span class="n">metrics</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">metrics</span><span class="p">)):</span>
+    <span class="o">...</span>
+</code></pre></div>
+</details>
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "..", "features": ["content.code.copy", "content.code.select", "content.code.annotate", "content.code.highlight"], "search": "../assets/javascripts/workers/search.f8cc74c7.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.60a45f97.min.js"></script>
+      
+    
+  </body>
+</html>
