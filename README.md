@@ -37,9 +37,9 @@ pip install torchsystem
 
 - **Domain Events**:  Aggregates can produce and consume domain events, which signal meaningful changes in the system or trigger actions elsewhere. Exceptions are supported to be treated as domain events, allowing them to be enqueued and handled or rised as needed. This makes it trivial to implement features like early stopping (Just enqueue an exception and raise it when needed).
 
-- **Dependency Injection**: The framework provides a robust dependency injection system that allows you to define and inject dependencies. This enables you to define your logic in terms of interfaces and inject implementations later. 
-
 - **Registry**: The registry module allows you to treat your models as entities by providing a way to calculate locally unique hashes for them that can act as their identifier. This module also provides several other utilities to help you handle the data from your domain.
+
+- **Dependency Injection**: The framework provides a robust dependency injection system that allows you to define and inject dependencies. This enables you to define your logic in terms of interfaces and inject implementations later. 
 
 - **Compilers**: Building aggregates can be a complex process. In the context of deep learning, aggregates not only need to be built but also compiled, making compilation an integral part of the construction process. This framework provides a Compiler class to help define and manage the compilation process for your aggregates
 
@@ -174,7 +174,7 @@ Let's create a simple tensorboard consumer for this service:
 from torchsystem import Depends
 from torchsystem.services import Consumer
 from torch.utils.tensorboard.writer import SummaryWriter
-from trainsys.services.training import (
+from src.services.training import (
     Trained,
     Validated
 )
@@ -201,8 +201,8 @@ Since several consumers can consume from the same producer, you can plug any ser
 from torchsystem.services import Subscriber
 from torchsystem.services import Consumer
 
-from trainsys.services.training import Metric
-from trainsys.services.training import Trained, Validated
+from src.services.training import Metric
+from src.services.training import Trained, Validated
 
 subscriber = Subscriber()
 consumer = Consumer()
@@ -320,8 +320,6 @@ from torch.optim import Optimizer
 from torchsystem import Depends
 from torchsystem.compiler import compile
 from torchsystem.compiler import Compiler
-from trainsys.domain.models import Repository
-from trainsys.ports.models import Models
 from src.classifier import Classifier
 
 logger = getLogger(__name__)
@@ -362,7 +360,7 @@ Finally, you can put all together in the application layer as follows:
 from torch import cuda
 from torch.utils.tensorboard.writer import SummaryWriter
 
-from src.service import (
+from src.services import (
     training,
     tensorboard,
     earlystopping

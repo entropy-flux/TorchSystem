@@ -1,6 +1,6 @@
 ### Treat your models as Entities.
  
-An ENTITY is an object defined by it's identity, and it's mutable nature distinguish them from value objects. In the
+An ENTITY is an object defined by it's IDENTITY, and it's mutable nature distinguish them from VALUE OBJECTS. In the
 context of machine learning, neural networks are stateful objects that can mutate their internal state during training.
 This means that they must be treated as entities, and in order to identifying them, is necessary to identify their invariants.
 

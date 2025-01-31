@@ -22,7 +22,6 @@ plugins:
           selection:
             docstring_style: "google" 
 
-
 nav:
   - Home: index.md
   - Domain: domain.md
@@ -30,5 +29,5 @@ nav:
   - Dependency Injection: depends.md
   - Compiler: compiler.md
   - Services: services.md
-  - Publisher/Subscriber: pubsub.md
   - Producer/Consumer: prodcon.md
+  - Publisher/Subscriber: pubsub.md
