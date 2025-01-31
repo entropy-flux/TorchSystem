@@ -1,6 +1,6 @@
 # TorchSystem.
 
-This framework will help you to create powerful and scalable systems using the PyTorch library. It is designed under the principles of domain driven design (DDD) and includes built-in message patterns and a robust dependency injection system. It enables the creation of stateless, modular service layers and robust domain models. This design facilitates better separation of concerns, testability, and scalability, making it ideal for complex IA training systems.
+This framework will help you to create powerful and scalable systems using the PyTorch library. It is designed under the principles of domain driven design (DDD) and includes built-in message patterns and a robust dependency injection system. It enables the creation of stateless, modular service layers and robust domain models. This design facilitates better separation of concerns, testability, and scalability, making it ideal for complex IA training systems. You can find the full documentation here: [mr-mapache.github.io/torch-system/](https://mr-mapache.github.io/torch-system/)
 
 ## Table of contents:
 
@@ -56,21 +56,20 @@ Let's build a simple training system using the framework. First, we can define o
 ```python 
 # src/domain.py
 from typing import Any
-from typing import Protocol
-from collections.abc import Callable
+from typing import Protocol 
 
-class Events(Protocol):
-
-    def enqueue(self, event) -> None:... # You will find out why we need this later
+from torch import Tensor
+from torch.nn import Module
+from torchsystem import Events
 
 class Model(Protocol):
     id: Any
     phase: str
     epoch: int
-    events: Events
-    nn: Callable
-    criterion: Callable
-    optimizer: Callable
+    events: Events # You will find out why we need this later
+    nn: Module
+    criterion: Module
+    optimizer: Module
     
     def fit(self, *args, **kwargs) -> Any:...
 
@@ -91,7 +90,7 @@ class Loader(Protocol):
     def __iter__(self) -> Iterator[tuple[Tensor, Tensor]]:...
 ```
 
-Notice that we didn't define any implementation. Of course you can just implement it right away, but let's define a training service first:
+Notice that we didn't define any implementation. Of course you can just implement it right away, but let's define a training service first. Service handlers and events produced in the services should be modeled using an ubiquitous language. Under this idea, the framework provides a way to invoke services or produce events using their names. This is completly optional, like everything in the library, and you can invoke services handlers and dispatch events directly.
 
 ```python
 # src/services/training.py
@@ -107,25 +106,16 @@ from src.domain import Model
 from src.domain import Loader
 from src.domain import Metric, Metrics 
 
-@dataclass
-class Trained:
-    model: Model
-    loader: Loader
-    metrics: Sequence[Metric]
-
-@dataclass
-class Validated:
-    model: Model
-    loader: Loader
-    metrics: Sequence[Metric]
-
-@dataclass
-class Iterated:
-    model: Model
-    loaders: Sequence[tuple[str, Loader]]
-
 service = Service() 
 producer = Producer() 
+
+@service.handler
+def iterate(model: Model, loaders: Sequence[tuple[str, Loader]], metrics: Metrics):
+    for phase, loader in loaders:
+        train(model, loader, metrics) if phase == 'train' else validate(model, loader, metrics)
+    service.handle('train', model, loader, metrics) if phase == 'train' else service.handle('validate', model, loader, metrics)
+    model.epoch += 1
+    producer.produce('iterated', model, loaders)
 
 def device() -> str:
     raise NotImplementedError("We don't know the device yet!!!, will be injected later")
@@ -138,7 +128,7 @@ def train(model: Model, loader: Loader, metrics: Metrics, device: str = Depends(
         prediction, loss = model.fit(input, target)
         metrics.update(batch, loss, prediction, target)
     sequence = metrics.compute()
-    producer.dispatch(Trained(model, loader, sequence))
+    producer.produce('trained', model, loader, sequence)
 
 @service.handler
 def validate(model: Model, loader: Loader, metrics: Metrics, device: str = Depends(device)):
@@ -149,17 +139,24 @@ def validate(model: Model, loader: Loader, metrics: Metrics, device: str = Depen
             prediction, loss = model.evaluate(input, target)
             metrics.update(batch, loss, prediction, target)
         sequence = metrics.compute()
-        producer.dispatch(Validated(model, loader, sequence))
+        producer.produce('validated', model, loader, sequence)
 
-@service.handler
-def iterate(model: Model, loaders: Sequence[tuple[str, Loader]], metrics: Metrics):
-    for phase, loader in loaders:
-        train(model, loader, metrics) if phase == 'train' else validate(model, loader, metrics)
-    # You can call functions by name.
-    # service.handle('train', model, loader, metrics) if phase == 'train' else service.handle('validate', model, loader, metrics)
-    # This is allows you to write handlers in the order you want. 
-    model.epoch += 1
-    producer.dispatch(Iterated(model, loaders))
+@producer.event
+class Iterated:
+    model: Model
+    loaders: Sequence[tuple[str, Loader]]
+
+@producer.event
+class Trained:
+    model: Model
+    loader: Loader
+    metrics: Sequence[Metric]
+
+@producer.event
+class Validated:
+    model: Model
+    loader: Loader
+    metrics: Sequence[Metric]
 ```
 
 And that's it! A simple training system. Notice that it is completely decoupled from the implementation of the domain. It's only task is to orchestrate the training process and produce events from it. It doesn't provide any storage logic or data manipulation, only stateless training logic. Now you can now build a whole data storage system, logging or any other service you need around this simple service, thanks to the event system.
@@ -181,10 +178,14 @@ consumer = Consumer()
 def writer() -> SummaryWriter:
     raise NotImplementedError("We don't want to handle the writer here!!!, will be injected later in the application layer") 
 
+
 @consumer.handler
 def deliver_metrics(event: Trained | Validated, writer: SummaryWriter = Depends(writer)):
     for metric in event.metrics:
         writer.add_scalar(f'{event.model.id}/{metric.name}/{event.model.phase}', metric.value, event.model.epoch)
+
+    # When you pass an Union of types as annotation, the consumer will register the handler for all types in the Union
+    # automatically. This is a good way to handle events that share the same logic.
 ```
 
 Since several consumers can consume from the same producer, you can plug any service you want to the training system. The service don't need to know who is consuming the events it produces. This is known a dependency inversion principle. You now build a whole system around this simple training service. All kind of logic can be implemented from here, from weights storage to early stopping. Let's create an early stopping service:
@@ -230,10 +231,11 @@ from torch import Tensor
 from torch.nn import Module
 from torch.nn import Flatten
 from torch.optim import Optimizer
+from torchsystem.domain import Event
 from torchsystem.domain import Aggregate
 from torchsystem.registry import gethash
 
-class Classifier(Aggregate):
+class Classifier(Aggregate): 
     def __init__(self, nn: Module, criterion: Module, optimizer: Optimizer):
         super().__init__()
         self.epoch = 0
@@ -266,10 +268,43 @@ class Classifier(Aggregate):
         return argmax(output, dim=1), self.loss(output, target)
     
     def onepoch(self):
+        # Hook that will be called after the epoch attribute is updated. The aggregate handle this
+        # automatically for epochs and phase.
         self.events.commit() # This will raise the StopIteration exception when the epoch is over
 ```
 
-As you see, aggregates is just a simple facade to encapsulate things you already knew. This one can be built and compiled in a simple way. However you will find yourself in situations where you need to pick a torch backend, create and clean multiprocessing resources, pickle modules, etc., and you will need this feature. So I will implement a compilation pipeline, just to show you how to use the compiler:
+As you see, aggregates is just a simple facade to encapsulate things you already knew. Aggregates have also the capability to handle domain events or domain exceptions. 
+
+```python
+class SomeDomainEvent(Event):...
+# A simple class can represent a domain event.
+
+class DomainException(Exception):...
+# Exceptions are also supported as domain events.
+# If no handler is found, they will be raised when the event queue is commited.
+
+class DomainEventWithData(Event):
+    # They also can carry data
+    def __init__(self, data: Any):
+        self.data = data
+
+class DomainEventWithIgnoredData(Event):
+    def __init__(self, data: Any):
+        self.data = data
+
+class Classifier(Aggregate): 
+    def __init__(self, nn: Module, criterion: Module, optimizer: Optimizer):
+        super().__init__()        
+        self.events.handlers[SomeDomainEvent] = lambda: print('SomeDomainEvent handled!')
+        self.events.handlers[DomainException] = lambda: print('DomainException handled!')
+        self.events.handlers[DomainEventWithData] = lambda event: print(f'DomainEventWithData handled with data: {event.data}')
+        self.events.handlers[DomainEventWithIgnoredData] = lambda: print(f'DomainEventWithIgnoredData handled')
+        # Usually you need to define the handlers outside the aggregate and pass them in the building process. But
+        # This is an example of how you can handle complex domain logic within the aggregate.
+        ...
+```
+
+The `Classifier` aggregate we just created can be built and compiled in a simple way. However you will find yourself in situations where you need to pick a torch backend, create and clean multiprocessing resources, pickle modules, etc., and you will need a tool to build it an compile it. I will implement a compilation pipeline, just to show you how to use the compiler:
 
 ```python
 # src/services/compilation.py

@@ -27,6 +27,7 @@ def on_model_iterated(event: ModelTrained | ModelEvaluated, db = Depends(getdb))
 db = []
 
 def test_consumer():
+    db.clear()
     consumer.dependency_overrides[getdb] = lambda: db
 
     producer = Producer()
@@ -36,3 +37,17 @@ def test_consumer():
     producer.dispatch(ModelEvaluated([4, 5, 6]))
 
     assert db == [[1, 2, 3], [4, 5, 6]]
+
+
+producer = Producer()
+
+@producer.event
+class ModelIterated:
+    metrics: Sequence
+
+def test_produce():
+    db.clear()
+    consumer.dependency_overrides[getdb] = lambda: db
+    producer.register(consumer)
+
+    producer.produce('model-iterated', [1, 2, 3])

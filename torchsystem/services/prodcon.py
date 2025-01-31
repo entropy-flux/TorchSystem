@@ -2,7 +2,9 @@ from re import sub
 from typing import Callable
 from typing import Any
 from typing import Union
+from typing import overload
 from inspect import signature
+from dataclasses import dataclass
 
 from torchsystem.depends import inject, Provider
 from torchsystem.depends import Depends as Depends
@@ -165,15 +167,13 @@ class Producer:
         from torchsystem.services import Consumer
         from torchsystem.services import Producer
 
-        class Event:...
-
         @dataclass
-        class ModelTrained(Event):
+        class ModelTrained:
             model: Callable
             metrics: Sequence
 
         @dataclass
-        class ModelEvaluated(Event):
+        class ModelEvaluated:
             model: Callable
             metrics: Sequence
 
@@ -182,10 +182,25 @@ class Producer:
         producer = Producer()
         producer.register(consumer)
         producer.dispatch(ModelTrained(model, [{'name': 'loss', 'value': 0.1}, {'name': 'accuracy', 'value': 0.9}]))     
+
+        # Events can also be produced and dispatched by the produce method.
+
+        @producer.event
+        class ModelIterated:
+            model: Callable
+            metrics: Sequence
+
+        producer.produce('model-iterated', model, [{'name': 'loss', 'value': 0.1}, {'name': 'accuracy', 'value': 0.9}])
         ```
     """
-    def __init__(self):
+    def __init__(
+        self,
+        *,
+        generator: Callable[[str], str] = lambda name: sub(r'(?<!^)(?=[A-Z])', '-', name).lower()
+    ):
         self.consumers = list[Consumer]()
+        self.types = dict[str, str]()
+        self.generator = generator
 
     def register(self, *consumers: Consumer):
         """
@@ -205,3 +220,43 @@ class Producer:
         """
         for consumer in self.consumers:
             consumer.consume(message)
+
+    def event(self, cls: type):
+        """
+        Decorator for registering an event type. The event type is registered with the name of the class as the key.
+
+        Args:
+            cls (type): The event class to be registered.
+
+        Returns:
+            type: The event class.
+        """
+        key = self.generator(cls.__name__)
+        self.types[key] = dataclass(cls)
+        return dataclass(cls)
+    
+    @overload
+    def produce(self, event_type: str, *args, **kwargs):
+        ...
+
+    @overload
+    def produce(self, event_type: type, *args, **kwargs):
+        ...
+
+    def produce(self, event_type: str | type, *args, **kwargs):
+        """
+        Produces an event by instantiating the event class and dispatching it to all registered consumers.
+
+        Args:
+            event_type (str | type): The event type to produce.
+            *args: The event class arguments.
+            **kwargs: The event class keyword arguments.
+        """
+        if isinstance(event_type, str):
+            event_type = self.types.get(event_type, None)
+            if event_type is None:
+                raise ValueError(f'Event of type {event_type} is not registered.')
+            self.dispatch(event_type(*args, **kwargs))
+
+        elif isinstance(event_type, type):
+            self.dispatch(event_type(*args, **kwargs))
