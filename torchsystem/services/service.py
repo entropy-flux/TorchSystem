@@ -13,6 +13,17 @@ class Service:
     The `Service` serves as an entry point for the service layer and provides a simple way to
     build stateless logic for executing domain operations.
 
+    A SERVICE should be modeled with UBIQUITOUS LANGUAGE. This means that the names of handler
+    functions should reflect the domain operations that the service is responsible for. Keep
+    this in mind when naming the functions that will be registered as handlers, since the `Service`
+    class provides a method to call the handlers by their registered name. This is useful for example 
+    when building REST APIs with Command Query Segregation (CQS) and you want to invoke a handler based
+    on the action they perfom (aka. The handler's name).
+
+    A naming generator can be provided to the `Service` constructor in order to customize the function names
+    to the ubiquitous language of the domain. The default generator transforms the function name from snake_case
+    to kebab-case.
+
     Methods:
         register:
             Registers a handler for a specific command or query type. Handles nested or generic annotations.
@@ -46,8 +57,8 @@ class Service:
         self, 
         name: str = None,
         *,
-        generator: Callable[[str], str] = lambda name: sub(r'_', '-', name),
-        provider: Provider = None
+        provider: Provider = None,
+        generator: Callable[[str], str] = lambda name: sub(r'_', '-', name)
     ):
         self.name = name
         self.handlers = dict[str, Callable[..., Any]]()
@@ -57,7 +68,7 @@ class Service:
     @property
     def dependency_overrides(self) -> dict:
         """
-        Returns the dependency overrides for the service. This is useful for late binding,
+        An entry point for overriding the dependencies for the service. This is useful for late binding,
         testing and changing the behavior of the service in runtime.
 
         Returns:
@@ -110,16 +121,16 @@ class Service:
             service = Service()
 
             @service.handler
-            def train(model: Model, data: DataLoader, device: str = Depends(device)):
+            def train_model(model: Model, data: DataLoader, device: str = Depends(device)):
                 # Your training logic here
                 ...
 
             model = Model()
             data = Data()
 
-            service.handle('train', model, data) # train(model, data) will also work
-                                                 # but this is usefull when building REST APIs
-                                                 # with Command Query Segregation (CQS)
+            service.handle('train-model', model, data) # train(model, data) will also work
+                                                       # but this is usefull when building REST APIs
+                                                       # with Command Query Segregation (CQS)
             ```
         """
         handler = self.handlers.get(action, None)

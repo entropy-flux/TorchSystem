@@ -27,6 +27,7 @@ nav:
   - Home: index.md
   - Domain: domain.md
   - Compiler: compiler.md
+  - Registry: registry.md
   - Services: services.md
   - Publisher/Subscriber: pubsub.md
   - Producer/Consumer: prodcon.md

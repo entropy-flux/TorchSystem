@@ -8,15 +8,14 @@ from torchsystem.depends import Provider
 
 class Compiler[T]:
     """
-    AGGREGATES usually have a complex initialization and are built from multiple components. Sometimes
-    database queries, API calls, or other external resources are required to build it. Each one with it's
-    own lifecycle tath may require some initialization method or cleanup after they are no longer needed.
+    Sometimes AGGREGATES may require complex initialization and be built from multiple sources, like database
+    queries, API calls, or other external resources are required to build it. Each one with it's own lifecycle
+    that may require some initialization method or cleanup after they are no longer needed.
      
     In the context of neural networks, AGGREGATES not only should be built but also compiled. Compilation
     is the process of converting a high-level neural network model into a low-level representation that can
     be executed on a specific hardware platform, and can be seen as an integral part of the process of building 
-    the AGGREGATE. This process get even more complex when performing distributed training and
-    a dedicated pipeline is required to build and compile AGGREGATES.
+    the AGGREGATE. This process get even more complex when performing distributed training. 
 
     A `Compiler` is a class that compiles a pipeline of functions to be executed in sequence in order
     to build an a low-level representation of the AGGREGATE. Since some compilation steps sometimes
