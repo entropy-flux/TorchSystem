@@ -9,10 +9,10 @@
       
       
       
-        <link rel="prev" href="../compiler/">
+        <link rel="prev" href="../domain/">
       
       
-        <link rel="next" href="../services/">
+        <link rel="next" href="../depends/">
       
       
       <link rel="icon" href="../assets/images/favicon.png">
@@ -193,26 +193,6 @@
       
   
   
-  
-  
-    <li class="md-nav__item">
-      <a href="../compiler/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Compiler
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
     
   
   
@@ -279,6 +259,46 @@
   
 </nav>
       
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../depends/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Dependency Injection
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../compiler/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Compiler
+  </span>
+  
+
+      </a>
     </li>
   
 
@@ -453,7 +473,7 @@ documentation can be found here: <a href="https://mr-mapache.github.io/ml-regist
 <span class="nb">print</span><span class="p">(</span><span class="n">getarguments</span><span class="p">(</span><span class="n">optimizer</span><span class="p">))</span> <span class="c1"># {&#39;lr&#39;: 0.001}</span>
 </code></pre></div></p>
 <h3 id="retrieve-your-models-from-the-registry">Retrieve your models from the registry.</h3>
-<p>You can also register classes within a <code>Registry</code> object. This will allow you to retrieve the class by it's name. This is
+<p>You can also register classes in a <code>Registry</code> object. This will allow you to retrieve the classes by their name. This is
 useful for example when you want to load a model from a configuration file, or you want to expose them through a REST API.</p>
 <p>Example:
 <div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">torchsystem.registry</span><span class="w"> </span><span class="kn">import</span> <span class="n">Registry</span>

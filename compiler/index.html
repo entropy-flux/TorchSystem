@@ -9,10 +9,10 @@
       
       
       
-        <link rel="prev" href="../domain/">
+        <link rel="prev" href="../depends/">
       
       
-        <link rel="next" href="../registry/">
+        <link rel="next" href="../services/">
       
       
       <link rel="icon" href="../assets/images/favicon.png">
@@ -193,6 +193,46 @@
       
   
   
+  
+  
+    <li class="md-nav__item">
+      <a href="../registry/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Registry
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../depends/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Dependency Injection
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
     
   
   
@@ -310,26 +350,6 @@
   
 </nav>
       
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../registry/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Registry
-  </span>
-  
-
-      </a>
     </li>
   
 
@@ -624,7 +644,7 @@ in the pipeline.</p>
 <span class="kn">from</span><span class="w"> </span><span class="nn">torchsystem.compiler</span><span class="w"> </span><span class="kn">import</span> <span class="n">Depends</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">torchsystem.compiler</span><span class="w"> </span><span class="kn">import</span> <span class="nb">compile</span>
 
-<span class="n">compiler</span> <span class="o">=</span> <span class="n">Compiler</span><span class="p">[</span><span class="n">Classifier</span><span class="p">]()</span>
+<span class="n">compiler</span> <span class="o">=</span> <span class="n">Compiler</span><span class="p">()</span>
 <span class="n">logger</span> <span class="o">=</span> <span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
 <span class="k">def</span><span class="w"> </span><span class="nf">device</span><span class="p">():</span>
