@@ -325,7 +325,7 @@ from trainsys.ports.models import Models
 from src.classifier import Classifier
 
 logger = getLogger(__name__)
-compiler = Compiler[Classifier]()
+compiler = Compiler()
 
 def device() -> str:...
 

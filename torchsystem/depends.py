@@ -1,3 +1,6 @@
+### TODO: More work needed to be done on this file.
+### While this is workings, this should be refactored with better code before it grows too much.
+
 from typing import Callable, Generator
 from inspect import signature
 from contextlib import ExitStack, contextmanager
@@ -39,6 +42,17 @@ def _managed_dependency(generator: Generator):
         next(generator, None)  # Ensure proper cleanup
 
 def Depends(callable: Callable):
+    """
+    The Depends function is used to define a dependency for a function. The callable argument is
+    a function that will be called to provide the dependency. The function can return a value or a generator in
+    order to clean up resources after the function has been called.
+
+    Args:
+        callable (Callable): The function that will be called to provide the dependency.
+
+    Returns: 
+        Dependency: A Dependency object that can be used as a default value for a function parameter
+    """
     return Dependency(callable)
 
 def inject(provider: Provider):

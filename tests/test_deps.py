@@ -30,17 +30,17 @@ def test_generator_dependency():
     openmock.assert_called_once()
     closemock.assert_called_once()
 
-otheropenmock = Mock()
-otherclosemock = Mock()
+overrideopenmock = Mock()
+overrideclosemock = Mock()
 
 def override_normal_dependency_with_generator():
-    otheropenmock()
+    overrideopenmock()
     yield 43
-    otherclosemock()
+    overrideclosemock()
 
 
 def test_dependency_override():
     provider.dependency_overrides[normal_dependency] = override_normal_dependency_with_generator
     assert normal_function() == 43
-    otheropenmock.assert_called_once()
-    otherclosemock.assert_called_once()
+    overrideopenmock.assert_called_once()
+    overrideclosemock.assert_called_once()

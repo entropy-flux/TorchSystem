@@ -45,7 +45,7 @@ class Compiler[T]:
         from torchsystem.compiler import Depends
         from torchsystem.compiler import compile
 
-        compiler = Compiler[Classifier]()
+        compiler = Compiler()
         logger = getLogger(__name__)
 
         def device():

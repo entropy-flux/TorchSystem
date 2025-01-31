@@ -56,7 +56,7 @@ print(getarguments(optimizer)) # {'lr': 0.001}
 
 ### Retrieve your models from the registry.
 
-You can also register classes within a `Registry` object. This will allow you to retrieve the class by it's name. This is
+You can also register classes in a `Registry` object. This will allow you to retrieve the classes by their name. This is
 useful for example when you want to load a model from a configuration file, or you want to expose them through a REST API.
 
 Example:

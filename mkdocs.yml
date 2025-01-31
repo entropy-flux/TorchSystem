@@ -26,8 +26,9 @@ plugins:
 nav:
   - Home: index.md
   - Domain: domain.md
-  - Compiler: compiler.md
   - Registry: registry.md
+  - Dependency Injection: depends.md
+  - Compiler: compiler.md
   - Services: services.md
   - Publisher/Subscriber: pubsub.md
   - Producer/Consumer: prodcon.md
