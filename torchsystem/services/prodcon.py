@@ -221,7 +221,7 @@ class Producer:
         for consumer in self.consumers:
             consumer.consume(message)
 
-    def event(self, cls: type):
+    def event(self, cls: type) -> type:
         """
         Decorator for registering an event type. The event type is registered with the name of the class as the key.
 

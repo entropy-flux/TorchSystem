@@ -2,6 +2,7 @@
 
 This framework will help you to create powerful and scalable systems using the PyTorch library. It is designed under the principles of domain driven design (DDD) and includes built-in message patterns and a robust dependency injection system. It enables the creation of stateless, modular service layers and robust domain models. This design facilitates better separation of concerns, testability, and scalability, making it ideal for complex IA training systems. You can find the full documentation here: [mr-mapache.github.io/torch-system/](https://mr-mapache.github.io/torch-system/)
 
+
 ## Table of contents:
 
 - [Introduction](#introduction)
@@ -94,8 +95,7 @@ Notice that we didn't define any implementation. Of course you can just implemen
 
 ```python
 # src/services/training.py
-from typing import Sequence
-from dataclasses import dataclass
+from typing import Sequence 
 
 from torch import inference_mode
 from torchsystem import Depends
@@ -141,6 +141,8 @@ def validate(model: Model, loader: Loader, metrics: Metrics, device: str = Depen
         sequence = metrics.compute()
         producer.produce('validated', model, loader, sequence)
 
+# Now, define the events that were produced.
+
 @producer.event
 class Iterated:
     model: Model
@@ -157,6 +159,10 @@ class Validated:
     model: Model
     loader: Loader
     metrics: Sequence[Metric]
+
+# The events are registered in the producer
+# by their name (ubiquitous language). The producer will take care of the name resolution using
+# a name generator, wich is CamelCase to kebab-case by default.
 ```
 
 And that's it! A simple training system. Notice that it is completely decoupled from the implementation of the domain. It's only task is to orchestrate the training process and produce events from it. It doesn't provide any storage logic or data manipulation, only stateless training logic. Now you can now build a whole data storage system, logging or any other service you need around this simple service, thanks to the event system.
