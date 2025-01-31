@@ -267,9 +267,9 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#torchsystem.registry" class="md-nav__link">
+  <a href="#retrieve-your-models-from-the-registry" class="md-nav__link">
     <span class="md-ellipsis">
-      registry
+      Retrieve your models from the registry.
     </span>
   </a>
   
@@ -377,9 +377,9 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#torchsystem.registry" class="md-nav__link">
+  <a href="#retrieve-your-models-from-the-registry" class="md-nav__link">
     <span class="md-ellipsis">
-      registry
+      Retrieve your models from the registry.
     </span>
   </a>
   
@@ -403,16 +403,7 @@
   <h1>Registry</h1>
 
 <h3 id="treat-your-models-as-entities">Treat your models as Entities.</h3>
-
-
-<div class="doc doc-object doc-module">
-
-
-
-<a id="torchsystem.registry"></a>
-    <div class="doc doc-contents first">
-
-        <p>An ENTITY is an object defined by it's identity, and it's mutable nature distinguish them from value objects. In the
+<p>An ENTITY is an object defined by it's identity, and it's mutable nature distinguish them from value objects. In the
 context of machine learning, neural networks are stateful objects that can mutate their internal state during training.
 This means that they must be treated as entities, and in order to identifying them, is necessary to identify their invariants.</p>
 <p>Under a local context, we can state that, "neural networks of the same type and with the same hyperparameters are
@@ -461,31 +452,27 @@ documentation can be found here: <a href="https://mr-mapache.github.io/ml-regist
 <span class="nb">print</span><span class="p">(</span><span class="n">getarguments</span><span class="p">(</span><span class="n">criterion</span><span class="p">))</span> <span class="c1"># {}</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">getarguments</span><span class="p">(</span><span class="n">optimizer</span><span class="p">))</span> <span class="c1"># {&#39;lr&#39;: 0.001}</span>
 </code></pre></div></p>
+<h3 id="retrieve-your-models-from-the-registry">Retrieve your models from the registry.</h3>
+<p>You can also register classes within a <code>Registry</code> object. This will allow you to retrieve the class by it's name. This is
+useful for example when you want to load a model from a configuration file, or you want to expose them through a REST API.</p>
+<p>Example:
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">torchsystem.registry</span><span class="w"> </span><span class="kn">import</span> <span class="n">Registry</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">torchsystem.registry</span><span class="w"> </span><span class="kn">import</span> <span class="n">getclass</span>
 
+<span class="n">registry</span> <span class="o">=</span> <span class="n">Registry</span><span class="p">()</span>
+<span class="n">registry</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">MLP</span><span class="p">)</span>
+<span class="n">registry</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">GLU</span><span class="p">)</span>
 
+<span class="n">model</span> <span class="o">=</span> <span class="n">registry</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;MLP&#39;</span><span class="p">,</span> <span class="mi">784</span><span class="p">,</span> <span class="mi">256</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="n">dropout</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="s1">&#39;ReLU&#39;</span><span class="p">)</span>
 
+<span class="n">avaliables</span> <span class="o">=</span> <span class="n">registry</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">avaliables</span><span class="p">)</span> <span class="c1"># [&#39;MLP&#39;, &#39;GLU&#39;]</span>
+<span class="k">for</span> <span class="n">model</span> <span class="ow">in</span> <span class="n">avaliables</span><span class="p">:</span> 
+    <span class="nb">print</span><span class="p">(</span><span class="n">registry</span><span class="o">.</span><span class="n">signature</span><span class="p">(</span><span class="n">model</span><span class="p">))</span>
 
-
-
-
-
-  <div class="doc doc-children">
-
-
-
-
-
-
-
-
-
-
-
-  </div>
-
-    </div>
-
-</div>
+<span class="c1"># {&#39;input_size&#39;: int, &#39;hidden_size&#39;: int, &#39;output_size&#39;: int, &#39;dropout&#39;: float, &#39;activation&#39;: &#39;Module&#39;}</span>
+<span class="c1"># {&#39;input_size&#39;: int, &#39;hidden_size&#39;: int, &#39;output_size&#39;: int, &#39;dropout&#39;: float, &#39;activation&#39;: &#39;Module&#39;}</span>
+</code></pre></div></p>
 
 
 
