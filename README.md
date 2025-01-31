@@ -13,15 +13,15 @@ This framework will help you to create powerful and scalable systems using the P
 
 ## Introduction
 
-In domain-driven design, an aggregate is a cluster of associated objects that we treat as a unit for the purpose of data changes. It acts as a boundary around its constituent objects, encapsulating their behavior and ensuring that all changes to its state occur through well-defined entry points.
+In domain driven design, an aggregate is a cluster of associated objects that we treat as a unit for the purpose of data changes. It acts as a boundary around its constituent objects, encapsulating their behavior and ensuring that all changes to its state occur through well-defined entry points.
 
-In the context of deep learning, a model not only consists of a neural network but also a set of associated objects that are necessary for the tasks it performs, such as loss functions, tokenizers, etc. This defines an aggregate.
+In the context of deep learning, a model not only consists of a neural network but also a set of associated objects that are necessary for the tasks it performs, such as loss functions, tokenizers, classification heads etc. This cluster of objects defines an aggregate.
 
 While aggregates are in charge of data, in order to perform actions, we need to define services. Services are stateless operations that fulfill domain-specific tasks. For example, when training a neural network, the model doesn't own the data on which it is trained or how the training is performed. The training process is a stateless operation that resides outside the model and should be defined as a service.
 
 Services may produce data, such as events, metrics, or logs, that are not their responsibility to handle. This introduces the need for a messaging system that allows services to communicate with each other.
 
-With all this in mind, the need for a well-defined framework that defines aggregates and handles service interactions becomes evident. While it is up to the developer to define his domain, this framework provides a set of tools to facilitate it's implementation.
+With all this in mind, the need for a well-defined framework that defines aggregates and handles service interactions becomes evident. While it is up to the developer to define his domain, this framework provides a set of tools to facilitate their implementation.
 
 ## Instalation
 
@@ -52,7 +52,7 @@ pip install torchsystem
 
 ## Example
 
-Let's build a simple training system using the framework. First, we can define our domain with interfaces:
+Let's build a simple training system using the framework. First, we can define our domain with protocols, while this is not strictly necessary it's a good practice to define the interfaces first.
 
 ```python 
 # src/domain.py
@@ -165,7 +165,7 @@ class Validated:
 # a name generator, wich is CamelCase to kebab-case by default.
 ```
 
-And that's it! A simple training system. Notice that it is completely decoupled from the implementation of the domain. It's only task is to orchestrate the training process and produce events from it. It doesn't provide any storage logic or data manipulation, only stateless training logic. Now you can now build a whole data storage system, logging or any other service you need around this simple service, thanks to the event system.
+And that's it! A simple training system. Notice that it is completely decoupled from the implementation of the domain. It's only task is to orchestrate the training process and produce events from it. It doesn't provide any storage logic or data manipulation, only stateless training logic. Now you can now build a whole data storage system, logging or any other service you need around this simple service.
 
 Let's create a simple tensorboard consumer for this service:
 
@@ -194,7 +194,7 @@ def deliver_metrics(event: Trained | Validated, writer: SummaryWriter = Depends(
     # automatically. This is a good way to handle events that share the same logic.
 ```
 
-Since several consumers can consume from the same producer, you can plug any service you want to the training system. The service don't need to know who is consuming the events it produces. This is known a dependency inversion principle. You now build a whole system around this simple training service. All kind of logic can be implemented from here, from weights storage to early stopping. Let's create an early stopping service:
+Since several consumers can consume from the same producer, you can plug any service you want to the training system. The service don't need to know who is consuming the events it produces. This is known a dependency inversion principle. You can now build a whole system around this simple training service. All kind of logic can be implemented from here, from weights storage to early stopping. Let's create an early stopping service:
 
 ```python
 # src/services/earlystopping.py
@@ -227,11 +227,12 @@ def on_high_accuracy(metric: Metric):
         raise StopIteration # Exceptions are a good way to propagate information backwards in the system.
 ```
 
-This is a simple early stopping service. It listens to the metrics produced by the training service and raises a StopIteration exception when the loss is low enough or the accuracy is high enough. This exception is enqueued in the model events and can be raised again when needed, for example within the `onepoch` hook in the aggregate. A `Publisher` could also be used to send the messages to the subscribers but it wasn't necessary in this case.
+This is a simple early stopping service. It listens to the metrics produced by the training service and raises a StopIteration exception when the loss is low enough or the accuracy is high. The exception is enqueued in the model events and can be raised again when needed, for example in an `onepoch` hook in the aggregate. A `Publisher` could also be used to send the messages to the subscribers but it wasn't necessary in this case.
 
 Now we are going to implement a simple classifier aggregate in order to train a neural network for image classification tasks.
 
 ```python
+# src/classifier.py
 from torch import argmax
 from torch import Tensor 
 from torch.nn import Module
@@ -310,7 +311,9 @@ class Classifier(Aggregate):
         ...
 ```
 
-The `Classifier` aggregate we just created can be built and compiled in a simple way. However you will find yourself in situations where you need to pick a torch backend, create and clean multiprocessing resources, pickle modules, etc., and you will need a tool to build it an compile it. I will implement a compilation pipeline, just to show you how to use the compiler:
+The `Classifier` aggregate we just created can be built and compiled in a simple way. However you will find yourself in situations where you need to pick a torch backend, create and clean multiprocessing resources, pickle modules, etc., and you will need a tool to build the aggregate an compile it. 
+
+I will implement a compilation pipeline, just to show you how to use the compiler:
 
 ```python
 # src/services/compilation.py
@@ -319,11 +322,11 @@ from torch.nn import Module
 from torch.optim import Optimizer
 from torchsystem import Depends
 from torchsystem.compiler import compile
-from torchsystem.compiler import Compiler
+from torchsystem.compiler import Compiler 
 from src.classifier import Classifier
 
 logger = getLogger(__name__)
-compiler = Compiler()
+compiler = Compiler[Classifier]()
 
 def device() -> str:...
 
@@ -347,7 +350,7 @@ def compile_classifier(classifier: Classifier):
 
 @compiler.step
 def get_current_epoch(classifier: Classifier, epoch: int = Depends(epoch)):
-    # Implement this with some database query or api call. 
+    # Implement this with some database query or api call using the classifier.id
     classifier.epoch = epoch
     return classifier
 ```
@@ -396,7 +399,7 @@ training.service.handle('iterate', classifier, loaders, metrics)
 ...
 ```
 
-This is a simple example of how to build a training system using the framework. Since services can be called by their name, you can easily write a REST API with CQS or a CLI interfaces for your training system. The possibilities are endless. 
+This is a simple example of how to build a training system using the framework. Since services can be called by their name, you can easily write a REST API with CQS (Command Query Segregation) or a CLI interfaces for your training system. The possibilities are endless. 
 
 ## License
 
