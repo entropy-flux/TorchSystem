@@ -113,15 +113,13 @@ producer = Producer()
 @service.handler
 def iterate(model: Model, loaders: Sequence[tuple[str, Loader]], metrics: Metrics):
     for phase, loader in loaders:
-        train(model, loader, metrics) if phase == 'train' else validate(model, loader, metrics)
-    train(model, loader, metrics) if phase == 'train' else validate(model, loader, metrics)
+        train(model, loader, metrics) if phase == 'train' else validate(model, loader, metrics) 
     producer.dispatch(Iterated(model, loaders))
 
 @event
 class Iterated:
     model: Model
-    loaders: Sequence[tuple[str, Loader]] # We put this on events because you may want to store info about the
-                                          # data you used during training.
+    loaders: Sequence[tuple[str, Loader]]  
 
 def device() -> str:
     raise NotImplementedError("Override this dependency with a concrete implementation")
@@ -134,7 +132,7 @@ def train(model: Model, loader: Loader, metrics: Metrics, device: str = Depends(
         prediction, loss = model.fit(input, target)
         metrics.update(batch, loss, prediction, target)
     sequence = metrics.compute()
-    producer.dispatch(Trained(model, loader, metrics))
+    producer.dispatch(Trained(model, metrics))
 
 @service.handler
 def validate(model: Model, loader: Loader, metrics: Metrics, device: str = Depends(device)):
@@ -145,22 +143,20 @@ def validate(model: Model, loader: Loader, metrics: Metrics, device: str = Depen
             prediction, loss = model.evaluate(input, target)
             metrics.update(batch, loss, prediction, target)
         sequence = metrics.compute()
-    producer.dispatch(Trained(model, loader, metrics))
+    producer.dispatch(Validated(model, metrics))
 
 @event
 class Trained:
     model: Model
-    loader: Loader
     metrics: Sequence[Metric]
 
 @event
 class Validated:
-    model: Model
-    loader: Loader
+    model: Model 
     metrics: Sequence[Metric]
 ```
 
-And that's it! A simple training system. Notice that it is completely decoupled from the implementation of the domain. It's only task is to orchestrate the training process and produce events from it. It doesn't provide any storage logic or data manipulation, only stateless training logic. Now you can now build a whole data storage system, logging or any other service you need around this simple service.
+And that's it! A simple training system. Notice that it is completely decoupled from the implementation of the domain. It's only task is to orchestrate the training process and produce events from it. It doesn't provide any storage logic or data manipulation, only stateless training logic. Now you can now build a whole data storage system, logging or any other service you need around this simple service. For example, you can store info about the data you used to train the model consuming the `loaders` field of the `Iterated` event, using tools from the [registry](https://mr-mapache.github.io/torch-system/registry/) module.
 
 Let's create a simple tensorboard consumer for this service:
 
