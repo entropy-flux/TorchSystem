@@ -18,6 +18,7 @@ class Event:
     optionally subclassed to write self-documented code when creating custom events.
     """
 
+type PHASE = Literal['train', 'evaluation'] | str
 type EVENT = Event | type[Event] | Exception | type[Exception]
 type HANDLERS = Callable | Sequence[Callable]
 
@@ -170,7 +171,7 @@ class Aggregate(Module, ABC):
 
     Attributes:
         id (Any): The id of the AGGREGATE ROOT. It should be unique within the AGGREGATE boundary.
-        phase (Literal['train', 'evaluation']): The phase of the AGGREGATE.
+        phase (str): The phase of the AGGREGATE.
         events (Events): The domain events of the AGGREGATE.
 
     Methods:
@@ -258,7 +259,7 @@ class Aggregate(Module, ABC):
         return 'train' if self.training else 'evaluation'
     
     @phase.setter
-    def phase(self, value: str):
+    def phase(self, value: PHASE):
         """
         Set the phase of the AGGREGATE. When the phase changes, the onphase hook method is called.
         The phase will be set to 'train' if the value is 'train', otherwise it will be set to 'evaluation'.

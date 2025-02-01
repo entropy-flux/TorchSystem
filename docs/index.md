@@ -60,6 +60,7 @@ from typing import Protocol
 
 from torch import Tensor
 from torch.nn import Module
+from torch.optim import Optimizer
 from torchsystem import Events
 
 class Model(Protocol):
@@ -69,7 +70,7 @@ class Model(Protocol):
     events: Events 
     nn: Module
     criterion: Module
-    optimizer: Module
+    optimizer: Optimizer
     
     def fit(self, *args, **kwargs) -> Any:...
 
@@ -114,12 +115,11 @@ producer = Producer()
 def iterate(model: Model, loaders: Sequence[tuple[str, Loader]], metrics: Metrics):
     for phase, loader in loaders:
         train(model, loader, metrics) if phase == 'train' else validate(model, loader, metrics) 
-    producer.dispatch(Iterated(model, loaders))
+    producer.dispatch(Iterated(model))
 
 @event
 class Iterated:
     model: Model
-    loaders: Sequence[tuple[str, Loader]]  
 
 def device() -> str:
     raise NotImplementedError("Override this dependency with a concrete implementation")
@@ -132,7 +132,7 @@ def train(model: Model, loader: Loader, metrics: Metrics, device: str = Depends(
         prediction, loss = model.fit(input, target)
         metrics.update(batch, loss, prediction, target)
     sequence = metrics.compute()
-    producer.dispatch(Trained(model, metrics))
+    producer.dispatch(Trained(model, loader, metrics))
 
 @service.handler
 def validate(model: Model, loader: Loader, metrics: Metrics, device: str = Depends(device)):
@@ -143,16 +143,18 @@ def validate(model: Model, loader: Loader, metrics: Metrics, device: str = Depen
             prediction, loss = model.evaluate(input, target)
             metrics.update(batch, loss, prediction, target)
         sequence = metrics.compute()
-    producer.dispatch(Validated(model, metrics))
+    producer.dispatch(Validated(model, loader, metrics))
 
 @event
 class Trained:
     model: Model
+    loader: Loader
     metrics: Sequence[Metric]
 
 @event
 class Validated:
     model: Model 
+    loader: Loader
     metrics: Sequence[Metric]
 ```
 
@@ -218,7 +220,7 @@ def on_high_accuracy(metric: Metric):
         raise StopIteration # Exceptions are a good way to propagate information backwards in the system.
 ```
 
-This is a simple early stopping service. It listens to the metrics produced by the training service and raises a StopIteration exception when the loss is low enough or the accuracy is high. The exception is enqueued in the model events and can be raised again when needed, for example in a `onepoch` hook in the aggregate. A `Publisher` could also be used to send the messages to the subscribers, but it wasn't necessary in this case.
+This is a simple early stopping service. It listens to the metrics produced by the training service and raises a `StopIteration` exception when the loss is low enough or the accuracy is high. The exception is enqueued in the model events and can be raised again when needed, for example in a `onepoch` hook in the aggregate. A `Publisher` could also be used to send the messages to the subscribers, but it wasn't necessary in this case.
 
 Now we are going to implement a simple classifier aggregate in order to train a neural network for image classification tasks.
 
