@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "torchsystem"
-version = "1.2.2"
+version = "1.3.0"
 description = "A framework for creating message-driven IA systems with PyTorch"
 authors = ["mr-mapache <eric.m.cardozo@mi.unc.edu.ar>"]
 license = "MIT"
@@ -8,7 +8,7 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.12"
-mlregistry = "^1.2.1"
+mlregistry = "^1.2.3"
 
 
 [tool.poetry.group.tests.dependencies]

@@ -565,13 +565,13 @@ mkdocstrings = ">=0.26"
 
 [[package]]
 name = "mlregistry"
-version = "1.2.1"
+version = "1.2.3"
 description = "A simple package to track python objects."
 optional = false
 python-versions = "<4.0,>=3.12"
 files = [
-    {file = "mlregistry-1.2.1-py3-none-any.whl", hash = "sha256:9413a033556e42c785b9c47526acfad1502b8ee32d87c2f6f3e8c6bf64dc3b6f"},
-    {file = "mlregistry-1.2.1.tar.gz", hash = "sha256:2c30da9dd82a09b45357c9d16695d77878c35a9767e06145e10526d27a871e6f"},
+    {file = "mlregistry-1.2.3-py3-none-any.whl", hash = "sha256:50b23e56be682026585ec825acc571257cacd90aa23e5e972decbb6ec1f93d48"},
+    {file = "mlregistry-1.2.3.tar.gz", hash = "sha256:e9362c82bc639dc718cbd6ae973b81f060a603f8de4dfad76d14ed87f1e367df"},
 ]
 
 [[package]]
@@ -1578,4 +1578,4 @@ watchmedo = ["PyYAML (>=3.10)"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.12"
-content-hash = "41f2796f0aa69125277f9b13615200e6dd36baf9522b65040dbb9bdf44806f61"
+content-hash = "c1c887ee8d414eccf1cfe7076ba23429f1c809e04c3f8c3e7b6adda94363f1b9"
