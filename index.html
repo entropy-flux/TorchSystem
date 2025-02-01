@@ -218,9 +218,9 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#instalation" class="md-nav__link">
+  <a href="#installation" class="md-nav__link">
     <span class="md-ellipsis">
-      Instalation
+      Installation
     </span>
   </a>
   
@@ -446,9 +446,9 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#instalation" class="md-nav__link">
+  <a href="#installation" class="md-nav__link">
     <span class="md-ellipsis">
-      Instalation
+      Installation
     </span>
   </a>
   
@@ -502,7 +502,7 @@
 <ul>
 <li><a href="#introduction">Introduction</a></li>
 <li><a href="#features">Features</a></li>
-<li><a href="#instalation">Instalation</a></li>
+<li><a href="#instalation">Installation</a></li>
 <li><a href="#example">Example</a></li>
 <li><a href="#license">License</a></li>
 </ul>
@@ -512,7 +512,7 @@
 <p>While aggregates are in charge of data, in order to perform actions, we need to define services. Services are stateless operations that fulfill domain-specific tasks. For example, when training a neural network, the model doesn't own the data on which it is trained or how the training is performed. The training process is a stateless operation that resides outside the model and should be defined as a service.</p>
 <p>Services may produce data, such as events, metrics, or logs, that are not their responsibility to handle. This introduces the need for a messaging system that allows services to communicate with each other.</p>
 <p>With all this in mind, the need for a well-defined framework that defines aggregates and handles service interactions becomes evident. While it is up to the developer to define his domain, this framework provides a set of tools to facilitate their implementation.</p>
-<h2 id="instalation">Instalation</h2>
+<h2 id="installation">Installation</h2>
 <p>To install the framework, you can use pip:</p>
 <div class="highlight"><pre><span></span><code>pip<span class="w"> </span>install<span class="w"> </span>torchsystem
 </code></pre></div>
@@ -522,7 +522,7 @@
 <p><strong>Aggregates</strong>: Define the structure of your domain by grouping related entities and enforcing consistency within their boundaries. They encapsulate both data and behavior, ensuring that all modifications occur through controlled operations.</p>
 </li>
 <li>
-<p><strong>Domain Events</strong>:  Aggregates can produce and consume domain events, which signal meaningful changes in the system or trigger actions elsewhere. Exceptions are supported to be treated as domain events, allowing them to be enqueued and handled or rised as needed. This makes it trivial to implement features like early stopping (Just enqueue an exception and raise it when needed).</p>
+<p><strong>Domain Events</strong>: Aggregates can produce and consume domain events, which signal meaningful changes in the system or trigger actions elsewhere. Exceptions are supported to be treated as domain events, allowing them to be enqueued and handled or raised as needed. This makes it trivial to implement features like early stopping (Just enqueue an exception and raise it when needed).</p>
 </li>
 <li>
 <p><strong>Registry</strong>: The registry module allows you to treat your models as entities by providing a way to calculate locally unique hashes for them that can act as their identifier. This module also provides several other utilities to help you handle the data from your domain.</p>
@@ -557,7 +557,7 @@
     <span class="nb">id</span><span class="p">:</span> <span class="n">Any</span>
     <span class="n">phase</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">epoch</span><span class="p">:</span> <span class="nb">int</span>
-    <span class="n">events</span><span class="p">:</span> <span class="n">Events</span> <span class="c1"># You will find out why we need this later</span>
+    <span class="n">events</span><span class="p">:</span> <span class="n">Events</span> 
     <span class="n">nn</span><span class="p">:</span> <span class="n">Module</span>
     <span class="n">criterion</span><span class="p">:</span> <span class="n">Module</span>
     <span class="n">optimizer</span><span class="p">:</span> <span class="n">Module</span>
@@ -580,14 +580,15 @@
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">Tensor</span><span class="p">]]:</span><span class="o">...</span>
 </code></pre></div>
-<p>Notice that we didn't define any implementation. Of course you can just implement it right away, but let's define a training service first. Service handlers and events produced in the services should be modeled using an ubiquitous language. Under this idea, the framework provides a way to invoke services or produce events using their names. This is completly optional, like everything in the library, and you can invoke services handlers and dispatch events directly.</p>
+<p>Notice that we didn't define any implementation. Of course, you can just implement it right away, but let's define a training service first. Service handlers and events produced in the services should be modeled using ubiquitous language. Under this idea, the framework provides a way to invoke services or produce events using their names. This is completely optional, like everything in the library, and you can invoke services handlers and dispatch events directly.</p>
+<p>The training service can be implemented as follows:</p>
 <div class="highlight"><pre><span></span><code><span class="c1"># src/services/training.py</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Sequence</span> 
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">torch</span><span class="w"> </span><span class="kn">import</span> <span class="n">inference_mode</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">torchsystem</span><span class="w"> </span><span class="kn">import</span> <span class="n">Depends</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">torchsystem.services</span><span class="w"> </span><span class="kn">import</span> <span class="n">Service</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">torchsystem.services</span><span class="w"> </span><span class="kn">import</span> <span class="n">Producer</span> 
+<span class="kn">from</span><span class="w"> </span><span class="nn">torchsystem.services</span><span class="w"> </span><span class="kn">import</span> <span class="n">Producer</span><span class="p">,</span> <span class="n">event</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">src.domain</span><span class="w"> </span><span class="kn">import</span> <span class="n">Model</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">src.domain</span><span class="w"> </span><span class="kn">import</span> <span class="n">Loader</span>
@@ -599,13 +600,16 @@
 <span class="nd">@service</span><span class="o">.</span><span class="n">handler</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">iterate</span><span class="p">(</span><span class="n">model</span><span class="p">:</span> <span class="n">Model</span><span class="p">,</span> <span class="n">loaders</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Loader</span><span class="p">]],</span> <span class="n">metrics</span><span class="p">:</span> <span class="n">Metrics</span><span class="p">):</span>
     <span class="k">for</span> <span class="n">phase</span><span class="p">,</span> <span class="n">loader</span> <span class="ow">in</span> <span class="n">loaders</span><span class="p">:</span>
-        <span class="n">train</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">loader</span><span class="p">,</span> <span class="n">metrics</span><span class="p">)</span> <span class="k">if</span> <span class="n">phase</span> <span class="o">==</span> <span class="s1">&#39;train&#39;</span> <span class="k">else</span> <span class="n">validate</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">loader</span><span class="p">,</span> <span class="n">metrics</span><span class="p">)</span>
-    <span class="n">service</span><span class="o">.</span><span class="n">handle</span><span class="p">(</span><span class="s1">&#39;train&#39;</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">loader</span><span class="p">,</span> <span class="n">metrics</span><span class="p">)</span> <span class="k">if</span> <span class="n">phase</span> <span class="o">==</span> <span class="s1">&#39;train&#39;</span> <span class="k">else</span> <span class="n">service</span><span class="o">.</span><span class="n">handle</span><span class="p">(</span><span class="s1">&#39;validate&#39;</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">loader</span><span class="p">,</span> <span class="n">metrics</span><span class="p">)</span>
-    <span class="n">model</span><span class="o">.</span><span class="n">epoch</span> <span class="o">+=</span> <span class="mi">1</span>
-    <span class="n">producer</span><span class="o">.</span><span class="n">produce</span><span class="p">(</span><span class="s1">&#39;iterated&#39;</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">loaders</span><span class="p">)</span>
+        <span class="n">train</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">loader</span><span class="p">,</span> <span class="n">metrics</span><span class="p">)</span> <span class="k">if</span> <span class="n">phase</span> <span class="o">==</span> <span class="s1">&#39;train&#39;</span> <span class="k">else</span> <span class="n">validate</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">loader</span><span class="p">,</span> <span class="n">metrics</span><span class="p">)</span> 
+    <span class="n">producer</span><span class="o">.</span><span class="n">dispatch</span><span class="p">(</span><span class="n">Iterated</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">loaders</span><span class="p">))</span>
+
+<span class="nd">@event</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Iterated</span><span class="p">:</span>
+    <span class="n">model</span><span class="p">:</span> <span class="n">Model</span>
+    <span class="n">loaders</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Loader</span><span class="p">]]</span>  
 
 <span class="k">def</span><span class="w"> </span><span class="nf">device</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-    <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;We don&#39;t know the device yet!!!, will be injected later&quot;</span><span class="p">)</span>
+    <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Override this dependency with a concrete implementation&quot;</span><span class="p">)</span>
 
 <span class="nd">@service</span><span class="o">.</span><span class="n">handler</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">train</span><span class="p">(</span><span class="n">model</span><span class="p">:</span> <span class="n">Model</span><span class="p">,</span> <span class="n">loader</span><span class="p">:</span> <span class="n">Loader</span><span class="p">,</span> <span class="n">metrics</span><span class="p">:</span> <span class="n">Metrics</span><span class="p">,</span> <span class="n">device</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">device</span><span class="p">)):</span>
@@ -615,7 +619,7 @@
         <span class="n">prediction</span><span class="p">,</span> <span class="n">loss</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">target</span><span class="p">)</span>
         <span class="n">metrics</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">batch</span><span class="p">,</span> <span class="n">loss</span><span class="p">,</span> <span class="n">prediction</span><span class="p">,</span> <span class="n">target</span><span class="p">)</span>
     <span class="n">sequence</span> <span class="o">=</span> <span class="n">metrics</span><span class="o">.</span><span class="n">compute</span><span class="p">()</span>
-    <span class="n">producer</span><span class="o">.</span><span class="n">produce</span><span class="p">(</span><span class="s1">&#39;trained&#39;</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">loader</span><span class="p">,</span> <span class="n">sequence</span><span class="p">)</span>
+    <span class="n">producer</span><span class="o">.</span><span class="n">dispatch</span><span class="p">(</span><span class="n">Trained</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">metrics</span><span class="p">))</span>
 
 <span class="nd">@service</span><span class="o">.</span><span class="n">handler</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">validate</span><span class="p">(</span><span class="n">model</span><span class="p">:</span> <span class="n">Model</span><span class="p">,</span> <span class="n">loader</span><span class="p">:</span> <span class="n">Loader</span><span class="p">,</span> <span class="n">metrics</span><span class="p">:</span> <span class="n">Metrics</span><span class="p">,</span> <span class="n">device</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">device</span><span class="p">)):</span>
@@ -626,32 +630,19 @@
             <span class="n">prediction</span><span class="p">,</span> <span class="n">loss</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">target</span><span class="p">)</span>
             <span class="n">metrics</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">batch</span><span class="p">,</span> <span class="n">loss</span><span class="p">,</span> <span class="n">prediction</span><span class="p">,</span> <span class="n">target</span><span class="p">)</span>
         <span class="n">sequence</span> <span class="o">=</span> <span class="n">metrics</span><span class="o">.</span><span class="n">compute</span><span class="p">()</span>
-        <span class="n">producer</span><span class="o">.</span><span class="n">produce</span><span class="p">(</span><span class="s1">&#39;validated&#39;</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">loader</span><span class="p">,</span> <span class="n">sequence</span><span class="p">)</span>
+    <span class="n">producer</span><span class="o">.</span><span class="n">dispatch</span><span class="p">(</span><span class="n">Validated</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">metrics</span><span class="p">))</span>
 
-<span class="c1"># Now, define the events that were produced.</span>
-
-<span class="nd">@producer</span><span class="o">.</span><span class="n">event</span>
-<span class="k">class</span><span class="w"> </span><span class="nc">Iterated</span><span class="p">:</span>
-    <span class="n">model</span><span class="p">:</span> <span class="n">Model</span>
-    <span class="n">loaders</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Loader</span><span class="p">]]</span>
-
-<span class="nd">@producer</span><span class="o">.</span><span class="n">event</span>
+<span class="nd">@event</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">Trained</span><span class="p">:</span>
     <span class="n">model</span><span class="p">:</span> <span class="n">Model</span>
-    <span class="n">loader</span><span class="p">:</span> <span class="n">Loader</span>
     <span class="n">metrics</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Metric</span><span class="p">]</span>
 
-<span class="nd">@producer</span><span class="o">.</span><span class="n">event</span>
+<span class="nd">@event</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">Validated</span><span class="p">:</span>
-    <span class="n">model</span><span class="p">:</span> <span class="n">Model</span>
-    <span class="n">loader</span><span class="p">:</span> <span class="n">Loader</span>
+    <span class="n">model</span><span class="p">:</span> <span class="n">Model</span> 
     <span class="n">metrics</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Metric</span><span class="p">]</span>
-
-<span class="c1"># The events are registered in the producer</span>
-<span class="c1"># by their name (ubiquitous language). The producer will take care of the name resolution using</span>
-<span class="c1"># a name generator, wich is CamelCase to kebab-case by default.</span>
 </code></pre></div>
-<p>And that's it! A simple training system. Notice that it is completely decoupled from the implementation of the domain. It's only task is to orchestrate the training process and produce events from it. It doesn't provide any storage logic or data manipulation, only stateless training logic. Now you can now build a whole data storage system, logging or any other service you need around this simple service.</p>
+<p>And that's it! A simple training system. Notice that it is completely decoupled from the implementation of the domain. It's only task is to orchestrate the training process and produce events from it. It doesn't provide any storage logic or data manipulation, only stateless training logic. Now you can now build a whole data storage system, logging or any other service you need around this simple service. For example, you can store info about the data you used to train the model consuming the <code>loaders</code> field of the <code>Iterated</code> event, using tools from the <a href="https://mr-mapache.github.io/torch-system/registry/">registry</a> module.</p>
 <p>Let's create a simple tensorboard consumer for this service:</p>
 <div class="highlight"><pre><span></span><code><span class="c1"># src/services/tensorboard.py</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">torchsystem</span><span class="w"> </span><span class="kn">import</span> <span class="n">Depends</span>
@@ -706,7 +697,7 @@
     <span class="k">if</span> <span class="n">metric</span><span class="o">.</span><span class="n">value</span> <span class="o">&gt;</span> <span class="mf">0.995</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">StopIteration</span> <span class="c1"># Exceptions are a good way to propagate information backwards in the system.</span>
 </code></pre></div>
-<p>This is a simple early stopping service. It listens to the metrics produced by the training service and raises a StopIteration exception when the loss is low enough or the accuracy is high. The exception is enqueued in the model events and can be raised again when needed, for example in an <code>onepoch</code> hook in the aggregate. A <code>Publisher</code> could also be used to send the messages to the subscribers but it wasn't necessary in this case.</p>
+<p>This is a simple early stopping service. It listens to the metrics produced by the training service and raises a StopIteration exception when the loss is low enough or the accuracy is high. The exception is enqueued in the model events and can be raised again when needed, for example in a <code>onepoch</code> hook in the aggregate. A <code>Publisher</code> could also be used to send the messages to the subscribers, but it wasn't necessary in this case.</p>
 <p>Now we are going to implement a simple classifier aggregate in order to train a neural network for image classification tasks.</p>
 <div class="highlight"><pre><span></span><code><span class="c1"># src/classifier.py</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">torch</span><span class="w"> </span><span class="kn">import</span> <span class="n">argmax</span>
@@ -729,7 +720,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">id</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">gethash</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nn</span><span class="p">)</span> <span class="c1"># This will return an identifier for the root </span>
+        <span class="k">return</span> <span class="n">gethash</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nn</span><span class="p">)</span> <span class="c1"># This will return an identifier for the aggregate root </span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">input</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tensor</span><span class="p">:</span>
         <span class="nb">input</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">flatten</span><span class="p">(</span><span class="nb">input</span><span class="p">)</span>
@@ -783,7 +774,7 @@
         <span class="c1"># This is an example of how you can handle complex domain logic within the aggregate.</span>
         <span class="o">...</span>
 </code></pre></div>
-<p>The <code>Classifier</code> aggregate we just created can be built and compiled in a simple way. However you will find yourself in situations where you need to pick a torch backend, create and clean multiprocessing resources, pickle modules, etc., and you will need a tool to build the aggregate an compile it. </p>
+<p>The <code>Classifier</code> aggregate we just created can be built and compiled in a simple way. However, you will find yourself in situations where you need to pick a torch backend, create and clean multiprocessing resources, pickle modules, etc., and you will need a tool to build the aggregate and compile it. </p>
 <p>I will implement a compilation pipeline, just to show you how to use the compiler:</p>
 <div class="highlight"><pre><span></span><code><span class="c1"># src/services/compilation.py</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">logging</span><span class="w"> </span><span class="kn">import</span> <span class="n">getLogger</span>

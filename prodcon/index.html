@@ -406,24 +406,6 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#torchsystem.services.prodcon.Producer.event" class="md-nav__link">
-    <span class="md-ellipsis">
-      event
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#torchsystem.services.prodcon.Producer.produce" class="md-nav__link">
-    <span class="md-ellipsis">
-      produce
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
   <a href="#torchsystem.services.prodcon.Producer.register" class="md-nav__link">
     <span class="md-ellipsis">
       register
@@ -434,6 +416,15 @@
         
       </ul>
     </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#torchsystem.services.prodcon.event" class="md-nav__link">
+    <span class="md-ellipsis">
+      event
+    </span>
+  </a>
   
 </li>
       
@@ -578,24 +569,6 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#torchsystem.services.prodcon.Producer.event" class="md-nav__link">
-    <span class="md-ellipsis">
-      event
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#torchsystem.services.prodcon.Producer.produce" class="md-nav__link">
-    <span class="md-ellipsis">
-      produce
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
   <a href="#torchsystem.services.prodcon.Producer.register" class="md-nav__link">
     <span class="md-ellipsis">
       register
@@ -606,6 +579,15 @@
         
       </ul>
     </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#torchsystem.services.prodcon.event" class="md-nav__link">
+    <span class="md-ellipsis">
+      event
+    </span>
+  </a>
   
 </li>
       
@@ -717,18 +699,16 @@ be consumed by the consumer. The consumer maps it's handlers to keys generated b
 
 <details class="example" open>
   <summary>Example</summary>
-  <div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">torchsystem.services</span><span class="w"> </span><span class="kn">import</span> <span class="n">Consumer</span>
+  <div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">torchsystem.services</span><span class="w"> </span><span class="kn">import</span> <span class="n">Consumer</span><span class="p">,</span> <span class="n">event</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">torchsystem.services</span><span class="w"> </span><span class="kn">import</span> <span class="n">Publisher</span>
 
-<span class="k">class</span><span class="w"> </span><span class="nc">Event</span><span class="p">:</span><span class="o">...</span>
-
-<span class="nd">@dataclass</span>
-<span class="k">class</span><span class="w"> </span><span class="nc">ModelTrained</span><span class="p">(</span><span class="n">Event</span><span class="p">):</span>
+<span class="nd">@event</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">ModelTrained</span><span class="p">:</span>
     <span class="n">model</span><span class="p">:</span> <span class="n">Callable</span>
     <span class="n">metrics</span><span class="p">:</span> <span class="n">Sequence</span>
 
-<span class="nd">@dataclass</span>
-<span class="k">class</span><span class="w"> </span><span class="nc">ModelEvaluated</span><span class="p">(</span><span class="n">Event</span><span class="p">):</span>
+<span class="nd">@event</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">ModelEvaluated</span><span class="p">:</span>
     <span class="n">model</span><span class="p">:</span> <span class="n">Callable</span>
     <span class="n">metrics</span><span class="p">:</span> <span class="n">Sequence</span>
 
@@ -1080,32 +1060,22 @@ method to register consumers, and some delivery mechanism to deliver the events 
 <details class="example" open>
   <summary>Example</summary>
   <div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">torchsystem.services</span><span class="w"> </span><span class="kn">import</span> <span class="n">Consumer</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">torchsystem.services</span><span class="w"> </span><span class="kn">import</span> <span class="n">Producer</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">torchsystem.services</span><span class="w"> </span><span class="kn">import</span> <span class="n">Producer</span><span class="p">,</span> <span class="n">event</span>
 
-<span class="nd">@dataclass</span>
+<span class="nd">@event</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">ModelTrained</span><span class="p">:</span>
     <span class="n">model</span><span class="p">:</span> <span class="n">Callable</span>
     <span class="n">metrics</span><span class="p">:</span> <span class="n">Sequence</span>
 
-<span class="nd">@dataclass</span>
+<span class="nd">@event</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">ModelEvaluated</span><span class="p">:</span>
     <span class="n">model</span><span class="p">:</span> <span class="n">Callable</span>
     <span class="n">metrics</span><span class="p">:</span> <span class="n">Sequence</span>
-
 <span class="o">...</span>
 
 <span class="n">producer</span> <span class="o">=</span> <span class="n">Producer</span><span class="p">()</span>
 <span class="n">producer</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">consumer</span><span class="p">)</span>
 <span class="n">producer</span><span class="o">.</span><span class="n">dispatch</span><span class="p">(</span><span class="n">ModelTrained</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="p">[{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;loss&#39;</span><span class="p">,</span> <span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="mf">0.1</span><span class="p">},</span> <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;accuracy&#39;</span><span class="p">,</span> <span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="mf">0.9</span><span class="p">}]))</span>     
-
-<span class="c1"># Events can also be produced and dispatched by the produce method.</span>
-
-<span class="nd">@producer</span><span class="o">.</span><span class="n">event</span>
-<span class="k">class</span><span class="w"> </span><span class="nc">ModelIterated</span><span class="p">:</span>
-    <span class="n">model</span><span class="p">:</span> <span class="n">Callable</span>
-    <span class="n">metrics</span><span class="p">:</span> <span class="n">Sequence</span>
-
-<span class="n">producer</span><span class="o">.</span><span class="n">produce</span><span class="p">(</span><span class="s1">&#39;model-iterated&#39;</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="p">[{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;loss&#39;</span><span class="p">,</span> <span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="mf">0.1</span><span class="p">},</span> <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;accuracy&#39;</span><span class="p">,</span> <span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="mf">0.9</span><span class="p">}])</span>
 </code></pre></div>
 </details>
 
@@ -1178,15 +1148,42 @@ registered handlers for the event type.</p>
 <div class="doc doc-object doc-function">
 
 
-<h3 id="torchsystem.services.prodcon.Producer.event" class="doc doc-heading">
-            <code class="highlight language-python"><span class="n">event</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span></code>
+<h3 id="torchsystem.services.prodcon.Producer.register" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">register</span><span class="p">(</span><span class="o">*</span><span class="n">consumers</span><span class="p">)</span></code>
 
 </h3>
 
 
     <div class="doc doc-contents ">
 
-        <p>Decorator for registering an event type. The event type is registered with the name of the class as the key.</p>
+        <p>Registers a sequence of consumers to the producer. The producer will dispatch events to all registered
+consumers.</p>
+
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="torchsystem.services.prodcon.event" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">event</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span></code>
+
+</h2>
+
+
+    <div class="doc doc-contents ">
+
+        <p>A decorator to define an Event message.</p>
 
 
 <p><span class="doc-section-title">Parameters:</span></p>
@@ -1209,7 +1206,7 @@ registered handlers for the event type.</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>The event class to be registered.</p>
+                <p>The ocurrence of something that happened represented by a class</p>
               </div>
             </td>
             <td>
@@ -1235,125 +1232,27 @@ registered handlers for the event type.</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>The event class.</p>
+                <p>A dataclass representing the event.</p>
               </div>
             </td>
           </tr>
       </tbody>
     </table>
 
+
+<details class="example" open>
+  <summary>Example</summary>
+  <div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">torchsystem.services</span><span class="w"> </span><span class="kn">import</span> <span class="n">event</span>
+
+<span class="nd">@event</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">ModelTrained</span><span class="p">:</span>
+    <span class="n">model</span><span class="p">:</span> <span class="n">Callable</span>
+    <span class="n">metrics</span><span class="p">:</span> <span class="n">Sequence</span>
+</code></pre></div>
+</details>
     </div>
 
 </div>
-
-<div class="doc doc-object doc-function">
-
-
-<h3 id="torchsystem.services.prodcon.Producer.produce" class="doc doc-heading">
-            <code class="highlight language-python"><span class="n">produce</span><span class="p">(</span><span class="n">event_type</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></code>
-
-</h3>
-          <div class="doc-overloads">
-<div class="doc-signature highlight"><pre><span></span><code><span class="nf">produce</span><span class="p">(</span><span class="n">event_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-</code></pre></div><div class="doc-signature highlight"><pre><span></span><code><span class="nf">produce</span><span class="p">(</span><span class="n">event_type</span><span class="p">:</span> <span class="nb">type</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-</code></pre></div>          </div>
-
-
-    <div class="doc doc-contents ">
-
-        <p>Produces an event by instantiating the event class and dispatching it to all registered consumers.</p>
-
-
-<p><span class="doc-section-title">Parameters:</span></p>
-    <table>
-      <thead>
-        <tr>
-          <th>Name</th>
-          <th>Type</th>
-          <th>Description</th>
-          <th>Default</th>
-        </tr>
-      </thead>
-      <tbody>
-          <tr class="doc-section-item">
-            <td>
-                <code>event_type</code>
-            </td>
-            <td>
-                  <code>str | type</code>
-            </td>
-            <td>
-              <div class="doc-md-description">
-                <p>The event type to produce.</p>
-              </div>
-            </td>
-            <td>
-                <em>required</em>
-            </td>
-          </tr>
-          <tr class="doc-section-item">
-            <td>
-                <code>*args</code>
-            </td>
-            <td>
-            </td>
-            <td>
-              <div class="doc-md-description">
-                <p>The event class arguments.</p>
-              </div>
-            </td>
-            <td>
-                  <code>()</code>
-            </td>
-          </tr>
-          <tr class="doc-section-item">
-            <td>
-                <code>**kwargs</code>
-            </td>
-            <td>
-            </td>
-            <td>
-              <div class="doc-md-description">
-                <p>The event class keyword arguments.</p>
-              </div>
-            </td>
-            <td>
-                  <code>{}</code>
-            </td>
-          </tr>
-      </tbody>
-    </table>
-
-    </div>
-
-</div>
-
-<div class="doc doc-object doc-function">
-
-
-<h3 id="torchsystem.services.prodcon.Producer.register" class="doc doc-heading">
-            <code class="highlight language-python"><span class="n">register</span><span class="p">(</span><span class="o">*</span><span class="n">consumers</span><span class="p">)</span></code>
-
-</h3>
-
-
-    <div class="doc doc-contents ">
-
-        <p>Registers a sequence of consumers to the producer. The producer will dispatch events to all registered
-consumers.</p>
-
-    </div>
-
-</div>
-
-
-
-  </div>
-
-    </div>
-
-</div>
-
 
 
 

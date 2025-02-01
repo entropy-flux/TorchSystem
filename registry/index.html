@@ -425,14 +425,14 @@
 <h3 id="treat-your-models-as-entities">Treat your models as Entities.</h3>
 <p>An ENTITY is an object defined by it's IDENTITY, and it's mutable nature distinguish them from VALUE OBJECTS. In the
 context of machine learning, neural networks are stateful objects that can mutate their internal state during training.
-This means that they must be treated as entities, and in order to identifying them, is necessary to identify their invariants.</p>
+This means that they must be treated as entities, and in order to assign an IDENTITY them, is necessary to identify their invariants.</p>
 <p>Under a local context, we can state that, "neural networks of the same type and with the same hyperparameters are
 the same entity". Under this assumption, we can define a locally unique identifier for each entity, calculated from
 it's type and it's hyperparameters, this identifier is called a HASH, and it's the first step to define a global unique
 identifier for each entity in a machine learning system.</p>
 <p>In order to help with this task, the <code>torchsystem.registry</code> module provides a set of functions to register pytorch objects,
 so when they are initialized, the arguments that were passed to the constructor are stored as metadata to be used later
-to calculate their HASH. This module is provided by the <a href="https://github.com/mr-mapache/ml-registry">mlregistry</a> and it's
+to calculate their HASH. This module is provided by the <a href="https://github.com/mr-mapache/ml-registry">mlregistry</a>, and it's
 documentation can be found here: <a href="https://mr-mapache.github.io/ml-registry/">https://mr-mapache.github.io/ml-registry/</a>.</p>
 <p>Example:
 <div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">torch</span><span class="w"> </span><span class="kn">import</span> <span class="n">Tensor</span>
@@ -483,8 +483,8 @@ useful for example when you want to load a model from a configuration file, or y
 <span class="n">registry</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">MLP</span><span class="p">)</span>
 <span class="n">registry</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">GLU</span><span class="p">)</span>
 
-<span class="n">model</span> <span class="o">=</span> <span class="n">registry</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;MLP&#39;</span><span class="p">,</span> <span class="mi">784</span><span class="p">,</span> <span class="mi">256</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="n">dropout</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="s1">&#39;ReLU&#39;</span><span class="p">)</span>
-
+<span class="n">model_type</span> <span class="o">=</span> <span class="n">registry</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;MLP&#39;</span><span class="p">)</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">model_type</span><span class="p">(</span><span class="mi">784</span><span class="p">,</span> <span class="mi">256</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="n">dropout</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="n">ReLU</span><span class="p">())</span>
 <span class="n">avaliables</span> <span class="o">=</span> <span class="n">registry</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">avaliables</span><span class="p">)</span> <span class="c1"># [&#39;MLP&#39;, &#39;GLU&#39;]</span>
 <span class="k">for</span> <span class="n">model</span> <span class="ow">in</span> <span class="n">avaliables</span><span class="p">:</span> 
