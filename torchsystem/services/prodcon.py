@@ -203,7 +203,7 @@ class Producer:
             consumer.consume(message)
 
 
-def event(cls: type) -> type:
+def event(cls: type):
     """
     A decorator to define an Event message.
 
