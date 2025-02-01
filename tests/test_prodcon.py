@@ -1,18 +1,15 @@
-from dataclasses import dataclass
-from typing import Any
 from typing import Sequence 
 from torchsystem import Depends
+from torchsystem.services import event
 from torchsystem.services import Consumer
 from torchsystem.services import Producer
 
-class Event:...
-
-@dataclass
-class ModelTrained(Event):
+@event
+class ModelTrained:
     metrics: Sequence
 
-@dataclass
-class ModelEvaluated(Event):
+@event
+class ModelEvaluated:
     metrics: Sequence
 
 consumer = Consumer() 
@@ -37,17 +34,3 @@ def test_consumer():
     producer.dispatch(ModelEvaluated([4, 5, 6]))
 
     assert db == [[1, 2, 3], [4, 5, 6]]
-
-
-producer = Producer()
-
-@producer.event
-class ModelIterated:
-    metrics: Sequence
-
-def test_produce():
-    db.clear()
-    consumer.dependency_overrides[getdb] = lambda: db
-    producer.register(consumer)
-
-    producer.produce('model-iterated', [1, 2, 3])

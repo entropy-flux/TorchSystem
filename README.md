@@ -7,7 +7,7 @@ This framework will help you to create powerful and scalable systems using the P
 
 - [Introduction](#introduction)
 - [Features](#features)
-- [Instalation](#instalation)
+- [Installation](#instalation)
 - [Example](#example)
 - [License](#license)
 
@@ -23,7 +23,7 @@ Services may produce data, such as events, metrics, or logs, that are not their 
 
 With all this in mind, the need for a well-defined framework that defines aggregates and handles service interactions becomes evident. While it is up to the developer to define his domain, this framework provides a set of tools to facilitate their implementation.
 
-## Instalation
+## Installation
 
 To install the framework, you can use pip:
 
@@ -35,7 +35,7 @@ pip install torchsystem
 
 - **Aggregates**: Define the structure of your domain by grouping related entities and enforcing consistency within their boundaries. They encapsulate both data and behavior, ensuring that all modifications occur through controlled operations.
 
-- **Domain Events**:  Aggregates can produce and consume domain events, which signal meaningful changes in the system or trigger actions elsewhere. Exceptions are supported to be treated as domain events, allowing them to be enqueued and handled or rised as needed. This makes it trivial to implement features like early stopping (Just enqueue an exception and raise it when needed).
+- **Domain Events**: Aggregates can produce and consume domain events, which signal meaningful changes in the system or trigger actions elsewhere. Exceptions are supported to be treated as domain events, allowing them to be enqueued and handled or raised as needed. This makes it trivial to implement features like early stopping (Just enqueue an exception and raise it when needed).
 
 - **Registry**: The registry module allows you to treat your models as entities by providing a way to calculate locally unique hashes for them that can act as their identifier. This module also provides several other utilities to help you handle the data from your domain.
 
@@ -67,7 +67,7 @@ class Model(Protocol):
     id: Any
     phase: str
     epoch: int
-    events: Events # You will find out why we need this later
+    events: Events 
     nn: Module
     criterion: Module
     optimizer: Module
@@ -91,7 +91,9 @@ class Loader(Protocol):
     def __iter__(self) -> Iterator[tuple[Tensor, Tensor]]:...
 ```
 
-Notice that we didn't define any implementation. Of course you can just implement it right away, but let's define a training service first. Service handlers and events produced in the services should be modeled using an ubiquitous language. Under this idea, the framework provides a way to invoke services or produce events using their names. This is completly optional, like everything in the library, and you can invoke services handlers and dispatch events directly.
+Notice that we didn't define any implementation. Of course, you can just implement it right away, but let's define a training service first. Service handlers and events produced in the services should be modeled using ubiquitous language. Under this idea, the framework provides a way to invoke services or produce events using their names. This is completely optional, like everything in the library, and you can invoke services handlers and dispatch events directly.
+
+The training service can be implemented as follows:
 
 ```python
 # src/services/training.py
@@ -100,7 +102,7 @@ from typing import Sequence
 from torch import inference_mode
 from torchsystem import Depends
 from torchsystem.services import Service
-from torchsystem.services import Producer 
+from torchsystem.services import Producer, event
 
 from src.domain import Model
 from src.domain import Loader
@@ -113,12 +115,17 @@ producer = Producer()
 def iterate(model: Model, loaders: Sequence[tuple[str, Loader]], metrics: Metrics):
     for phase, loader in loaders:
         train(model, loader, metrics) if phase == 'train' else validate(model, loader, metrics)
-    service.handle('train', model, loader, metrics) if phase == 'train' else service.handle('validate', model, loader, metrics)
-    model.epoch += 1
-    producer.produce('iterated', model, loaders)
+    train(model, loader, metrics) if phase == 'train' else validate(model, loader, metrics)
+    producer.dispatch(Iterated(model, loaders))
+
+@event
+class Iterated:
+    model: Model
+    loaders: Sequence[tuple[str, Loader]] # We put this on events because you may want to store info about the
+                                          # data you used during training.
 
 def device() -> str:
-    raise NotImplementedError("We don't know the device yet!!!, will be injected later")
+    raise NotImplementedError("Override this dependency with a concrete implementation")
 
 @service.handler
 def train(model: Model, loader: Loader, metrics: Metrics, device: str = Depends(device)):
@@ -128,7 +135,7 @@ def train(model: Model, loader: Loader, metrics: Metrics, device: str = Depends(
         prediction, loss = model.fit(input, target)
         metrics.update(batch, loss, prediction, target)
     sequence = metrics.compute()
-    producer.produce('trained', model, loader, sequence)
+    producer.dispatch(Trained(model, loader, metrics))
 
 @service.handler
 def validate(model: Model, loader: Loader, metrics: Metrics, device: str = Depends(device)):
@@ -139,30 +146,19 @@ def validate(model: Model, loader: Loader, metrics: Metrics, device: str = Depen
             prediction, loss = model.evaluate(input, target)
             metrics.update(batch, loss, prediction, target)
         sequence = metrics.compute()
-        producer.produce('validated', model, loader, sequence)
+    producer.dispatch(Trained(model, loader, metrics))
 
-# Now, define the events that were produced.
-
-@producer.event
-class Iterated:
-    model: Model
-    loaders: Sequence[tuple[str, Loader]]
-
-@producer.event
+@event
 class Trained:
     model: Model
     loader: Loader
     metrics: Sequence[Metric]
 
-@producer.event
+@event
 class Validated:
     model: Model
     loader: Loader
     metrics: Sequence[Metric]
-
-# The events are registered in the producer
-# by their name (ubiquitous language). The producer will take care of the name resolution using
-# a name generator, wich is CamelCase to kebab-case by default.
 ```
 
 And that's it! A simple training system. Notice that it is completely decoupled from the implementation of the domain. It's only task is to orchestrate the training process and produce events from it. It doesn't provide any storage logic or data manipulation, only stateless training logic. Now you can now build a whole data storage system, logging or any other service you need around this simple service.
@@ -227,7 +223,7 @@ def on_high_accuracy(metric: Metric):
         raise StopIteration # Exceptions are a good way to propagate information backwards in the system.
 ```
 
-This is a simple early stopping service. It listens to the metrics produced by the training service and raises a StopIteration exception when the loss is low enough or the accuracy is high. The exception is enqueued in the model events and can be raised again when needed, for example in an `onepoch` hook in the aggregate. A `Publisher` could also be used to send the messages to the subscribers but it wasn't necessary in this case.
+This is a simple early stopping service. It listens to the metrics produced by the training service and raises a StopIteration exception when the loss is low enough or the accuracy is high. The exception is enqueued in the model events and can be raised again when needed, for example in a `onepoch` hook in the aggregate. A `Publisher` could also be used to send the messages to the subscribers, but it wasn't necessary in this case.
 
 Now we are going to implement a simple classifier aggregate in order to train a neural network for image classification tasks.
 
@@ -311,7 +307,7 @@ class Classifier(Aggregate):
         ...
 ```
 
-The `Classifier` aggregate we just created can be built and compiled in a simple way. However you will find yourself in situations where you need to pick a torch backend, create and clean multiprocessing resources, pickle modules, etc., and you will need a tool to build the aggregate an compile it. 
+The `Classifier` aggregate we just created can be built and compiled in a simple way. However, you will find yourself in situations where you need to pick a torch backend, create and clean multiprocessing resources, pickle modules, etc., and you will need a tool to build the aggregate and compile it. 
 
 I will implement a compilation pipeline, just to show you how to use the compiler:
 

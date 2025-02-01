@@ -2,7 +2,7 @@
  
 An ENTITY is an object defined by it's IDENTITY, and it's mutable nature distinguish them from VALUE OBJECTS. In the
 context of machine learning, neural networks are stateful objects that can mutate their internal state during training.
-This means that they must be treated as entities, and in order to identifying them, is necessary to identify their invariants.
+This means that they must be treated as entities, and in order to assign an IDENTITY them, is necessary to identify their invariants.
 
 Under a local context, we can state that, "neural networks of the same type and with the same hyperparameters are
 the same entity". Under this assumption, we can define a locally unique identifier for each entity, calculated from
@@ -11,7 +11,7 @@ identifier for each entity in a machine learning system.
 
 In order to help with this task, the `torchsystem.registry` module provides a set of functions to register pytorch objects,
 so when they are initialized, the arguments that were passed to the constructor are stored as metadata to be used later
-to calculate their HASH. This module is provided by the [mlregistry](https://github.com/mr-mapache/ml-registry) and it's
+to calculate their HASH. This module is provided by the [mlregistry](https://github.com/mr-mapache/ml-registry), and it's
 documentation can be found here: [https://mr-mapache.github.io/ml-registry/](https://mr-mapache.github.io/ml-registry/).
 
 Example:
@@ -69,8 +69,8 @@ registry = Registry()
 registry.register(MLP)
 registry.register(GLU)
 
-model = registry.get('MLP', 784, 256, 10, dropout=0.5, activation='ReLU')
-
+model_type = registry.get('MLP')
+model = model_type(784, 256, 10, dropout=0.5, activation=ReLU())
 avaliables = registry.keys()
 print(avaliables) # ['MLP', 'GLU']
 for model in avaliables: 
