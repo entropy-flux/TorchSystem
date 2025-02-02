@@ -183,7 +183,7 @@ def writer() -> SummaryWriter:
 @consumer.handler
 def deliver_metrics(event: Trained | Validated, writer: SummaryWriter = Depends(writer)):
     for metric in event.metrics:
-        writer.add_scalar(f'{event.model.id}/{metric.name}/{event.model.phase}', metric.value, event.model.epoch)
+        writer.add_scalars(f'{event.model.id}/{metric.name}', {event.model.phase: metric.value}, event.model.epoch)
 
     # When you pass an Union of types as annotation, the consumer will register the handler for all types in the Union
     # automatically. This is a good way to handle events that share the same logic.
