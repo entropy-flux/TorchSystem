@@ -351,6 +351,8 @@ from src.services import (
     earlystopping
 )
 
+summary_writer = SummaryWriter(...)
+
 model = MLP(...)
 criterion = CrossEntropyLoss(...)
 optimizer = Adam(...)
@@ -363,15 +365,15 @@ loaders = [
 def device():
     return 'cuda' if cuda.is_available() else 'cpu'
 
-def summary_writer():
-    writter = SummaryWriter(...)
-    yield writter
-    writter.close()
+def writter():
+    yield summary_writer
+    summary_writer.flush()
 
 training.service.dependency_overrides[training.device] = device
 compilation.compiler.dependency_overrides[compilation.device] = device
 tensorboard.consumer.dependency_overrides[tensorboard.writer] = summary_writer
 
+summary_writer.close()
 ...
 
 classifier = compilation.compiler.compile(model, criterion, optimizer)

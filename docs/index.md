@@ -343,7 +343,6 @@ Finally, you can put all together in the application layer as follows:
 
 ```python
 # src/main.py
-
 from torch import cuda
 from torch.utils.tensorboard.writer import SummaryWriter
 
@@ -352,6 +351,8 @@ from src.services import (
     tensorboard,
     earlystopping
 )
+
+summary_writer = SummaryWriter(...)
 
 model = MLP(...)
 criterion = CrossEntropyLoss(...)
@@ -365,26 +366,19 @@ loaders = [
 def device():
     return 'cuda' if cuda.is_available() else 'cpu'
 
-def summary_writer():
-    writter = SummaryWriter(...)
-    yield writter
-    writter.close()
+def writter():
+    yield summary_writer
+    summary_writer.flush()
 
 training.service.dependency_overrides[training.device] = device
 compilation.compiler.dependency_overrides[compilation.device] = device
 tensorboard.consumer.dependency_overrides[tensorboard.writer] = summary_writer
 
-...
-
-classifier = compilation.compiler.compile(model, criterion, optimizer)
-
-training.service.handle('iterate', classifier, loaders, metrics)
-
+summary_writer.close()
 ...
 ```
 
 This is a simple example of how to build a training system using the framework. Since services can be called by their name, you can easily write a REST API with CQS (Command Query Segregation) or a CLI interfaces for your training system. 
-
 
 ## Features
 
