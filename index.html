@@ -227,18 +227,18 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#features" class="md-nav__link">
+  <a href="#example" class="md-nav__link">
     <span class="md-ellipsis">
-      Features
+      Example
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#example" class="md-nav__link">
+  <a href="#features" class="md-nav__link">
     <span class="md-ellipsis">
-      Example
+      Features
     </span>
   </a>
   
@@ -455,18 +455,18 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#features" class="md-nav__link">
+  <a href="#example" class="md-nav__link">
     <span class="md-ellipsis">
-      Features
+      Example
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#example" class="md-nav__link">
+  <a href="#features" class="md-nav__link">
     <span class="md-ellipsis">
-      Example
+      Features
     </span>
   </a>
   
@@ -501,9 +501,9 @@
 <h2 id="table-of-contents">Table of contents:</h2>
 <ul>
 <li><a href="#introduction">Introduction</a></li>
-<li><a href="#features">Features</a></li>
 <li><a href="#instalation">Installation</a></li>
 <li><a href="#example">Example</a></li>
+<li><a href="#features">Features</a></li>
 <li><a href="#license">License</a></li>
 </ul>
 <h2 id="introduction">Introduction</h2>
@@ -516,35 +516,9 @@
 <p>To install the framework, you can use pip:</p>
 <div class="highlight"><pre><span></span><code>pip<span class="w"> </span>install<span class="w"> </span>torchsystem
 </code></pre></div>
-<h2 id="features">Features</h2>
-<ul>
-<li>
-<p><a href="https://mr-mapache.github.io/torch-system/domain/"><strong>Aggregates</strong></a>: Define the structure of your domain by grouping related entities and enforcing consistency within their boundaries. They encapsulate both data and behavior, ensuring that all modifications occur through controlled operations.</p>
-</li>
-<li>
-<p><a href="https://mr-mapache.github.io/torch-system/domain/"><strong>Domain Events</strong></a>: Aggregates can produce and consume domain events, which signal meaningful changes in the system or trigger actions elsewhere. Exceptions are supported to be treated as domain events, allowing them to be enqueued and handled or raised as needed. This makes it trivial to implement features like early stopping (Just enqueue an exception and raise it when needed).</p>
-</li>
-<li>
-<p><a href="https://mr-mapache.github.io/torch-system/registry/"><strong>Registry</strong></a>: The registry module allows you to treat your models as entities by providing a way to calculate locally unique hashes for them that can act as their identifier. This module also provides several other utilities to help you handle the data from your domain.</p>
-</li>
-<li>
-<p><a href="https://mr-mapache.github.io/torch-system/depends/"><strong>Dependency Injection</strong></a>: The framework provides a robust dependency injection system that allows you to define and inject dependencies. This enables you to define your logic in terms of interfaces and inject implementations later. </p>
-</li>
-<li>
-<p><a href="https://mr-mapache.github.io/torch-system/compiler/"><strong>Compilers</strong></a>: Building aggregates can be a complex process. In the context of deep learning, aggregates not only need to be built but also compiled, making compilation an integral part of the construction process. This framework provides a Compiler class to help define and manage the compilation process for your aggregates</p>
-</li>
-<li>
-<p><a href="https://mr-mapache.github.io/torch-system/services/"><strong>Services</strong></a>: Define stateless operations that fulfill domain-specific tasks using ubiquitous language. </p>
-</li>
-<li>
-<p><a href="https://mr-mapache.github.io/torch-system/prodcon/"><strong>Producers/Consumers</strong></a>: Events produced by services can be delivered by producers to several consumers. This allows you to decouple services and define complex interactions between them. </p>
-</li>
-<li>
-<p><a href="https://mr-mapache.github.io/torch-system/pubsub/"><strong>Publisher/Subscriber</strong></a>: Data also can be delivered with the publisher/subscriber pattern. Publishers can send data to subscribers using a topic-based system.</p>
-</li>
-</ul>
+<p>The framework is written in pure python and doesn't require any infrastructure. </p>
 <h2 id="example">Example</h2>
-<p>Let's build a simple training system using the framework. First, we can define our domain with protocols, while this is not strictly necessary it's a good practice to define the interfaces first.</p>
+<p>First, we can define our domain model with protocols, while not strictly necessary and not part of the framework, it's a good practice to define the interfaces of what you want to build first.</p>
 <div class="highlight"><pre><span></span><code><span class="c1"># src/domain.py</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Protocol</span> 
@@ -581,7 +555,7 @@
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">Tensor</span><span class="p">]]:</span><span class="o">...</span>
 </code></pre></div>
-<p>Notice that we didn't define any implementation. Of course, you can just implement it right away, but let's define a training service first. Service handlers and events produced in the services should be modeled using ubiquitous language. Under this idea, the framework provides a way to invoke services or produce events using their names. This is completely optional, like everything in the library, and you can invoke services handlers and dispatch events directly.</p>
+<p>Notice that we didn't define any implementation. Of course, you can just implement it right away, but let's define a training service first. Service handlers and events produced in the services should be modeled using ubiquitous language.  </p>
 <p>The training service can be implemented as follows:</p>
 <div class="highlight"><pre><span></span><code><span class="c1"># src/services/training.py</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Sequence</span> 
@@ -659,8 +633,7 @@
 <span class="n">consumer</span> <span class="o">=</span> <span class="n">Consumer</span><span class="p">()</span>
 
 <span class="k">def</span><span class="w"> </span><span class="nf">writer</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">SummaryWriter</span><span class="p">:</span>
-    <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;We don&#39;t want to handle the writer here!!!, will be injected later in the application layer&quot;</span><span class="p">)</span> 
-
+    <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Will be injected later in the application layer&quot;</span><span class="p">)</span> 
 
 <span class="nd">@consumer</span><span class="o">.</span><span class="n">handler</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">deliver_metrics</span><span class="p">(</span><span class="n">event</span><span class="p">:</span> <span class="n">Trained</span> <span class="o">|</span> <span class="n">Validated</span><span class="p">,</span> <span class="n">writer</span><span class="p">:</span> <span class="n">SummaryWriter</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">writer</span><span class="p">)):</span>
@@ -687,9 +660,11 @@
         <span class="k">try</span><span class="p">:</span>
             <span class="n">subscriber</span><span class="o">.</span><span class="n">receive</span><span class="p">(</span><span class="n">metric</span><span class="p">,</span> <span class="n">metric</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">StopIteration</span><span class="p">:</span>
-            <span class="n">event</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">events</span><span class="o">.</span><span class="n">enqueue</span><span class="p">(</span><span class="ne">StopIteration</span><span class="p">)</span> <span class="c1"># Exceptions are also supported as domain events</span>
-                                                      <span class="c1"># If you prefer you can create a domain event for this</span>
-                                                      <span class="c1"># and enqueue it here.</span>
+            <span class="n">event</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">events</span><span class="o">.</span><span class="n">enqueue</span><span class="p">(</span><span class="ne">StopIteration</span><span class="p">)</span> 
+            <span class="c1"># Exceptions are also supported as domain events</span>
+            <span class="c1"># If you prefer you can create a domain event for this</span>
+            <span class="c1"># and enqueue it here.</span>
+
 <span class="nd">@subscriber</span><span class="o">.</span><span class="n">subscribe</span><span class="p">(</span><span class="s1">&#39;loss&#39;</span><span class="p">)</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">on_low_loss</span><span class="p">(</span><span class="n">metric</span><span class="p">:</span> <span class="n">Metric</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">metric</span><span class="o">.</span><span class="n">value</span> <span class="o">&lt;</span> <span class="mf">0.001</span><span class="p">:</span>
@@ -698,7 +673,7 @@
 <span class="nd">@subscriber</span><span class="o">.</span><span class="n">subscribe</span><span class="p">(</span><span class="s1">&#39;accuracy&#39;</span><span class="p">)</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">on_high_accuracy</span><span class="p">(</span><span class="n">metric</span><span class="p">:</span> <span class="n">Metric</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">metric</span><span class="o">.</span><span class="n">value</span> <span class="o">&gt;</span> <span class="mf">0.995</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">StopIteration</span> <span class="c1"># Exceptions are a good way to propagate information backwards in the system.</span>
+        <span class="k">raise</span> <span class="ne">StopIteration</span>  
 </code></pre></div>
 <p>This is a simple early stopping service. It listens to the metrics produced by the training service and raises a <code>StopIteration</code> exception when the loss is low enough or the accuracy is high. The exception is enqueued in the model events and can be raised again when needed, for example in a <code>onepoch</code> hook in the aggregate. A <code>Publisher</code> could also be used to send the messages to the subscribers, but it wasn't necessary in this case.</p>
 <p>Now we are going to implement a simple classifier aggregate in order to train a neural network for image classification tasks.</p>
@@ -749,8 +724,11 @@
         <span class="c1"># automatically for epochs and phase.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">events</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span> <span class="c1"># This will raise the StopIteration exception when the epoch is over</span>
 </code></pre></div>
-<p>As you see, aggregates is just a simple facade to encapsulate things you already knew. Aggregates have also the capability to handle domain events or domain exceptions. </p>
-<div class="highlight"><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">SomeDomainEvent</span><span class="p">(</span><span class="n">Event</span><span class="p">):</span><span class="o">...</span>
+<p>As you see, aggregates is just a simple facade to encapsulate things you already knew. You also can give the aggregates the capability to handle domain events or domain exceptions. </p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">torchsystem.domain</span><span class="w"> </span><span class="kn">import</span> <span class="n">Aggregate</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">torchsystem.domain</span><span class="w"> </span><span class="kn">import</span> <span class="n">Event</span><span class="p">,</span> <span class="n">Events</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">SomeDomainEvent</span><span class="p">(</span><span class="n">Event</span><span class="p">):</span><span class="o">...</span>
 <span class="c1"># A simple class can represent a domain event.</span>
 
 <span class="k">class</span><span class="w"> </span><span class="nc">DomainException</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span><span class="o">...</span>
@@ -769,6 +747,7 @@
 <span class="k">class</span><span class="w"> </span><span class="nc">Classifier</span><span class="p">(</span><span class="n">Aggregate</span><span class="p">):</span> 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nn</span><span class="p">:</span> <span class="n">Module</span><span class="p">,</span> <span class="n">criterion</span><span class="p">:</span> <span class="n">Module</span><span class="p">,</span> <span class="n">optimizer</span><span class="p">:</span> <span class="n">Optimizer</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>        
+        <span class="bp">self</span><span class="o">.</span><span class="n">events</span> <span class="o">=</span> <span class="n">Events</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">events</span><span class="o">.</span><span class="n">handlers</span><span class="p">[</span><span class="n">SomeDomainEvent</span><span class="p">]</span> <span class="o">=</span> <span class="k">lambda</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;SomeDomainEvent handled!&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">events</span><span class="o">.</span><span class="n">handlers</span><span class="p">[</span><span class="n">DomainException</span><span class="p">]</span> <span class="o">=</span> <span class="k">lambda</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;DomainException handled!&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">events</span><span class="o">.</span><span class="n">handlers</span><span class="p">[</span><span class="n">DomainEventWithData</span><span class="p">]</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">event</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;DomainEventWithData handled with data: </span><span class="si">{</span><span class="n">event</span><span class="o">.</span><span class="n">data</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
@@ -819,7 +798,6 @@
 </code></pre></div>
 <p>Finally, you can put all together in the application layer as follows:</p>
 <div class="highlight"><pre><span></span><code><span class="c1"># src/main.py</span>
-
 <span class="kn">from</span><span class="w"> </span><span class="nn">torch</span><span class="w"> </span><span class="kn">import</span> <span class="n">cuda</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">torch.utils.tensorboard.writer</span><span class="w"> </span><span class="kn">import</span> <span class="n">SummaryWriter</span>
 
@@ -828,6 +806,8 @@
     <span class="n">tensorboard</span><span class="p">,</span>
     <span class="n">earlystopping</span>
 <span class="p">)</span>
+
+<span class="n">summary_writer</span> <span class="o">=</span> <span class="n">SummaryWriter</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
 
 <span class="n">model</span> <span class="o">=</span> <span class="n">MLP</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
 <span class="n">criterion</span> <span class="o">=</span> <span class="n">CrossEntropyLoss</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
@@ -841,24 +821,46 @@
 <span class="k">def</span><span class="w"> </span><span class="nf">device</span><span class="p">():</span>
     <span class="k">return</span> <span class="s1">&#39;cuda&#39;</span> <span class="k">if</span> <span class="n">cuda</span><span class="o">.</span><span class="n">is_available</span><span class="p">()</span> <span class="k">else</span> <span class="s1">&#39;cpu&#39;</span>
 
-<span class="k">def</span><span class="w"> </span><span class="nf">summary_writer</span><span class="p">():</span>
-    <span class="n">writter</span> <span class="o">=</span> <span class="n">SummaryWriter</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
-    <span class="k">yield</span> <span class="n">writter</span>
-    <span class="n">writter</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">writter</span><span class="p">():</span>
+    <span class="k">yield</span> <span class="n">summary_writer</span>
+    <span class="n">summary_writer</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
 
 <span class="n">training</span><span class="o">.</span><span class="n">service</span><span class="o">.</span><span class="n">dependency_overrides</span><span class="p">[</span><span class="n">training</span><span class="o">.</span><span class="n">device</span><span class="p">]</span> <span class="o">=</span> <span class="n">device</span>
 <span class="n">compilation</span><span class="o">.</span><span class="n">compiler</span><span class="o">.</span><span class="n">dependency_overrides</span><span class="p">[</span><span class="n">compilation</span><span class="o">.</span><span class="n">device</span><span class="p">]</span> <span class="o">=</span> <span class="n">device</span>
 <span class="n">tensorboard</span><span class="o">.</span><span class="n">consumer</span><span class="o">.</span><span class="n">dependency_overrides</span><span class="p">[</span><span class="n">tensorboard</span><span class="o">.</span><span class="n">writer</span><span class="p">]</span> <span class="o">=</span> <span class="n">summary_writer</span>
 
-<span class="o">...</span>
-
-<span class="n">classifier</span> <span class="o">=</span> <span class="n">compilation</span><span class="o">.</span><span class="n">compiler</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">criterion</span><span class="p">,</span> <span class="n">optimizer</span><span class="p">)</span>
-
-<span class="n">training</span><span class="o">.</span><span class="n">service</span><span class="o">.</span><span class="n">handle</span><span class="p">(</span><span class="s1">&#39;iterate&#39;</span><span class="p">,</span> <span class="n">classifier</span><span class="p">,</span> <span class="n">loaders</span><span class="p">,</span> <span class="n">metrics</span><span class="p">)</span>
-
+<span class="n">summary_writer</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 <span class="o">...</span>
 </code></pre></div>
-<p>This is a simple example of how to build a training system using the framework. Since services can be called by their name, you can easily write a REST API with CQS (Command Query Segregation) or a CLI interfaces for your training system. The possibilities are endless. </p>
+<p>This is a simple example of how to build a training system using the framework. Since services can be called by their name, you can easily write a REST API with CQS (Command Query Segregation) or a CLI interfaces for your training system. </p>
+<h2 id="features">Features</h2>
+<p>Here is a more detailed list of features with links to their documentation.</p>
+<ul>
+<li>
+<p><a href="https://mr-mapache.github.io/torch-system/domain/"><strong>Aggregates</strong></a>: Define the structure of your domain by grouping related entities and enforcing consistency within their boundaries. They encapsulate both data and behavior, ensuring that all modifications occur through controlled operations.</p>
+</li>
+<li>
+<p><a href="https://mr-mapache.github.io/torch-system/domain/"><strong>Domain Events</strong></a>: Aggregates can produce and consume domain events, which signal meaningful changes in the system or trigger actions elsewhere. Exceptions are supported to be treated as domain events, allowing them to be enqueued and handled or raised as needed. This makes it trivial to implement features like early stopping (Just enqueue an exception and raise it when needed).</p>
+</li>
+<li>
+<p><a href="https://mr-mapache.github.io/torch-system/registry/"><strong>Registry</strong></a>: The registry module allows you to treat your models as entities by providing a way to calculate locally unique hashes for them that can act as their identifier. This module also provides several other utilities to help you handle the data from your domain.</p>
+</li>
+<li>
+<p><a href="https://mr-mapache.github.io/torch-system/depends/"><strong>Dependency Injection</strong></a>: The framework provides a robust dependency injection system that allows you to define and inject dependencies. This enables you to define your logic in terms of interfaces and inject implementations later. </p>
+</li>
+<li>
+<p><a href="https://mr-mapache.github.io/torch-system/compiler/"><strong>Compilers</strong></a>: Building aggregates can be a complex process. In the context of deep learning, aggregates not only need to be built but also compiled, making compilation an integral part of the construction process. This framework provides a Compiler class to help define and manage the compilation process for your aggregates</p>
+</li>
+<li>
+<p><a href="https://mr-mapache.github.io/torch-system/services/"><strong>Services</strong></a>: Define stateless operations that fulfill domain-specific tasks using ubiquitous language. </p>
+</li>
+<li>
+<p><a href="https://mr-mapache.github.io/torch-system/prodcon/"><strong>Producers/Consumers</strong></a>: Events produced by services can be delivered by producers to several consumers. This allows you to decouple services and define complex interactions between them. </p>
+</li>
+<li>
+<p><a href="https://mr-mapache.github.io/torch-system/pubsub/"><strong>Publisher/Subscriber</strong></a>: Data also can be delivered with the publisher/subscriber pattern. Publishers can send data to subscribers using a topic-based system.</p>
+</li>
+</ul>
 <h2 id="license">License</h2>
 <p>This project is licensed under the MIT License - Use it as you wish in your projects. </p>
 
