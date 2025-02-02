@@ -6,9 +6,9 @@ This framework will help you to create powerful and scalable systems using the P
 ## Table of contents:
 
 - [Introduction](#introduction)
-- [Features](#features)
 - [Installation](#instalation)
 - [Example](#example)
+- [Features](#features)
 - [License](#license)
 
 ## Introduction
@@ -31,28 +31,13 @@ To install the framework, you can use pip:
 pip install torchsystem
 ```
 
-## Features
-
-- [**Aggregates**](https://mr-mapache.github.io/torch-system/domain/): Define the structure of your domain by grouping related entities and enforcing consistency within their boundaries. They encapsulate both data and behavior, ensuring that all modifications occur through controlled operations.
-
-- [**Domain Events**](https://mr-mapache.github.io/torch-system/domain/): Aggregates can produce and consume domain events, which signal meaningful changes in the system or trigger actions elsewhere. Exceptions are supported to be treated as domain events, allowing them to be enqueued and handled or raised as needed. This makes it trivial to implement features like early stopping (Just enqueue an exception and raise it when needed).
-
-- [**Registry**](https://mr-mapache.github.io/torch-system/registry/): The registry module allows you to treat your models as entities by providing a way to calculate locally unique hashes for them that can act as their identifier. This module also provides several other utilities to help you handle the data from your domain.
-
-- [**Dependency Injection**](https://mr-mapache.github.io/torch-system/depends/): The framework provides a robust dependency injection system that allows you to define and inject dependencies. This enables you to define your logic in terms of interfaces and inject implementations later. 
-
-- [**Compilers**](https://mr-mapache.github.io/torch-system/compiler/): Building aggregates can be a complex process. In the context of deep learning, aggregates not only need to be built but also compiled, making compilation an integral part of the construction process. This framework provides a Compiler class to help define and manage the compilation process for your aggregates
-
-- [**Services**](https://mr-mapache.github.io/torch-system/services/): Define stateless operations that fulfill domain-specific tasks using ubiquitous language. 
-
-- [**Producers/Consumers**](https://mr-mapache.github.io/torch-system/prodcon/): Events produced by services can be delivered by producers to several consumers. This allows you to decouple services and define complex interactions between them. 
-
-- [**Publisher/Subscriber**](https://mr-mapache.github.io/torch-system/pubsub/): Data also can be delivered with the publisher/subscriber pattern. Publishers can send data to subscribers using a topic-based system.
-
+The framework is written in pure python and doesn't require any infrastructure. 
 
 ## Example
 
-Let's build a simple training system using the framework. First, we can define our domain with protocols, while this is not strictly necessary it's a good practice to define the interfaces first.
+Let's build a simple training system using the framework. You can find a more detailed working examples [here](https://github.com/mr-mapache/torch-system/tree/main/examples).
+
+First, we can define our domain with protocols, while this is not strictly necessary it's a good practice to define the interfaces first.
 
 ```python 
 # src/domain.py
@@ -92,7 +77,7 @@ class Loader(Protocol):
     def __iter__(self) -> Iterator[tuple[Tensor, Tensor]]:...
 ```
 
-Notice that we didn't define any implementation. Of course, you can just implement it right away, but let's define a training service first. Service handlers and events produced in the services should be modeled using ubiquitous language. Under this idea, the framework provides a way to invoke services or produce events using their names. This is completely optional, like everything in the library, and you can invoke services handlers and dispatch events directly.
+Notice that we didn't define any implementation. Of course, you can just implement it right away, but let's define a training service first. Service handlers and events produced in the services should be modeled using ubiquitous language.  
 
 The training service can be implemented as follows:
 
@@ -189,7 +174,7 @@ def deliver_metrics(event: Trained | Validated, writer: SummaryWriter = Depends(
     # automatically. This is a good way to handle events that share the same logic.
 ```
 
-Since several consumers can consume from the same producer, you can plug any service you want to the training system. The service don't need to know who is consuming the events it produces. This is known a dependency inversion principle. You can now build a whole system around this simple training service. All kind of logic can be implemented from here, from weights storage to early stopping. Let's create an early stopping service:
+Since several consumers can consume from the same producer, you can plug any service you want to the training system. The service doesn't need to know who is consuming the events it produces. This is known a dependency inversion principle. You can now build a whole system around this simple training service. All kind of logic can be implemented from here, from weights storage to early stopping. Let's create an early stopping service:
 
 ```python
 # src/services/earlystopping.py
@@ -275,9 +260,12 @@ class Classifier(Aggregate):
         self.events.commit() # This will raise the StopIteration exception when the epoch is over
 ```
 
-As you see, aggregates is just a simple facade to encapsulate things you already knew. Aggregates have also the capability to handle domain events or domain exceptions. 
+As you see, aggregates is just a simple facade to encapsulate things you already knew. You also can give Aggregates the capability to handle domain events or domain exceptions. 
 
-```python
+```python 
+from torchsystem.domain import Aggregate
+from torchsystem.domain import Event, Events
+
 class SomeDomainEvent(Event):...
 # A simple class can represent a domain event.
 
@@ -297,6 +285,7 @@ class DomainEventWithIgnoredData(Event):
 class Classifier(Aggregate): 
     def __init__(self, nn: Module, criterion: Module, optimizer: Optimizer):
         super().__init__()        
+        self.events = Events()
         self.events.handlers[SomeDomainEvent] = lambda: print('SomeDomainEvent handled!')
         self.events.handlers[DomainException] = lambda: print('DomainException handled!')
         self.events.handlers[DomainEventWithData] = lambda event: print(f'DomainEventWithData handled with data: {event.data}')
@@ -394,7 +383,27 @@ training.service.handle('iterate', classifier, loaders, metrics)
 ...
 ```
 
-This is a simple example of how to build a training system using the framework. Since services can be called by their name, you can easily write a REST API with CQS (Command Query Segregation) or a CLI interfaces for your training system. The possibilities are endless. 
+This is a simple example of how to build a training system using the framework. Since services can be called by their name, you can easily write a REST API with CQS (Command Query Segregation) or a CLI interfaces for your training system.
+
+## Features
+
+Here is a more detailed list of features with links to their documentation.
+
+- [**Aggregates**](https://mr-mapache.github.io/torch-system/domain/): Define the structure of your domain by grouping related entities and enforcing consistency within their boundaries. They encapsulate both data and behavior, ensuring that all modifications occur through controlled operations.
+
+- [**Domain Events**](https://mr-mapache.github.io/torch-system/domain/): Aggregates can produce and consume domain events, which signal meaningful changes in the system or trigger actions elsewhere. Exceptions are supported to be treated as domain events, allowing them to be enqueued and handled or raised as needed. This makes it trivial to implement features like early stopping (Just enqueue an exception and raise it when needed).
+
+- [**Registry**](https://mr-mapache.github.io/torch-system/registry/): The registry module allows you to treat your models as entities by providing a way to calculate locally unique hashes for them that can act as their identifier. This module also provides several other utilities to help you handle the data from your domain.
+
+- [**Dependency Injection**](https://mr-mapache.github.io/torch-system/depends/): The framework provides a robust dependency injection system that allows you to define and inject dependencies. This enables you to define your logic in terms of interfaces and inject implementations later. 
+
+- [**Compilers**](https://mr-mapache.github.io/torch-system/compiler/): Building aggregates can be a complex process. In the context of deep learning, aggregates not only need to be built but also compiled, making compilation an integral part of the construction process. This framework provides a Compiler class to help define and manage the compilation process for your aggregates
+
+- [**Services**](https://mr-mapache.github.io/torch-system/services/): Define stateless operations that fulfill domain-specific tasks using ubiquitous language. 
+
+- [**Producers/Consumers**](https://mr-mapache.github.io/torch-system/prodcon/): Events produced by services can be delivered by producers to several consumers. This allows you to decouple services and define complex interactions between them. 
+
+- [**Publisher/Subscriber**](https://mr-mapache.github.io/torch-system/pubsub/): Data also can be delivered with the publisher/subscriber pattern. Publishers can send data to subscribers using a topic-based system.
 
 ## License
 

@@ -43,7 +43,7 @@ def _managed_dependency(generator: Generator):
         value = next(generator)
         yield value
     finally:
-        next(generator, None)  # Ensure proper cleanup
+        next(generator, None)   
 
 def Depends(callable: Callable):
     """
