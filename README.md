@@ -37,7 +37,7 @@ The framework is written in pure python and doesn't require any infrastructure.
 
 Let's build a simple training system using the framework. You can find a more detailed working examples [here](https://github.com/mr-mapache/torch-system/tree/main/examples).
 
-First, we can define our domain with protocols, while this is not strictly necessary it's a good practice to define the interfaces first.
+First, we can define our domain model with protocols, while not strictly necessary and not part of the framework, it's a good practice to define the interfaces of what you want to build first.
 
 ```python 
 # src/domain.py
@@ -77,9 +77,7 @@ class Loader(Protocol):
     def __iter__(self) -> Iterator[tuple[Tensor, Tensor]]:...
 ```
 
-Notice that we didn't define any implementation. Of course, you can just implement it right away, but let's define a training service first. Service handlers and events produced in the services should be modeled using ubiquitous language.  
-
-The training service can be implemented as follows:
+Notice that we didn't define any implementation. Of course, you can just implement it right away, but first let's model what we want to do with our domain model. This is done creating a **service**. Let's create a training service for our model.
 
 ```python
 # src/services/training.py
@@ -144,8 +142,7 @@ class Validated:
     model: Model
     results: dict[str, Tensor]
 ```
-
-And that's it! A simple training system. Notice that it is completely decoupled from the implementation of the domain. It's only task is to orchestrate the training process and produce events from it. It doesn't provide any storage logic or data manipulation, only stateless training logic. Now you can now build a whole data storage system, logging or any other service you need around this simple service. For example, you can store info about the data you used to train the model consuming the `loaders` field of the `Iterated` event, using tools from the [registry](https://mr-mapache.github.io/torch-system/registry/) module.
+And that's it! A simple training service. Notice that it is completely decoupled from the implementation of the domain. It's only task is to orchestrate the training process and produce events from it. It doesn't provide any storage logic or data manipulation, only stateless training logic. Now you can now build a whole data storage system, logging or any other service you need around this simple service. For example, you can store info about the data you used to train the model consuming the `loaders` field of the `Iterated` event, using tools from the [registry](https://mr-mapache.github.io/torch-system/registry/) module.
 
 Let's create a simple tensorboard consumer for this service:
 
@@ -162,8 +159,7 @@ from src.services.training import (
 consumer = Consumer()
 
 def writer() -> SummaryWriter:
-    raise NotImplementedError("We don't want to handle the writer here!!!, will be injected later in the application layer") 
-
+    raise NotImplementedError("Will be injected later in the application layer") 
 
 @consumer.handler
 def deliver_metrics(event: Trained | Validated, writer: SummaryWriter = Depends(writer)):
@@ -193,9 +189,11 @@ def deliver_metrics(event: Trained | Validated):
         try:
             subscriber.receive(metric, metric.name)
         except StopIteration:
-            event.model.events.enqueue(StopIteration) # Exceptions are also supported as domain events
-                                                      # If you prefer you can create a domain event for this
-                                                      # and enqueue it here.
+            event.model.events.enqueue(StopIteration) 
+            # Exceptions are also supported as domain events
+            # If you prefer you can create a domain event for this
+            # and enqueue it here.
+
 @subscriber.subscribe('loss')
 def on_low_loss(metric: Metric):
     if metric.value < 0.001:
@@ -204,7 +202,7 @@ def on_low_loss(metric: Metric):
 @subscriber.subscribe('accuracy')
 def on_high_accuracy(metric: Metric):
     if metric.value > 0.995:
-        raise StopIteration # Exceptions are a good way to propagate information backwards in the system.
+        raise StopIteration  
 ```
 
 This is a simple early stopping service. It listens to the metrics produced by the training service and raises a `StopIteration` exception when the loss is low enough or the accuracy is high. The exception is enqueued in the model events and can be raised again when needed, for example in a `onepoch` hook in the aggregate. A `Publisher` could also be used to send the messages to the subscribers, but it wasn't necessary in this case.

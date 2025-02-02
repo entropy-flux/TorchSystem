@@ -34,7 +34,7 @@ The framework is written in pure python and doesn't require any infrastructure.
 
 ## Example
 
-Let's build a simple training system using the framework. First, we can define our domain with protocols, while this is not strictly necessary it's a good practice to define the interfaces first.
+First, we can define our domain model with protocols, while not strictly necessary and not part of the framework, it's a good practice to define the interfaces of what you want to build first.
 
 ```python 
 # src/domain.py
@@ -160,8 +160,7 @@ from src.services.training import (
 consumer = Consumer()
 
 def writer() -> SummaryWriter:
-    raise NotImplementedError("We don't want to handle the writer here!!!, will be injected later in the application layer") 
-
+    raise NotImplementedError("Will be injected later in the application layer") 
 
 @consumer.handler
 def deliver_metrics(event: Trained | Validated, writer: SummaryWriter = Depends(writer)):
@@ -191,9 +190,11 @@ def deliver_metrics(event: Trained | Validated):
         try:
             subscriber.receive(metric, metric.name)
         except StopIteration:
-            event.model.events.enqueue(StopIteration) # Exceptions are also supported as domain events
-                                                      # If you prefer you can create a domain event for this
-                                                      # and enqueue it here.
+            event.model.events.enqueue(StopIteration) 
+            # Exceptions are also supported as domain events
+            # If you prefer you can create a domain event for this
+            # and enqueue it here.
+
 @subscriber.subscribe('loss')
 def on_low_loss(metric: Metric):
     if metric.value < 0.001:
@@ -202,7 +203,7 @@ def on_low_loss(metric: Metric):
 @subscriber.subscribe('accuracy')
 def on_high_accuracy(metric: Metric):
     if metric.value > 0.995:
-        raise StopIteration # Exceptions are a good way to propagate information backwards in the system.
+        raise StopIteration  
 ```
 
 This is a simple early stopping service. It listens to the metrics produced by the training service and raises a `StopIteration` exception when the loss is low enough or the accuracy is high. The exception is enqueued in the model events and can be raised again when needed, for example in a `onepoch` hook in the aggregate. A `Publisher` could also be used to send the messages to the subscribers, but it wasn't necessary in this case.
@@ -259,7 +260,7 @@ class Classifier(Aggregate):
 ```
 
 
-As you see, aggregates is just a simple facade to encapsulate things you already knew. You also can give Aggregates the capability to handle domain events or domain exceptions. 
+As you see, aggregates is just a simple facade to encapsulate things you already knew. You also can give the aggregates the capability to handle domain events or domain exceptions. 
 
 ```python 
 from torchsystem.domain import Aggregate
