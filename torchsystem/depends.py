@@ -1,13 +1,17 @@
 ### TODO: More work needed to be done on this file.
 ### While this is workings, this should be refactored with better code before it grows too much.
 
-from typing import Callable, Generator
+from typing import Generator
 from inspect import signature
 from contextlib import ExitStack, contextmanager
+from collections.abc import Callable
 
 class Provider:
     def __init__(self):
         self.dependency_overrides = dict()
+    
+    def override(self, dependency: Callable, override: Callable):
+        self.dependency_overrides[dependency] = override
 
 class Dependency:
     def __init__(self, callable: Callable):

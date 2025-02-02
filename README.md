@@ -112,51 +112,52 @@ from src.domain import Metric, Metrics
 service = Service() 
 producer = Producer() 
 
-@service.handler
-def iterate(model: Model, loaders: Sequence[tuple[str, Loader]], metrics: Metrics):
-    for phase, loader in loaders:
-        train(model, loader, metrics) if phase == 'train' else validate(model, loader, metrics) 
-    producer.dispatch(Iterated(model))
-
-@event
-class Iterated:
-    model: Model
-
 def device() -> str:
     raise NotImplementedError("Override this dependency with a concrete implementation")
 
 @service.handler
+def iterate(model: Model, loaders: Sequence[tuple[str, Loader]], metrics: Metrics):
+    for phase, loader in loaders:
+        train(model, loader, metrics) if phase == 'train' else validate(model, loader, metrics)
+        metrics.reset()
+    model.epoch += 1
+    producer.dispatch(Iterated(model, loaders))
+
+@event
+class Iterated:
+    model: Model
+    loaders: Sequence[tuple[str, Loader]]
+
+@service.handler
 def train(model: Model, loader: Loader, metrics: Metrics, device: str = Depends(device)):
     model.phase = 'train'
-    for batch, (input, target) in enumerate(loader, start=1):
-        input, target = input.to(device), target.to(device)
-        prediction, loss = model.fit(input, target)
-        metrics.update(batch, loss, prediction, target)
-    sequence = metrics.compute()
-    producer.dispatch(Trained(model, loader, metrics))
+    for batch, (inputs, targets) in enumerate(loader, start=1):
+        inputs, targets = inputs.to(device), targets.to(device)
+        predictions, loss = model.fit(inputs, targets)
+        metrics.update(batch, loss, predictions, targets)
+    results = metrics.compute()
+    producer.dispatch(Trained(model, results))
 
 @service.handler
 def validate(model: Model, loader: Loader, metrics: Metrics, device: str = Depends(device)):
-    model.phase = 'evaluation'
     with inference_mode():
-        for batch, (input, target) in enumerate(loader, start=1):
-            input, target = input.to(device), target.to(device)
-            prediction, loss = model.evaluate(input, target)
-            metrics.update(batch, loss, prediction, target)
-        sequence = metrics.compute()
-    producer.dispatch(Validated(model, loader, metrics))
+        model.phase = 'evaluation'
+        for batch, (inputs, targets) in enumerate(loader, start=1):
+            inputs, targets = inputs.to(device), targets.to(device)
+            predictions, loss = model.evaluate(inputs, targets)
+            metrics.update(batch, loss, predictions, targets)
+        results = metrics.compute()
+        producer.dispatch(Validated(model, results))
 
 @event
 class Trained:
     model: Model
-    loader: Loader
-    metrics: Sequence[Metric]
+    results: dict[str, Tensor]
 
 @event
 class Validated:
-    model: Model 
-    loader: Loader
-    metrics: Sequence[Metric]
+    model: Model
+    results: dict[str, Tensor]
 ```
 
 And that's it! A simple training system. Notice that it is completely decoupled from the implementation of the domain. It's only task is to orchestrate the training process and produce events from it. It doesn't provide any storage logic or data manipulation, only stateless training logic. Now you can now build a whole data storage system, logging or any other service you need around this simple service. For example, you can store info about the data you used to train the model consuming the `loaders` field of the `Iterated` event, using tools from the [registry](https://mr-mapache.github.io/torch-system/registry/) module.
