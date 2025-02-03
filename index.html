@@ -548,6 +548,7 @@
 </code></pre></div>
 <p>The framework is written in pure python and doesn't require any infrastructure. </p>
 <h2 id="example">Example</h2>
+<p>Let's build a simple training system using the framework. You can find a more detailed working examples <a href="https://github.com/mr-mapache/torch-system/tree/main/examples">here</a>.</p>
 <p>First, we can define our domain model with protocols, while not strictly necessary and not part of the framework, it's a good practice to define the interfaces of what you want to build first.</p>
 <div class="highlight"><pre><span></span><code><span class="c1"># src/domain.py</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span>
@@ -580,6 +581,8 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span><span class="o">...</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">compute</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Metric</span><span class="p">]:</span><span class="o">...</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span><span class="o">...</span>
 
 <span class="k">class</span><span class="w"> </span><span class="nc">Loader</span><span class="p">(</span><span class="n">Protocol</span><span class="p">):</span>
 
@@ -650,6 +653,7 @@
     <span class="n">loaders</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Loader</span><span class="p">]]</span>
 </code></pre></div>
 <p>And that's it! A simple training system. Notice that it is completely decoupled from the implementation of the domain. It's only task is to orchestrate the training process and produce events from it. It doesn't provide any storage logic or data manipulation, only stateless training logic. Now you can now build a whole data storage system, logging or any other service you need around this simple service. For example, you can store info about the data you used to train the model consuming the <code>loaders</code> field of the <code>Iterated</code> event, using tools from the <a href="https://mr-mapache.github.io/torch-system/registry/">registry</a> module.</p>
+<p>The <code>NotImplementedError</code> doesn't mean that the <code>device</code> is just not implemented in the example, when the <code>device</code> function is passed as a dependency using the <code>Depends</code> function to a <code>Service</code> instance, it is added to a dependency map that you can override later. This will allow you to left the dependency unimplemented and override it later using <code>dependency_overrides</code>. This is the idea behind the the dependency injection system. You can read more about it <a href="https://mr-mapache.github.io/torch-system/depends/">here</a>. It will allow you to decouple your infrastructure from your services and bind them in the application layer.</p>
 <p>Let's create a simple tensorboard consumer for this service:</p>
 <div class="highlight"><pre><span></span><code><span class="c1"># src/services/tensorboard.py</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">torchsystem</span><span class="w"> </span><span class="kn">import</span> <span class="n">Depends</span>
@@ -747,12 +751,7 @@
 
     <span class="k">def</span><span class="w"> </span><span class="nf">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">input</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span> <span class="n">target</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">Tensor</span><span class="p">]:</span>
         <span class="n">output</span> <span class="o">=</span> <span class="bp">self</span><span class="p">(</span><span class="nb">input</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">argmax</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">loss</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="n">target</span><span class="p">)</span>
-
-    <span class="k">def</span><span class="w"> </span><span class="nf">onepoch</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="c1"># Hook that will be called after the epoch attribute is updated. The aggregate handle this</span>
-        <span class="c1"># automatically for epochs and phase.</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">events</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span> <span class="c1"># This will raise the StopIteration exception when the epoch is over</span>
+        <span class="k">return</span> <span class="n">argmax</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">loss</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="n">target</span><span class="p">)</span> 
 </code></pre></div>
 <p>As you see, aggregates is just a simple facade to encapsulate things you already knew. You also can give the aggregates the capability to handle domain events or domain exceptions. </p>
 <div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">torchsystem.domain</span><span class="w"> </span><span class="kn">import</span> <span class="n">Aggregate</span>
@@ -785,6 +784,11 @@
         <span class="c1"># Usually you need to define the handlers outside the aggregate and pass them in the building process. But</span>
         <span class="c1"># This is an example of how you can handle complex domain logic within the aggregate.</span>
         <span class="o">...</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">onepoch</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># Hook that will be called after the epoch attribute is updated. The aggregate handle this</span>
+        <span class="c1"># automatically for epochs and phase.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">events</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span> <span class="c1"># This will raise the StopIteration exception enqueued before when the epoch is over</span>
 </code></pre></div>
 <p>The <code>Classifier</code> aggregate we just created can be built and compiled in a simple way. However, you will find yourself in situations where you need to pick a torch backend, create and clean multiprocessing resources, pickle modules, etc., and you will need a tool to build the aggregate and compile it. </p>
 <p>I will implement a compilation pipeline, just to show you how to use the compiler:</p>
@@ -860,7 +864,7 @@
 <span class="n">training</span><span class="o">.</span><span class="n">producer</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">tensorboard</span><span class="o">.</span><span class="n">consumer</span><span class="p">)</span>
 <span class="n">training</span><span class="o">.</span><span class="n">producer</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">earlystopping</span><span class="o">.</span><span class="n">consumer</span><span class="p">)</span>
 <span class="n">compilation</span><span class="o">.</span><span class="n">compiler</span><span class="o">.</span><span class="n">dependency_overrides</span><span class="p">[</span><span class="n">compilation</span><span class="o">.</span><span class="n">device</span><span class="p">]</span> <span class="o">=</span> <span class="n">device</span>
-<span class="n">tensorboard</span><span class="o">.</span><span class="n">consumer</span><span class="o">.</span><span class="n">dependency_overrides</span><span class="p">[</span><span class="n">tensorboard</span><span class="o">.</span><span class="n">writer</span><span class="p">]</span> <span class="o">=</span> <span class="n">summary_writer</span>
+<span class="n">tensorboard</span><span class="o">.</span><span class="n">consumer</span><span class="o">.</span><span class="n">dependency_overrides</span><span class="p">[</span><span class="n">tensorboard</span><span class="o">.</span><span class="n">writer</span><span class="p">]</span> <span class="o">=</span> <span class="n">writer</span>
 
 <span class="o">...</span>
 
