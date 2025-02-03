@@ -716,7 +716,7 @@ be consumed by the consumer. The consumer maps it's handlers to keys generated b
 <span class="n">publisher</span> <span class="o">=</span> <span class="n">Publisher</span><span class="p">()</span>
 
 <span class="nd">@consumer</span><span class="o">.</span><span class="n">handler</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">on_model_iterated</span><span class="p">(</span><span class="n">event</span><span class="p">:</span> <span class="n">UserCreated</span> <span class="o">|</span> <span class="n">UserUpdated</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">on_model_iterated</span><span class="p">(</span><span class="n">event</span><span class="p">:</span> <span class="n">ModelTrained</span> <span class="o">|</span> <span class="n">ModelEvaluated</span><span class="p">):</span>
     <span class="k">for</span> <span class="n">metric</span> <span class="ow">in</span> <span class="n">event</span><span class="o">.</span><span class="n">metrics</span><span class="p">:</span>
         <span class="n">publisher</span><span class="o">.</span><span class="n">publish</span><span class="p">(</span><span class="n">metric</span><span class="p">,</span> <span class="n">metric</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">])</span>
 
