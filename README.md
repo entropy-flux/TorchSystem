@@ -371,16 +371,17 @@ def writter():
     summary_writer.flush()
 
 training.service.dependency_overrides[training.device] = device
+training.producer.register(tensorboard.consumer)
+training.producer.register(earlystopping.consumer)
 compilation.compiler.dependency_overrides[compilation.device] = device
 tensorboard.consumer.dependency_overrides[tensorboard.writer] = summary_writer
 
-summary_writer.close()
 ...
 
 classifier = compilation.compiler.compile(model, criterion, optimizer)
-
 training.service.handle('iterate', classifier, loaders, metrics)
 
+summary_writer.close()
 ...
 ```
 
