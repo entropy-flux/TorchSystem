@@ -95,9 +95,6 @@ from src.domain import Metric, Metrics
 service = Service() 
 producer = Producer() 
 
-def device() -> str:
-    raise NotImplementedError("Override this dependency with a concrete implementation")
-
 @service.handler
 def iterate(model: Model, loaders: Sequence[tuple[str, Loader]], metrics: Metrics):
     for phase, loader in loaders:
@@ -110,6 +107,9 @@ def iterate(model: Model, loaders: Sequence[tuple[str, Loader]], metrics: Metric
 class Iterated:
     model: Model
     loaders: Sequence[tuple[str, Loader]]
+
+def device() -> str:
+    raise NotImplementedError("Override this dependency with a concrete implementation")
 
 @service.handler
 def train(model: Model, loader: Loader, metrics: Metrics, device: str = Depends(device)):
