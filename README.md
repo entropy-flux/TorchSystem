@@ -72,6 +72,8 @@ class Metrics(Protocol):
 
     def compute(self) -> Sequence[Metric]:...
 
+    def reset(self) -> None:...
+
 class Loader(Protocol):
 
     def __iter__(self) -> Iterator[tuple[Tensor, Tensor]]:...
@@ -144,6 +146,8 @@ class Iterated:
 ```
 
 And that's it! A simple training service. Notice that it is completely decoupled from the implementation of the domain. It's only task is to orchestrate the training process and produce events from it. It doesn't provide any storage logic or data manipulation, only stateless training logic. Now you can now build a whole data storage system, logging or any other service you need around this simple service. For example, you can store info about the data you used to train the model consuming the `loaders` field of the `Iterated` event, using tools from the [registry](https://mr-mapache.github.io/torch-system/registry/) module.
+
+The `NotImplementedError` doesn't mean that the `device` is just not implemented in the example, when the `device` function is passed as a dependency using the `Depends` function to a `Service` instance, it is added to a dependency map that you can override later. This will allow you to left the dependency unimplemented and override it later using `dependency_overrides`. This is the idea behind the the dependency injection system. You can read more about it [here](https://mr-mapache.github.io/torch-system/depends/). It will allow you to decouple your infrastructure from your services and bind them in the application layer.
 
 Let's create a simple tensorboard consumer for this service:
 
@@ -252,11 +256,6 @@ class Classifier(Aggregate):
     def evaluate(self, input: Tensor, target: Tensor) -> tuple[Tensor, Tensor]:
         output = self(input)
         return argmax(output, dim=1), self.loss(output, target)
-    
-    def onepoch(self):
-        # Hook that will be called after the epoch attribute is updated. The aggregate handle this
-        # automatically for epochs and phase.
-        self.events.commit() # This will raise the StopIteration exception when the epoch is over
 ```
 
 As you see, aggregates is just a simple facade to encapsulate things you already knew. You also can give Aggregates the capability to handle domain events or domain exceptions. 
@@ -292,6 +291,11 @@ class Classifier(Aggregate):
         # Usually you need to define the handlers outside the aggregate and pass them in the building process. But
         # This is an example of how you can handle complex domain logic within the aggregate.
         ...
+    
+    def onepoch(self):
+        # Hook that will be called after the epoch attribute is updated. The aggregate handle this
+        # automatically for epochs and phase.
+        self.events.commit() # This will raise the StopIteration exception enqueued before when the epoch is over
 ```
 
 The `Classifier` aggregate we just created can be built and compiled in a simple way. However, you will find yourself in situations where you need to pick a torch backend, create and clean multiprocessing resources, pickle modules, etc., and you will need a tool to build the aggregate and compile it. 
@@ -374,7 +378,7 @@ training.service.dependency_overrides[training.device] = device
 training.producer.register(tensorboard.consumer)
 training.producer.register(earlystopping.consumer)
 compilation.compiler.dependency_overrides[compilation.device] = device
-tensorboard.consumer.dependency_overrides[tensorboard.writer] = summary_writer
+tensorboard.consumer.dependency_overrides[tensorboard.writer] = writer
 
 ...
 
