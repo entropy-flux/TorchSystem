@@ -402,4 +402,16 @@ Here is a more detailed list of features with links to their documentation.
 
 ## License
 
-This project is licensed under the MIT License - Use it as you wish in your projects. 
+This project is licensed under the Apache License 2.0. You can view a copy of the license at the following link:
+
+[Apache License 2.0](http://www.apache.org/licenses/LICENSE-2.0)
+
+### Summary of the Apache License 2.0
+
+The Apache License 2.0 allows for the use, modification, and distribution of the software under the conditions specified in the full license. Some key conditions include:
+
+- You must include a copy of the copyright notice and the license in any distribution of the software.
+- You may not use the project's names or trademarks without explicit permission.
+- The software is provided "as is", without warranties of any kind.
+
+For full details, please review the complete license text [here](http://www.apache.org/licenses/LICENSE-2.0).
