@@ -251,6 +251,21 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="License">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#summary-of-the-apache-license-20" class="md-nav__link">
+    <span class="md-ellipsis">
+      Summary of the Apache License 2.0
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
     </ul>
@@ -479,6 +494,21 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="License">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#summary-of-the-apache-license-20" class="md-nav__link">
+    <span class="md-ellipsis">
+      Summary of the Apache License 2.0
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
     </ul>
@@ -572,9 +602,6 @@
 <span class="n">service</span> <span class="o">=</span> <span class="n">Service</span><span class="p">()</span> 
 <span class="n">producer</span> <span class="o">=</span> <span class="n">Producer</span><span class="p">()</span> 
 
-<span class="k">def</span><span class="w"> </span><span class="nf">device</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-    <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Override this dependency with a concrete implementation&quot;</span><span class="p">)</span>
-
 <span class="nd">@service</span><span class="o">.</span><span class="n">handler</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">iterate</span><span class="p">(</span><span class="n">model</span><span class="p">:</span> <span class="n">Model</span><span class="p">,</span> <span class="n">loaders</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Loader</span><span class="p">]],</span> <span class="n">metrics</span><span class="p">:</span> <span class="n">Metrics</span><span class="p">):</span>
     <span class="k">for</span> <span class="n">phase</span><span class="p">,</span> <span class="n">loader</span> <span class="ow">in</span> <span class="n">loaders</span><span class="p">:</span>
@@ -587,6 +614,9 @@
 <span class="k">class</span><span class="w"> </span><span class="nc">Iterated</span><span class="p">:</span>
     <span class="n">model</span><span class="p">:</span> <span class="n">Model</span>
     <span class="n">loaders</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Loader</span><span class="p">]]</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">device</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Override this dependency with a concrete implementation&quot;</span><span class="p">)</span>
 
 <span class="nd">@service</span><span class="o">.</span><span class="n">handler</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">train</span><span class="p">(</span><span class="n">model</span><span class="p">:</span> <span class="n">Model</span><span class="p">,</span> <span class="n">loader</span><span class="p">:</span> <span class="n">Loader</span><span class="p">,</span> <span class="n">metrics</span><span class="p">:</span> <span class="n">Metrics</span><span class="p">,</span> <span class="n">device</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">device</span><span class="p">)):</span>
@@ -862,7 +892,16 @@
 </li>
 </ul>
 <h2 id="license">License</h2>
-<p>This project is licensed under the MIT License - Use it as you wish in your projects. </p>
+<p>This project is licensed under the Apache License 2.0. You can view a copy of the license at the following link:</p>
+<p><a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License 2.0</a></p>
+<h3 id="summary-of-the-apache-license-20">Summary of the Apache License 2.0</h3>
+<p>The Apache License 2.0 allows for the use, modification, and distribution of the software under the conditions specified in the full license. Some key conditions include:</p>
+<ul>
+<li>You must include a copy of the copyright notice and the license in any distribution of the software.</li>
+<li>You may not use the project's names or trademarks without explicit permission.</li>
+<li>The software is provided "as is", without warranties of any kind.</li>
+</ul>
+<p>For full details, please review the complete license text <a href="http://www.apache.org/licenses/LICENSE-2.0">here</a>.</p>
 
 
 
