@@ -95,19 +95,6 @@ from src.domain import Metric, Metrics
 service = Service() 
 producer = Producer() 
 
-@service.handler
-def iterate(model: Model, loaders: Sequence[tuple[str, Loader]], metrics: Metrics):
-    for phase, loader in loaders:
-        train(model, loader, metrics) if phase == 'train' else validate(model, loader, metrics)
-        metrics.reset()
-    model.epoch += 1
-    producer.dispatch(Iterated(model, loaders))
-
-@event
-class Iterated:
-    model: Model
-    loaders: Sequence[tuple[str, Loader]]
-
 def device() -> str:
     raise NotImplementedError("Override this dependency with a concrete implementation")
 
@@ -132,15 +119,28 @@ def validate(model: Model, loader: Loader, metrics: Metrics, device: str = Depen
         results = metrics.compute()
         producer.dispatch(Validated(model, results))
 
+@service.handler
+def iterate(model: Model, loaders: Sequence[tuple[str, Loader]], metrics: Metrics):
+    for phase, loader in loaders:
+        train(model, loader, metrics) if phase == 'train' else validate(model, loader, metrics)
+        metrics.reset()
+    model.epoch += 1
+    producer.dispatch(Iterated(model, loaders))
+
 @event
 class Trained:
     model: Model
-    results: dict[str, Tensor]
+    metrics: Sequence[Metric]
 
 @event
 class Validated:
     model: Model
-    results: dict[str, Tensor]
+    metrics: Sequence[Metric]
+
+@event
+class Iterated:
+    model: Model
+    loaders: Sequence[tuple[str, Loader]]
 ```
 
 And that's it! A simple training system. Notice that it is completely decoupled from the implementation of the domain. It's only task is to orchestrate the training process and produce events from it. It doesn't provide any storage logic or data manipulation, only stateless training logic. Now you can now build a whole data storage system, logging or any other service you need around this simple service. For example, you can store info about the data you used to train the model consuming the `loaders` field of the `Iterated` event, using tools from the [registry](https://mr-mapache.github.io/torch-system/registry/) module.

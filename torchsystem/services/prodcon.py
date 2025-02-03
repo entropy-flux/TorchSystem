@@ -1,4 +1,4 @@
-# Copyright Eric Cardozo.
+# Copyright Eric Cardozo <eric.m.cardozo@mi.unc.edu.ar>
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -66,7 +66,7 @@ class Consumer:
         publisher = Publisher()
 
         @consumer.handler
-        def on_model_iterated(event: UserCreated | UserUpdated):
+        def on_model_iterated(event: ModelTrained | ModelEvaluated):
             for metric in event.metrics:
                 publisher.publish(metric, metric['name'])
 
