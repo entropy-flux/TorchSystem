@@ -637,12 +637,12 @@
 <span class="nd">@event</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">Trained</span><span class="p">:</span>
     <span class="n">model</span><span class="p">:</span> <span class="n">Model</span>
-    <span class="n">results</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Tensor</span><span class="p">]</span>
+    <span class="n">metrics</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Metric</span><span class="p">]</span>
 
 <span class="nd">@event</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">Validated</span><span class="p">:</span>
     <span class="n">model</span><span class="p">:</span> <span class="n">Model</span>
-    <span class="n">results</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Tensor</span><span class="p">]</span>
+    <span class="n">metrics</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Metric</span><span class="p">]</span>
 
 <span class="nd">@event</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">Iterated</span><span class="p">:</span>
