@@ -10,13 +10,12 @@
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
-# limitations under the License.
+# limitations under the License. 
 
 from abc import ABC
 from typing import Any
 from typing import Literal
-from torch.nn import Module
-from torchsystem.domain.events import Events
+from torch.nn import Module 
 
 type PHASE = Literal['train', 'evaluation'] | str
 
@@ -95,7 +94,6 @@ class Aggregate(Module, ABC):
     
     def __init__(self):
         super().__init__()
-        self.events = Events()
 
     @property
     def id(self) -> Any:
