@@ -11,7 +11,7 @@ Example:
 from torch import cuda
 from torchsystem import Depends
 from torchsystem.services import Service
-from sqlalchemyl.orm import Session
+from sqlalchemy.orm import Session
 
 service = Service() # You will know more about services in the next sections.
                     # For now, just think of it as a decorator that allows you

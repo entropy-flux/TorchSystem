@@ -11,8 +11,7 @@ identifier for each entity in a machine learning system.
 
 In order to help with this task, the `torchsystem.registry` module provides a set of functions to register pytorch objects,
 so when they are initialized, the arguments that were passed to the constructor are stored as metadata to be used later
-to calculate their HASH. This module is provided by the [mlregistry](https://github.com/mr-mapache/ml-registry), and it's
-documentation can be found here: [https://mr-mapache.github.io/ml-registry/](https://mr-mapache.github.io/ml-registry/).
+to calculate their HASH. Aditional documentation can be found here: [https://mr-mapache.github.io/ml-registry/](https://mr-mapache.github.io/ml-registry/).
 
 Example:
 ```python
@@ -79,3 +78,9 @@ for model in avaliables:
 # {'input_size': int, 'hidden_size': int, 'output_size': int, 'dropout': float, 'activation': 'Module'}
 # {'input_size': int, 'hidden_size': int, 'output_size': int, 'dropout': float, 'activation': 'Module'}
 ```
+
+::: torchsystem.registry.accessors
+    handler: python
+    options:
+      show_root_heading: false
+      show_source: false

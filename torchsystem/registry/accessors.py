@@ -130,10 +130,8 @@ def register(cls: type, excluded_args: list[int] | None = None, excluded_kwargs:
     Returns:
         type: The class with the __init__ method overriden.
 
-    Example:
-
-        .. code-block:: python
-
+    Example: 
+        ```python	
         @register
         class Bar:
             def __init__(self, x: int, y: float, z: str):
@@ -144,6 +142,7 @@ def register(cls: type, excluded_args: list[int] | None = None, excluded_kwargs:
                 pass
                 
         register(Foo, excluded_args=[0], excluded_kwargs=['z'])
+        ```	
     """
     ...
 
@@ -162,15 +161,13 @@ def register(cls: str, excluded_args: list[int] | None = None, excluded_kwargs: 
     Returns:
         type: A decorator to override the __init__ method of a class.
 
-    Example:
-        
-        .. code-block:: python
-
+    Example: 
+        ```python	
         @register('bar')
         class Bar:
             def __init__(self, x: int, y: float, z: str):
                 pass
-
+        ```
     """
     ...
 
@@ -216,9 +213,7 @@ class Registry[T]:
     
     
     Example:
-
-        .. code-block:: python
-
+        ```python	
         from mlregistry.registry import Registry
 
         registry = Registry()
@@ -233,6 +228,7 @@ class Registry[T]:
         instance = registry.get('Foo')(1, 2.0, '3') # instance of Foo
         signature = registry.signature('Foo') # {'x': 'int', 'y': 'float', 'z': 'str'}
         keys = registry.keys() # ['Foo']
+        ```
     """
     def __init__(self):
         self.types = dict()
@@ -240,48 +236,39 @@ class Registry[T]:
 
     @overload
     def register(self, cls: str, excluded_args: list[int] | None = None, excluded_kwargs: set[str] | None = None) -> Callable[[type[T]], type[T]]:
-        """
-        A decorator to register a class type with the registry and override its __init__ method in order to capture the arguments
-        passed to the constructor during the object instantiation. The class type is registered with the name provided as the
-        argument to the decorator.
-
-        Args:
-            cls (str): the name of the class type to be registered
-            excluded_args (list[int], optional): The list of argument indexes to be excluded. Defaults to None.
-            excluded_kwargs (dict[str, Any], optional): The dictionary of keyword arguments to be excluded. Defaults to None.
-
-        Returns:
-            type[T]: The registered class type with the name provided as the argument to the decorator.
-        """
         ...
-
 
     @overload
     def register(self, cls: type, excluded_args: list[int] | None = None, excluded_kwargs: set[str] | None = None) -> type[T]:
+        ...
+
+    def register(self, cls: type | str, excluded_args: list[int] | None = None, excluded_kwargs: set[str] | None = None) -> type[T] | Callable[[type[T]], type[T]]:
         """
         Register a class type with the registry and override its __init__ method in order to capture the arguments
         passed to the constructor during the object instantiation. The captured arguments can be retrieved using the
         `getarguments` function. The `excluded_args` and `excluded_kwargs` parameters can be used to exclude the arguments
-        from being captured. 
+        from being captured.
+
+        Types can be registered after their definition or using the register method as a decorato and optionally setting the
+        name of the class in the registry.
 
         Args:
-            cls (type): the class type to be registered
+            cls (type | str): the class type to be registered
             excluded_args (list[int], optional): The list of argument indexes to be excluded. Defaults to None.
-            excluded_kwargs (dict[str, Any], optional): The dictionary of keyword arguments to be excluded. Defaults to None.
+            excluded_kwargs (set[str], optional): The dictionary of keyword arguments to be excluded. Defaults to None.
 
         Returns:
-            type[T]: the registered class type.
+            type[T] | Callable: the registered class type.
         """
-        ...
-
-    def register(self, cls: type | str, excluded_args: list[int] | None = None, excluded_kwargs: set[str] | None = None) -> type[T] | Callable[[type[T]], type[T]]:
+        
+        
         if isinstance(cls, type):
             self.types[cls.__name__] = cls
             self.signatures[cls.__name__] = core.cls_signature(cls, excluded_args, excluded_kwargs)
             core.cls_override_init(cls, excluded_args, excluded_kwargs)
             return cls
             
-        elif isinstance(cls, str):
+        elif isinstance(cls, str | None):
             def wrapper(type: type):
                 self.types[cls] = type
                 self.signatures[cls] = core.cls_signature(type, excluded_args, excluded_kwargs)
