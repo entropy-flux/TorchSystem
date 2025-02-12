@@ -54,4 +54,4 @@ training.service.dependency_overrides[training.db_session] = db_session
 
 In the example above, we override the `trainer` and `db_session` dependencies with concrete implementations. Note that the `db_session` dependency is a generator-based dependency, which allows you to clean up resources after the dependency is used. There are a lot of situations where you need to clean up resources after using a dependency, for example when working with distributed training, databases, filesystems, tensorboard, etc.
 
-You will see more examples of dependency injection in the next sections, dependency injection is a core concept in this framework and is used extensively in the compiler ,services, consumers or subscribers. 
+You will see more examples of dependency injection in the next sections, dependency injection is a core concept in this framework and is used extensively in the compiler, services, consumers or subscribers. 
