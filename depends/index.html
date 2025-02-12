@@ -412,7 +412,7 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">torch</span><span class="w"> </span><span class="kn">import</span> <span class="n">cuda</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">torchsystem</span><span class="w"> </span><span class="kn">import</span> <span class="n">Depends</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">torchsystem.services</span><span class="w"> </span><span class="kn">import</span> <span class="n">Service</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">sqlalchemyl.orm</span><span class="w"> </span><span class="kn">import</span> <span class="n">Session</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sqlalchemy.orm</span><span class="w"> </span><span class="kn">import</span> <span class="n">Session</span>
 
 <span class="n">service</span> <span class="o">=</span> <span class="n">Service</span><span class="p">()</span> <span class="c1"># You will know more about services in the next sections.</span>
                     <span class="c1"># For now, just think of it as a decorator that allows you</span>
@@ -450,7 +450,7 @@
 <span class="n">training</span><span class="o">.</span><span class="n">service</span><span class="o">.</span><span class="n">dependency_overrides</span><span class="p">[</span><span class="n">training</span><span class="o">.</span><span class="n">db_session</span><span class="p">]</span> <span class="o">=</span> <span class="n">db_session</span>
 </code></pre></div>
 <p>In the example above, we override the <code>trainer</code> and <code>db_session</code> dependencies with concrete implementations. Note that the <code>db_session</code> dependency is a generator-based dependency, which allows you to clean up resources after the dependency is used. There are a lot of situations where you need to clean up resources after using a dependency, for example when working with distributed training, databases, filesystems, tensorboard, etc.</p>
-<p>You will see more examples of dependency injection in the next sections, dependency injection is a core concept in this framework and is used extensively in the compiler ,services, consumers or subscribers. </p>
+<p>You will see more examples of dependency injection in the next sections, dependency injection is a core concept in this framework and is used extensively in the compiler, services, consumers or subscribers. </p>
 
 
 
