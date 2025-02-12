@@ -105,7 +105,7 @@ class Compiler[T]:
     def __init__(
         self,
         *,
-        provider: Provider = None
+        provider: Provider | None = None,
     ):
         """
         Initialize the Compiler.
@@ -151,7 +151,7 @@ class Compiler[T]:
         self.steps.append(injected)
         return injected
     
-    def compile(self, *args, **kwargs) -> T:
+    def compile(self, *args, **kwargs) -> T | Any | None:
         """
         Execute the pipeline of functions in sequence. The output of each function is passed as input
         to the next function. The compiled AGGREGATE should be returned by the last function in the pipeline.

@@ -92,8 +92,8 @@ class Events:
         ```
     """
     def __init__(self):
-        self.queue = deque[EVENT]()
-        self.handlers = dict[type, HANDLERS]()
+        self.queue = deque[Event | Exception | type[Event] | type[Exception]]()
+        self.handlers = dict[type, Callable | Sequence[Callable]]()
 
     @overload
     def enqueue(self, event: Event) -> None: ...
@@ -133,12 +133,12 @@ class Events:
     def handle(self, event: type[Event]) -> None: ...
 
     @overload
-    def handle(self, event: Exception) -> None: ...
-
-    @overload
     def handle(self, event: type[Exception]) -> None: ...
 
-    def handle(self, event: EVENT) -> None:
+    @overload
+    def handle(self, event: Exception) -> None: ...
+
+    def handle(self, event: Event | Exception | type[Event] | type[Exception]) -> None:
         """
         Handles a DOMAIN EVENT by dispatching it to the appropriate handler or group of handlers. If no handler 
         is found for the event, the event is ignored, except if the event is an exception. If the event is an
@@ -159,7 +159,7 @@ class Events:
             for handler in handlers if isinstance(handlers, Iterable) else [handlers]:
                 handler() if len(signature(handler).parameters) == 0 else handler(event)
         
-        elif isinstance(event, Exception) or issubclass(event, Exception):
+        elif isinstance(event, Exception) or isinstance(event, type) and issubclass(event, Exception):
             raise event
 
     def commit(self) -> None:

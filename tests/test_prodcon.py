@@ -12,6 +12,10 @@ class ModelTrained:
 class ModelEvaluated:
     metrics: Sequence
 
+@event
+class ModelDeployed:
+    pass
+
 consumer = Consumer() 
 
 def getdb():
@@ -20,6 +24,10 @@ def getdb():
 @consumer.handler
 def on_model_iterated(event: ModelTrained | ModelEvaluated, db = Depends(getdb)): 
     db.append(event.metrics)
+
+@consumer.handler
+def on_model_deployed(event: ModelDeployed, db = Depends(getdb)):
+    db.clear()
 
 db = []
 
@@ -34,3 +42,7 @@ def test_consumer():
     producer.dispatch(ModelEvaluated([4, 5, 6]))
 
     assert db == [[1, 2, 3], [4, 5, 6]]
+
+    producer.dispatch(ModelDeployed())
+
+    assert db == []

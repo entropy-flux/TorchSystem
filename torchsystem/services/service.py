@@ -69,9 +69,9 @@ class Service:
     """
     def __init__(
         self, 
-        name: str = None,
+        name: str | None = None,
         *,
-        provider: Provider = None,
+        provider: Provider | None = None,
         generator: Callable[[str], str] = lambda name: sub(r'_', '-', name)
     ):
         self.name = name

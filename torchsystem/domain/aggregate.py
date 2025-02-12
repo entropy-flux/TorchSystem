@@ -21,7 +21,7 @@ from typing import Any
 from typing import Literal
 from torch.nn import Module 
 
-type PHASE = Literal['train', 'evaluation'] | str
+type Phase = Literal['train', 'evaluation'] | str
 
 class Aggregate(Module, ABC):
     """
@@ -126,7 +126,7 @@ class Aggregate(Module, ABC):
         return 'train' if self.training else 'evaluation'
     
     @phase.setter
-    def phase(self, value: PHASE):
+    def phase(self, value: Phase):
         """
         Set the phase of the AGGREGATE. When the phase changes, the onphase hook method is called.
         The phase will be set to 'train' if the value is 'train', otherwise it will be set to 'evaluation'.

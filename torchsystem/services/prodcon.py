@@ -76,9 +76,9 @@ class Consumer:
     """
     def __init__(
         self, 
-        name: str = None,
+        name: str | None = None,
         *,
-        provider: Provider = None,
+        provider: Provider | None = None,
         generator: Callable[[str], str] = lambda name: sub(r'(?<!^)(?=[A-Z])', '-', name).lower()
     ):
         self.name = name
@@ -111,7 +111,7 @@ class Consumer:
             handler (Callable[..., None]): The handler function to be registered.
 
         Returns:
-            Callable[..., None]: The injected handler function.
+            Callable[..., None]: The injected handler function at the end of the recursion.
         """
         if hasattr(annotation, '__origin__'):
             origin = getattr(annotation, '__origin__')
@@ -129,7 +129,8 @@ class Consumer:
             self.types[key] = annotation    
             injected = inject(self.provider)(handler)
             self.handlers.setdefault(key, []).append(injected)
-            return injected
+            return injected    
+        return handler
 
     def handler(self, wrapped: Callable[..., None]) -> Callable[..., None]:
         """

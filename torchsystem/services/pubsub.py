@@ -72,9 +72,9 @@ class Subscriber:
     """
     def __init__(
         self, 
-        name: str = None,
+        name: str | None = None,
         *,
-        provider: Provider = None, 
+        provider: Provider | None = None,
     ):
         self.name = name
         self.provider = provider or Provider()
