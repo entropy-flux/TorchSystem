@@ -8,7 +8,6 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.12"
-mlregistry = "^1.2.3"
 
 
 [tool.poetry.group.tests.dependencies]
