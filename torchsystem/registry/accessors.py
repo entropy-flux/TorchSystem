@@ -171,19 +171,19 @@ def register(cls: str, excluded_args: list[int] | None = None, excluded_kwargs: 
     """
     ...
 
-def register(cls: type | str | None, excluded_args: list[int] | None = None, excluded_kwargs: set[str] | None = None):
+def register(cls: type | str | None, excluded_args: list[int] | None = None, excluded_kwargs: set[str] | None = None) -> type | Callable[[type], type]:
     """
     A function to override the __init__ method of a class in order to capture the arguments passed 
     to it when an instance of the given type is initialized. Can be used as a raw decorator or as a
     decorator with a name argument to set the name of the class in the registry.
 
     Args:
-        cls (type | str | None): The class to override the __init__ method or the name of the class in the registry.
+        cls (type | str): The class to override the __init__ method or the name of the class in the registry.
         excluded_args (list[int], optional): The indexes of the arguments to exclude from the capture. Defaults to None.
         excluded_kwargs (set[str], optional): The names of the keyword arguments to exclude from the capture. Defaults to None.
 
     Returns:
-        type: The class with the __init__ method overriden or a decorator to override the __init__ method of a class.
+        type | Callable: The class with the __init__ method overriden or a decorator to override the __init__ method of a class.
     """
     if isinstance(cls, type):
         return core.cls_override_init(cls, excluded_args, excluded_kwargs)
