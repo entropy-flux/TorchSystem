@@ -1,19 +1,15 @@
-# Copyright Eric Cardozo.
+# Copyright 2024 Eric Cardozo
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
+# You can obtain a copy of the License at:
+# 
 #     http://www.apache.org/licenses/LICENSE-2.0
 #
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License. 
+# This software is distributed "AS IS," without warranties or conditions.
+# See the License for specific terms.
 #
-# 
-# For inquiries, visit the documentation at mr-mapache.github.io/torch-system/
+# For inquiries, visit: mr-mapache.github.io/torch-system/
 
 
 from typing import Any
