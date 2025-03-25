@@ -618,6 +618,11 @@
     <span class="n">results</span> <span class="o">=</span> <span class="n">metrics</span><span class="o">.</span><span class="n">compute</span><span class="p">()</span>
     <span class="n">producer</span><span class="o">.</span><span class="n">dispatch</span><span class="p">(</span><span class="n">Trained</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">results</span><span class="p">))</span>
 
+<span class="nd">@event</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Trained</span><span class="p">:</span>
+    <span class="n">model</span><span class="p">:</span> <span class="n">Model</span>
+    <span class="n">metrics</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Metric</span><span class="p">]</span>
+
 <span class="nd">@service</span><span class="o">.</span><span class="n">handler</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">validate</span><span class="p">(</span><span class="n">model</span><span class="p">:</span> <span class="n">Model</span><span class="p">,</span> <span class="n">loader</span><span class="p">:</span> <span class="n">Loader</span><span class="p">,</span> <span class="n">metrics</span><span class="p">:</span> <span class="n">Metrics</span><span class="p">,</span> <span class="n">device</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">device</span><span class="p">)):</span>
     <span class="k">with</span> <span class="n">inference_mode</span><span class="p">():</span>
@@ -638,11 +643,6 @@
     <span class="n">producer</span><span class="o">.</span><span class="n">dispatch</span><span class="p">(</span><span class="n">Iterated</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">loaders</span><span class="p">))</span>
 
 <span class="nd">@event</span>
-<span class="k">class</span><span class="w"> </span><span class="nc">Trained</span><span class="p">:</span>
-    <span class="n">model</span><span class="p">:</span> <span class="n">Model</span>
-    <span class="n">metrics</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Metric</span><span class="p">]</span>
-
-<span class="nd">@event</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">Validated</span><span class="p">:</span>
     <span class="n">model</span><span class="p">:</span> <span class="n">Model</span>
     <span class="n">metrics</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Metric</span><span class="p">]</span>
@@ -652,7 +652,7 @@
     <span class="n">model</span><span class="p">:</span> <span class="n">Model</span>
     <span class="n">loaders</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Loader</span><span class="p">]]</span>
 </code></pre></div>
-<p>And that's it! A simple training system. Notice that it is completely decoupled from the implementation of the domain. It's only task is to orchestrate the training process and produce events from it. It doesn't provide any storage logic or data manipulation, only stateless training logic. Now you can now build a whole data storage system, logging or any other service you need around this simple service. For example, you can store info about the data you used to train the model consuming the <code>loaders</code> field of the <code>Iterated</code> event, using tools from the <a href="https://mr-mapache.github.io/torch-system/registry/">registry</a> module.</p>
+<p>And that's it! A simple training service. Notice that it is completely decoupled from the implementation of the domain. It's only task is to orchestrate the training process and produce events from it. It doesn't provide any storage logic or data manipulation, only stateless training logic. Now you can now build a whole data storage system, logging or any other service you need around this simple service. For example, you can store info about the data you used to train the model consuming the <code>loaders</code> field of the <code>Iterated</code> event, using tools from the <a href="https://mr-mapache.github.io/torch-system/registry/">registry</a> module. The <code>event</code> decorator will store fields as weakrefs in order to avoid issues with memory and unnecessary reference counting.</p>
 <p>The <code>NotImplementedError</code> doesn't mean that the <code>device</code> is just not implemented in the example, when the <code>device</code> function is passed as a dependency using the <code>Depends</code> function to a <code>Service</code> instance, it is added to a dependency map that you can override later. This will allow you to leave the dependency unimplemented and override it later using <code>dependency_overrides</code>. This is the idea behind the dependency injection system. You can read more about it <a href="https://mr-mapache.github.io/torch-system/depends/">here</a>. It will allow you to decouple your infrastructure from your services and bind them in the application layer.</p>
 <p>Let's create a simple tensorboard consumer for this service:</p>
 <div class="highlight"><pre><span></span><code><span class="c1"># src/services/tensorboard.py</span>

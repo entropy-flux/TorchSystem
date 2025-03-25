@@ -1183,7 +1183,8 @@ consumers.</p>
 
     <div class="doc doc-contents ">
 
-        <p>A decorator to define an Event message.</p>
+        <p>A decorator to define an Event message. An event will store weak references to objects
+and is meant to be consumed by consumers inside the scope where they are produced.</p>
 
 
 <p><span class="doc-section-title">Parameters:</span></p>
