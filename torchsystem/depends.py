@@ -18,6 +18,7 @@ from typing import Generator
 from inspect import signature
 from contextlib import ExitStack, contextmanager
 from collections.abc import Callable
+from functools import wraps
 
 class Provider:
     def __init__(self):
@@ -74,6 +75,7 @@ def Depends(callable: Callable):
 
 def inject(provider: Provider):
     def decorator(function: Callable):
+        @wraps(function)
         def wrapper(*args, **kwargs):
             bounded, exit_stack = resolve(function, provider, *args, **kwargs)
             with exit_stack:
