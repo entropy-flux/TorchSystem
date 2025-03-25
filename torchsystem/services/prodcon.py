@@ -219,9 +219,10 @@ class Producer:
 
 
 def event(cls: type):
-    """
-    A decorator to define an Event message.
-
+    """ 
+    A decorator to define an Event message. An event will store weak references to objects
+    and is meant to be consumed by consumers inside the scope where they are produced.
+    
     Args:
         cls (type): The ocurrence of something that happened represented by a class
 
