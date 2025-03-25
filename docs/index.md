@@ -112,6 +112,11 @@ def train(model: Model, loader: Loader, metrics: Metrics, device: str = Depends(
     results = metrics.compute()
     producer.dispatch(Trained(model, results))
 
+@event
+class Trained:
+    model: Model
+    metrics: Sequence[Metric]
+
 @service.handler
 def validate(model: Model, loader: Loader, metrics: Metrics, device: str = Depends(device)):
     with inference_mode():
@@ -132,11 +137,6 @@ def iterate(model: Model, loaders: Sequence[tuple[str, Loader]], metrics: Metric
     producer.dispatch(Iterated(model, loaders))
 
 @event
-class Trained:
-    model: Model
-    metrics: Sequence[Metric]
-
-@event
 class Validated:
     model: Model
     metrics: Sequence[Metric]
@@ -147,7 +147,7 @@ class Iterated:
     loaders: Sequence[tuple[str, Loader]]
 ```
 
-And that's it! A simple training system. Notice that it is completely decoupled from the implementation of the domain. It's only task is to orchestrate the training process and produce events from it. It doesn't provide any storage logic or data manipulation, only stateless training logic. Now you can now build a whole data storage system, logging or any other service you need around this simple service. For example, you can store info about the data you used to train the model consuming the `loaders` field of the `Iterated` event, using tools from the [registry](https://mr-mapache.github.io/torch-system/registry/) module.
+And that's it! A simple training service. Notice that it is completely decoupled from the implementation of the domain. It's only task is to orchestrate the training process and produce events from it. It doesn't provide any storage logic or data manipulation, only stateless training logic. Now you can now build a whole data storage system, logging or any other service you need around this simple service. For example, you can store info about the data you used to train the model consuming the `loaders` field of the `Iterated` event, using tools from the [registry](https://mr-mapache.github.io/torch-system/registry/) module. The `event` decorator will store fields as weakrefs in order to avoid issues with memory and unnecessary reference counting.
 
 The `NotImplementedError` doesn't mean that the `device` is just not implemented in the example, when the `device` function is passed as a dependency using the `Depends` function to a `Service` instance, it is added to a dependency map that you can override later. This will allow you to leave the dependency unimplemented and override it later using `dependency_overrides`. This is the idea behind the dependency injection system. You can read more about it [here](https://mr-mapache.github.io/torch-system/depends/). It will allow you to decouple your infrastructure from your services and bind them in the application layer.
 
