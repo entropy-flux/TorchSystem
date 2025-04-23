@@ -42,7 +42,9 @@ def resolve(function: Callable, provider: Provider, *args, **kwargs):
             if dependency in provider.dependency_overrides:
                 dependency = provider.dependency_overrides[dependency]
             
-            dep_instance = dependency()
+            dep_args, dep_stack = resolve(dependency, provider)
+            with dep_stack:
+                dep_instance = dependency(*dep_args.args, **dep_args.kwargs)
             
             if isinstance(dep_instance, Generator):
                 bounded.arguments[name] = exit_stack.enter_context(_managed_dependency(dep_instance))
@@ -60,17 +62,6 @@ def _managed_dependency(generator: Generator):
         next(generator, None)   
 
 def Depends(callable: Callable):
-    """
-    The Depends function is used to define a dependency for a function. The callable argument is
-    a function that will be called to provide the dependency. The function can return a value or a generator in
-    order to clean up resources after the function has been called.
-
-    Args:
-        callable (Callable): The function that will be called to provide the dependency.
-
-    Returns: 
-        Dependency: A Dependency object that can be used as a default value for a function parameter
-    """
     return Dependency(callable)
 
 def inject(provider: Provider):

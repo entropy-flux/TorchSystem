@@ -43,4 +43,28 @@ def test_dependency_override():
     provider.dependency_overrides[normal_dependency] = override_normal_dependency_with_generator
     assert normal_function() == 43
     overrideopenmock.assert_called_once()
-    overrideclosemock.assert_called_once()
+    overrideclosemock.assert_called_once() 
+
+def left_leaf_dependency():
+    return 2
+    
+def right_leaf_dependency():
+    return 3
+
+def right_node_dependency(leaf = Depends(right_leaf_dependency)):
+    return leaf*5
+
+def root_dependency(left = Depends(left_leaf_dependency), right = Depends(right_node_dependency)):
+    return left*right*7
+
+@inject(provider)
+def handle_dependency(root = Depends(root_dependency)):
+    return root*11
+
+def test_handle_nested_depends():
+    value = handle_dependency()
+    assert value == 2*3*5*7*11
+
+    provider.dependency_overrides[right_node_dependency] = lambda: 13
+    value = handle_dependency()
+    assert value == 2*7*11*13  
