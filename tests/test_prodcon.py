@@ -33,7 +33,7 @@ db = []
 
 def test_consumer():
     db.clear()
-    consumer.dependency_overrides[getdb] = lambda: db
+    consumer.override(getdb, lambda: db)
 
     producer = Producer()
     producer.register(consumer)

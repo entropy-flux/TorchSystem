@@ -16,7 +16,7 @@ def train(model: Any, device: str = Depends(getdevice)):
 def test_service():
     model = Mock()
     device = Mock()
-    service.dependency_overrides[getdevice] = lambda: device
+    service.override(getdevice, lambda: device)
     service.handle('train', model)
     model.assert_called_once()
     device.assert_called_once()

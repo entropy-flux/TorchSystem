@@ -97,6 +97,16 @@ class Consumer:
             dict: A dictionary of the dependency map.
         """
         return self.provider.dependency_overrides
+    
+    def override(self, dependency: Callable, implementation: Callable):
+        """
+        Overrides a dependency with an implementation. 
+
+        Args:
+            dependency (Callable): The dependency function to override.
+            implementation (Callable): The implementation of the function.
+        """
+        self.dependency_overrides[dependency] = implementation
 
     def register(self, annotation: Any, handler: Callable[..., None]) -> Callable[..., None]:
         """
