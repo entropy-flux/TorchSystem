@@ -131,6 +131,18 @@ class Compiler[T]:
             ```
         """
         return self.provider.dependency_overrides
+    
+    
+    def override(self, dependency: Callable, implementation: Callable):
+        """
+        Overrides a dependency with an implementation. 
+
+        Args:
+            dependency (Callable): The dependency function to override.
+            implementation (Callable): The implementation of the function.
+        """
+        self.dependency_overrides[dependency] = implementation
+    
 
     def step(self, callable: Callable) -> Any:
         """
