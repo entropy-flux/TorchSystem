@@ -1,8 +1,8 @@
 [tool.poetry]
 name = "torchsystem"
-version = "1.4.4"
+version = "1.4.5"
 description = "A framework for creating message-driven IA systems with PyTorch"
-authors = ["Eric Cardozo <eric.m.cardozo@mi.unc.edu.ar>"]
+authors = ["Eric Hermosis <eric.hermosis@gmail.com>"]
 license = "Apache-2.0"
 readme = "README.md"
 

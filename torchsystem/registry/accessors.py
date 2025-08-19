@@ -1,4 +1,4 @@
-# Copyright 2024 Eric Cardozo
+# Copyright 2024 Eric Hermosis
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -9,7 +9,7 @@
 # This software is distributed "AS IS," without warranties or conditions.
 # See the License for specific terms.
 #
-# For inquiries, visit: mr-mapache.github.io/torch-system/
+# For inquiries, visit: entropy-flux.github.io/TorchSystem/
 
 from typing import Any
 from json import dumps
@@ -18,7 +18,9 @@ from copy import deepcopy
 from typing import overload
 from typing import Optional
 from typing import Any
-from collections.abc import Callable
+from collections.abc import Callable 
+from torch.nn import Module
+from torch.serialization import add_safe_globals
 from torchsystem.registry import core
 
 def getarguments(obj: object) -> dict[str, Any]:
@@ -279,13 +281,20 @@ class Registry[T]:
             self.types[cls.__name__] = cls
             self.signatures[cls.__name__] = core.cls_signature(cls, excluded_args, excluded_kwargs)
             core.cls_override_init(cls, excluded_args, excluded_kwargs)
+            if issubclass(cls, Module):
+                add_safe_globals([cls])
             return cls
             
-        elif isinstance(cls, str | None):
-            def wrapper(type: type):
-                self.types[cls] = type
-                self.signatures[cls] = core.cls_signature(type, excluded_args, excluded_kwargs)
-                core.cls_override_init(type, excluded_args, excluded_kwargs, cls)
+        elif isinstance(cls, str):
+            def wrapper(type_: type):
+                self.types[cls] = type_
+                self.signatures[cls] = core.cls_signature(type_, excluded_args, excluded_kwargs)
+                core.cls_override_init(type_, excluded_args, excluded_kwargs, cls)
+ 
+                if issubclass(type_, Module):
+                    add_safe_globals([type_])
+
+                return type_
             return wrapper
         else:
             raise TypeError("The argument should be a class type or a string")

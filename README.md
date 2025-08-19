@@ -1,6 +1,6 @@
 # TorchSystem.
 
-This framework will help you to create powerful and scalable systems using the PyTorch library. It is designed under the principles of domain driven design (DDD) and includes built-in message patterns and a robust dependency injection system. It enables the creation of stateless, modular service layers and robust domain models. This design facilitates better separation of concerns, testability, and scalability, making it ideal for complex IA training systems. You can find the full documentation here: [mr-mapache.github.io/torch-system/](https://mr-mapache.github.io/torch-system/)
+This framework will help you to create powerful and scalable systems using the PyTorch library. It is designed under the principles of domain driven design (DDD) and includes built-in message patterns and a robust dependency injection system. It enables the creation of stateless, modular service layers and robust domain models. This design facilitates better separation of concerns, testability, and scalability, making it ideal for complex IA training systems. You can find the full documentation here: [entropy-flux.github.io/TorchSystem/](https://entropy-flux.github.io/TorchSystem/)
 
 
 ## Table of contents:
@@ -35,7 +35,7 @@ The framework is written in pure python and doesn't require any infrastructure.
 
 ## Example
 
-Let's build a simple training system using the framework. You can find a more detailed working examples [here](https://github.com/mr-mapache/torch-system/tree/main/examples).
+Let's build a simple training system using the framework. You can find a more detailed working examples [here](https://github.com/entropy-flux/TorchSystem/tree/main/examples).
 
 First, we can define our domain model with protocols, while not strictly necessary and not part of the framework, it's a good practice to define the interfaces of what you want to build first.
 
@@ -145,9 +145,9 @@ class Iterated:
     loaders: Sequence[tuple[str, Loader]]
 ```
 
-And that's it! A simple training service. Notice that it is completely decoupled from the implementation of the domain. It's only task is to orchestrate the training process and produce events from it. It doesn't provide any storage logic or data manipulation, only stateless training logic. Now you can now build a whole data storage system, logging or any other service you need around this simple service. For example, you can store info about the data you used to train the model consuming the `loaders` field of the `Iterated` event, using tools from the [registry](https://mr-mapache.github.io/torch-system/registry/) module. The `event` decorator will store fields as weakrefs in order to avoid issues with memory and unnecessary reference counting.
+And that's it! A simple training service. Notice that it is completely decoupled from the implementation of the domain. It's only task is to orchestrate the training process and produce events from it. It doesn't provide any storage logic or data manipulation, only stateless training logic. Now you can now build a whole data storage system, logging or any other service you need around this simple service. For example, you can store info about the data you used to train the model consuming the `loaders` field of the `Iterated` event, using tools from the [registry](https://entropy-flux.github.io/TorchSystem/registry/) module. The `event` decorator will store fields as weakrefs in order to avoid issues with memory and unnecessary reference counting.
 
-The `NotImplementedError` doesn't mean that the `device` is just not implemented in the example, when the `device` function is passed as a dependency using the `Depends` function to a `Service` instance, it is added to a dependency map that you can override later. This will allow you to left the dependency unimplemented and override it later using `dependency_overrides`. This is the idea behind the the dependency injection system. You can read more about it [here](https://mr-mapache.github.io/torch-system/depends/). It will allow you to decouple your infrastructure from your services and bind them in the application layer.
+The `NotImplementedError` doesn't mean that the `device` is just not implemented in the example, when the `device` function is passed as a dependency using the `Depends` function to a `Service` instance, it is added to a dependency map that you can override later. This will allow you to left the dependency unimplemented and override it later using `dependency_overrides`. This is the idea behind the the dependency injection system. You can read more about it [here](https://entropy-flux.github.io/TorchSystem/depends/). It will allow you to decouple your infrastructure from your services and bind them in the application layer.
 
 Let's create a simple tensorboard consumer for this service:
 
@@ -395,21 +395,21 @@ This is a simple example of how to build a training system using the framework. 
 
 Here is a more detailed list of features with links to their documentation.
 
-- [**Aggregates**](https://mr-mapache.github.io/torch-system/domain/): Define the structure of your domain by grouping related entities and enforcing consistency within their boundaries. They encapsulate both data and behavior, ensuring that all modifications occur through controlled operations.
+- [**Aggregates**](https://entropy-flux.github.io/TorchSystem/domain/): Define the structure of your domain by grouping related entities and enforcing consistency within their boundaries. They encapsulate both data and behavior, ensuring that all modifications occur through controlled operations.
 
-- [**Domain Events**](https://mr-mapache.github.io/torch-system/domain/): Aggregates can produce and consume domain events, which signal meaningful changes in the system or trigger actions elsewhere. Exceptions are supported to be treated as domain events, allowing them to be enqueued and handled or raised as needed. This makes it trivial to implement features like early stopping (Just enqueue an exception and raise it when needed).
+- [**Domain Events**](https://entropy-flux.github.io/TorchSystem/domain/): Aggregates can produce and consume domain events, which signal meaningful changes in the system or trigger actions elsewhere. Exceptions are supported to be treated as domain events, allowing them to be enqueued and handled or raised as needed. This makes it trivial to implement features like early stopping (Just enqueue an exception and raise it when needed).
 
-- [**Registry**](https://mr-mapache.github.io/torch-system/registry/): The registry module allows you to treat your models as entities by providing a way to calculate locally unique hashes for them that can act as their identifier. This module also provides several other utilities to help you handle the data from your domain.
+- [**Registry**](https://entropy-flux.github.io/TorchSystem/registry/): The registry module allows you to treat your models as entities by providing a way to calculate locally unique hashes for them that can act as their identifier. This module also provides several other utilities to help you handle the data from your domain.
 
-- [**Dependency Injection**](https://mr-mapache.github.io/torch-system/depends/): The framework provides a robust dependency injection system that allows you to define and inject dependencies. This enables you to define your logic in terms of interfaces and inject implementations later. 
+- [**Dependency Injection**](https://entropy-flux.github.io/TorchSystem/depends/): The framework provides a robust dependency injection system that allows you to define and inject dependencies. This enables you to define your logic in terms of interfaces and inject implementations later. 
 
-- [**Compilers**](https://mr-mapache.github.io/torch-system/compiler/): Building aggregates can be a complex process. In the context of deep learning, aggregates not only need to be built but also compiled, making compilation an integral part of the construction process. This framework provides a Compiler class to help define and manage the compilation process for your aggregates
+- [**Compilers**](https://entropy-flux.github.io/TorchSystem/compiler/): Building aggregates can be a complex process. In the context of deep learning, aggregates not only need to be built but also compiled, making compilation an integral part of the construction process. This framework provides a Compiler class to help define and manage the compilation process for your aggregates
 
-- [**Services**](https://mr-mapache.github.io/torch-system/services/): Define stateless operations that fulfill domain-specific tasks using ubiquitous language. 
+- [**Services**](https://entropy-flux.github.io/TorchSystem/services/): Define stateless operations that fulfill domain-specific tasks using ubiquitous language. 
 
-- [**Producers/Consumers**](https://mr-mapache.github.io/torch-system/prodcon/): Events produced by services can be delivered by producers to several consumers. This allows you to decouple services and define complex interactions between them. 
+- [**Producers/Consumers**](https://entropy-flux.github.io/TorchSystem/prodcon/): Events produced by services can be delivered by producers to several consumers. This allows you to decouple services and define complex interactions between them. 
 
-- [**Publisher/Subscriber**](https://mr-mapache.github.io/torch-system/pubsub/): Data also can be delivered with the publisher/subscriber pattern. Publishers can send data to subscribers using a topic-based system.
+- [**Publisher/Subscriber**](https://entropy-flux.github.io/TorchSystem/pubsub/): Data also can be delivered with the publisher/subscriber pattern. Publishers can send data to subscribers using a topic-based system.
 
 ## License
 

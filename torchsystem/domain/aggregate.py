@@ -1,4 +1,4 @@
-# Copyright Eric Cardozo.
+# Copyright 2025 Eric Hermosis.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -13,7 +13,7 @@
 # limitations under the License. 
 #
 # 
-# For inquiries, visit the documentation at mr-mapache.github.io/torch-system/
+# For inquiries, visit the documentation at entropy-flux.github.io/TorchSystem/
 
 
 from abc import ABC
