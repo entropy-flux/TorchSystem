@@ -2,6 +2,7 @@
 
 This framework will help you to create powerful and scalable systems using the PyTorch library. It is designed under the principles of domain driven design (DDD) and includes built-in message patterns and a robust dependency injection system. It enables the creation of stateless, modular service layers and robust domain models. This design facilitates better separation of concerns, testability, and scalability, making it ideal for complex IA training systems. You can find the full documentation here: [entropy-flux.github.io/TorchSystem/](https://entropy-flux.github.io/TorchSystem/)
 
+You can full a simple training example [here](https://github.com/entropy-flux/cnn-server-example/tree/main) where a train a CNN in the main.py and the training pipeline done in the src folder. 
 
 ## Table of contents:
 
