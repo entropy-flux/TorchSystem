@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "torchsystem"
-version = "1.4.5"
-description = "A framework for creating message-driven IA systems with PyTorch"
+version = "1.4.6"
+description = "A framework for creating message-driven machine learning systems with PyTorch"
 authors = ["Eric Hermosis <eric.hermosis@gmail.com>"]
 license = "Apache-2.0"
 readme = "README.md"
@@ -12,14 +12,7 @@ python = "^3.12"
 
 [tool.poetry.group.tests.dependencies]
 pytest = "^8.3.4"
-torch = "^2.5.1"
-numpy = "^2.2.1"
-torchvision = "^0.20.1"
 mypy = "^1.14.1"
-torcheval = "^0.0.7"
-attrs = "^25.1.0"
-cattrs = "^24.1.2"
-tinydb = "^4.8.2"
 
 
 [tool.poetry.group.docs.dependencies]

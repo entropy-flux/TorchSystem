@@ -4,12 +4,11 @@ on:
     branches:
       - main
       - dev
-      
   pull_request:
     paths:
-      - '**/*.py' 
-      - 'torchsystem/**'   
-      - 'tests/**'   
+      - '**/*.py'
+      - 'torchsystem/**'
+      - 'tests/**'
 
 jobs:
   tests:
@@ -31,6 +30,7 @@ jobs:
           poetry-version: ${{ matrix.poetry-version }}
       - name: Install dependencies
         run: poetry install
+      - name: Install torch
+        run: poetry run pip install torch
       - name: Test with pytest
-        run: |
-          poetry run pytest
+        run: poetry run pytest

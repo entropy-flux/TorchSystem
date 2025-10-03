@@ -2,13 +2,15 @@
 
 This framework will help you to create powerful and scalable systems using the PyTorch library. It is designed under the principles of domain driven design (DDD) and includes built-in message patterns and a robust dependency injection system. It enables the creation of stateless, modular service layers and robust domain models. This design facilitates better separation of concerns, testability, and scalability, making it ideal for complex IA training systems. You can find the full documentation here: [entropy-flux.github.io/TorchSystem/](https://entropy-flux.github.io/TorchSystem/)
 
-You can full a simple training example [here](https://github.com/entropy-flux/cnn-server-example/tree/main) where I train a CNN in the train.py calling the pipeline implemented in the src folder. 
+## Disclaimer:
+
+torchsystem is an independent, open-source project and is not affiliated with, endorsed by, or sponsored by Meta or PyTorch. The name is for descriptive purposes only and does not imply any official connection.
 
 ## Table of contents:
 
 - [Introduction](#introduction)
-- [Installation](#instalation)
-- [Example](#example)
+- [Installation](#installation)
+- [Getting Started](#getting-started) 
 - [Features](#features)
 - [License](#license)
 
@@ -34,363 +36,339 @@ pip install torchsystem
 
 The framework is written in pure python and doesn't require any infrastructure. 
 
-## Example
+## Getting Started
 
-Let's build a simple training system using the framework. You can find a more detailed working examples [here](https://github.com/entropy-flux/TorchSystem/tree/main/examples).
+### Aggregates
 
-First, we can define our domain model with protocols, while not strictly necessary and not part of the framework, it's a good practice to define the interfaces of what you want to build first.
+Usually, a machine learning model consists of more than just a neural network. In practice, it involves a cluster of interrelated objects that need to work together to perform a specific task. For example, in a classification problem, you may need:
+
+- The neural network itself
+
+- A loss function to guide training
+
+- An optimizer to update parameters
+
+- Metrics to evaluate performance
+
+- Additional logic for training, evaluation, or preprocessing
+
+All these components form a cohesive unit that must be managed consistently. To reflect this in our code and ensure proper encapsulation, we can define an `Aggregate`.
 
 ```python 
-# src/domain.py
-from typing import Any
-from typing import Protocol 
-
-from torch import Tensor
-from torch.nn import Module
-from torch.optim import Optimizer
-from torchsystem import Events
-
-class Model(Protocol):
-    id: Any
-    phase: str
-    epoch: int
-    events: Events 
-    nn: Module
-    criterion: Module
-    optimizer: Optimizer
-    
-    def fit(self, *args, **kwargs) -> Any:...
-
-    def evaluate(self, *args, **kwargs) -> Any:...
-
-class Metric(Protocol):
-    name: str
-    value: Any
-
-class Metrics(Protocol):
-
-    def update(self, *args, **kwargs) -> None:...
-
-    def compute(self) -> Sequence[Metric]:...
-
-    def reset(self) -> None:...
-
-class Loader(Protocol):
-
-    def __iter__(self) -> Iterator[tuple[Tensor, Tensor]]:...
-```
-
-Notice that we didn't define any implementation. Of course, you can just implement it right away, but first let's model what we want to do with our domain model. This is done creating a **service**. Let's create a training service for our model.
-
-```python
-# src/services/training.py
-from typing import Sequence 
-
-from torch import inference_mode
-from torchsystem import Depends
-from torchsystem.services import Service
-from torchsystem.services import Producer, event
-
-from src.domain import Model
-from src.domain import Loader
-from src.domain import Metric, Metrics 
-
-service = Service() 
-producer = Producer() 
-
-def device() -> str:
-    raise NotImplementedError("Override this dependency with a concrete implementation")
-
-@service.handler
-def train(model: Model, loader: Loader, metrics: Metrics, device: str = Depends(device)):
-    model.phase = 'train'
-    for batch, (inputs, targets) in enumerate(loader, start=1):
-        inputs, targets = inputs.to(device), targets.to(device)
-        predictions, loss = model.fit(inputs, targets)
-        metrics.update(batch, loss, predictions, targets)
-    results = metrics.compute()
-    producer.dispatch(Trained(model, results))
-
-@event
-class Trained:
-    model: Model
-    metrics: Sequence[Metric]
-
-@service.handler
-def validate(model: Model, loader: Loader, metrics: Metrics, device: str = Depends(device)):
-    with inference_mode():
-        model.phase = 'evaluation'
-        for batch, (inputs, targets) in enumerate(loader, start=1):
-            inputs, targets = inputs.to(device), targets.to(device)
-            predictions, loss = model.evaluate(inputs, targets)
-            metrics.update(batch, loss, predictions, targets)
-        results = metrics.compute()
-        producer.dispatch(Validated(model, results))
-
-@service.handler
-def iterate(model: Model, loaders: Sequence[tuple[str, Loader]], metrics: Metrics):
-    for phase, loader in loaders:
-        train(model, loader, metrics) if phase == 'train' else validate(model, loader, metrics)
-        metrics.reset()
-    model.epoch += 1
-    producer.dispatch(Iterated(model, loaders))
-
-@event
-class Validated:
-    model: Model
-    metrics: Sequence[Metric]
-
-@event
-class Iterated:
-    model: Model
-    loaders: Sequence[tuple[str, Loader]]
-```
-
-And that's it! A simple training service. Notice that it is completely decoupled from the implementation of the domain. It's only task is to orchestrate the training process and produce events from it. It doesn't provide any storage logic or data manipulation, only stateless training logic. Now you can now build a whole data storage system, logging or any other service you need around this simple service. For example, you can store info about the data you used to train the model consuming the `loaders` field of the `Iterated` event, using tools from the [registry](https://entropy-flux.github.io/TorchSystem/registry/) module. The `event` decorator will store fields as weakrefs in order to avoid issues with memory and unnecessary reference counting.
-
-The `NotImplementedError` doesn't mean that the `device` is just not implemented in the example, when the `device` function is passed as a dependency using the `Depends` function to a `Service` instance, it is added to a dependency map that you can override later. This will allow you to left the dependency unimplemented and override it later using `dependency_overrides`. This is the idea behind the the dependency injection system. You can read more about it [here](https://entropy-flux.github.io/TorchSystem/depends/). It will allow you to decouple your infrastructure from your services and bind them in the application layer.
-
-Let's create a simple tensorboard consumer for this service:
-
-```python
-# src/services/tensorboard.py
-from torchsystem import Depends
-from torchsystem.services import Consumer
-from torch.utils.tensorboard.writer import SummaryWriter
-from src.services.training import (
-    Trained,
-    Validated
-)
-
-consumer = Consumer()
-
-def writer() -> SummaryWriter:
-    raise NotImplementedError("Will be injected later in the application layer") 
-
-@consumer.handler
-def deliver_metrics(event: Trained | Validated, writer: SummaryWriter = Depends(writer)):
-    for metric in event.metrics:
-        writer.add_scalars(f'{event.model.id}/{metric.name}', {event.model.phase: metric.value}, event.model.epoch)
-
-    # When you pass an Union of types as annotation, the consumer will register the handler for all types in the Union
-    # automatically. This is a good way to handle events that share the same logic.
-```
-
-Since several consumers can consume from the same producer, you can plug any service you want to the training system. The service doesn't need to know who is consuming the events it produces. This is known a dependency inversion principle. You can now build a whole system around this simple training service. All kind of logic can be implemented from here, from weights storage to early stopping. Let's create an early stopping service:
-
-```python
-# src/services/earlystopping.py
-from torchsystem.services import Subscriber
-from torchsystem.services import Consumer
-
-from src.services.training import Metric
-from src.services.training import Trained, Validated
-
-subscriber = Subscriber()
-consumer = Consumer()
-
-@consumer.handler
-def deliver_metrics(event: Trained | Validated):
-    for metric in event.metrics:
-        try:
-            subscriber.receive(metric, metric.name)
-        except StopIteration:
-            event.model.events.enqueue(StopIteration) 
-            # Exceptions are also supported as domain events
-            # If you prefer you can create a domain event for this
-            # and enqueue it here.
-
-@subscriber.subscribe('loss')
-def on_low_loss(metric: Metric):
-    if metric.value < 0.001:
-        raise StopIteration # Built-in exception from Python
-    
-@subscriber.subscribe('accuracy')
-def on_high_accuracy(metric: Metric):
-    if metric.value > 0.995:
-        raise StopIteration  
-```
-
-This is a simple early stopping service. It listens to the metrics produced by the training service and raises a `StopIteration` exception when the loss is low enough or the accuracy is high. The exception is enqueued in the model events and can be raised again when needed, for example in a `onepoch` hook in the aggregate. A `Publisher` could also be used to send the messages to the subscribers, but it wasn't necessary in this case.
-
-Now we are going to implement a simple classifier aggregate in order to train a neural network for image classification tasks.
-
-```python
-# src/classifier.py
-from torch import argmax
 from torch import Tensor 
 from torch.nn import Module
-from torch.nn import Flatten
 from torch.optim import Optimizer
-from torchsystem.domain import Event
-from torchsystem.domain import Aggregate
-from torchsystem.registry import gethash
+from torchsystem import Aggregate
+from torchsystem.registry import gethash, getname
 
-class Classifier(Aggregate): 
+class Classifier(Aggregate):
     def __init__(self, nn: Module, criterion: Module, optimizer: Optimizer):
         super().__init__()
         self.epoch = 0
         self.nn = nn
         self.criterion = criterion
-        self.optimizer = optimizer 
-        self.flatten = Flatten()
-
-    @property
-    def id(self) -> str:
-        return gethash(self.nn) # This will return an identifier for the aggregate root 
+        self.optimizer = optimizer
+        self.name = getname(nn)
+        self.hash = gethash(nn)
 
     def forward(self, input: Tensor) -> Tensor:
-        input = self.flatten(input)
         return self.nn(input)
-    
-    def loss(self, output: Tensor, target: Tensor) -> Tensor:
-        return self.criterion(output, target)
-    
-    def fit(self, input: Tensor, target: Tensor) -> tuple[Tensor, Tensor]:
+     
+    def loss(self, outputs: Tensor, targets: Tensor) -> Tensor:
+        return self.criterion(outputs, targets)
+
+    def fit(self, inputs: Tensor, targets: Tensor) -> Tensor:
         self.optimizer.zero_grad()
-        output = self(input)
-        loss = self.loss(output, target)
+        outputs = self(inputs)
+        loss = self.loss(outputs, targets)
         loss.backward()
         self.optimizer.step()
-        return argmax(output, dim=1), loss # returns classification predictions and their loss
-
-    def evaluate(self, input: Tensor, target: Tensor) -> tuple[Tensor, Tensor]:
-        output = self(input)
-        return argmax(output, dim=1), self.loss(output, target)
+        return loss
+    
+    def evaluate(self, inputs: Tensor, targets: Tensor) -> Tensor: 
+        outputs = self(inputs)
+        return self.loss(outputs, targets)
 ```
 
-As you see, aggregates is just a simple facade to encapsulate things you already knew. You also can give Aggregates the capability to handle domain events or domain exceptions. 
+This aggregate wraps all the essential components of a classification model and exposes clear methods (fit and evaluate) for performing domain-specific tasks. 
+
+By using an aggregate:
+
+- State changes are managed consistently.
+
+- Training and evaluation logic is encapsulated within the model itself.
+
+- Additional components, such as metrics or logging, can be easily integrated.
+
+This approach ensures that your model is more than just a network—it’s a self-contained, manageable unit ready to interact with services and pipelines.
+
+Note: We imported two utility functions from the registry module: `gethash` and `getname`.
+
+- `gethash(nn)` provides a locally unique identifier for the neural network.
+
+- `getname(nn)` provides a human-readable, non-unique name for the network.
+
+These attributes are part of the model’s overall identity, helping to distinguish and reference the model in logs, checkpoints, and tracking systems. 
+
+To use functions from the registry module, you first need to register your neural network with the framework. For example:
 
 ```python 
-from torchsystem.domain import Aggregate
-from torchsystem.domain import Event, Events
+from model import MLP
+from torchsystem import registry
 
-class SomeDomainEvent(Event):...
-# A simple class can represent a domain event.
-
-class DomainException(Exception):...
-# Exceptions are also supported as domain events.
-# If no handler is found, they will be raised when the event queue is commited.
-
-class DomainEventWithData(Event):
-    # They also can carry data
-    def __init__(self, data: Any):
-        self.data = data
-
-class DomainEventWithIgnoredData(Event):
-    def __init__(self, data: Any):
-        self.data = data
-
-class Classifier(Aggregate): 
-    def __init__(self, nn: Module, criterion: Module, optimizer: Optimizer):
-        super().__init__()        
-        self.events = Events()
-        self.events.handlers[SomeDomainEvent] = lambda: print('SomeDomainEvent handled!')
-        self.events.handlers[DomainException] = lambda: print('DomainException handled!')
-        self.events.handlers[DomainEventWithData] = lambda event: print(f'DomainEventWithData handled with data: {event.data}')
-        self.events.handlers[DomainEventWithIgnoredData] = lambda: print(f'DomainEventWithIgnoredData handled')
-        # Usually you need to define the handlers outside the aggregate and pass them in the building process. But
-        # This is an example of how you can handle complex domain logic within the aggregate.
-        ...
-    
-    def onepoch(self):
-        # Hook that will be called after the epoch attribute is updated. The aggregate handle this
-        # automatically for epochs and phase.
-        self.events.commit() # This will raise the StopIteration exception enqueued before when the epoch is over
+registry.register(MLP)
 ```
+For more details and advanced usage, see the full documentation.
 
-The `Classifier` aggregate we just created can be built and compiled in a simple way. However, you will find yourself in situations where you need to pick a torch backend, create and clean multiprocessing resources, pickle modules, etc., and you will need a tool to build the aggregate and compile it. 
+### Services
 
-I will implement a compilation pipeline, just to show you how to use the compiler:
+Let's now train our aggregate. The training process involves orchestrating data, batching, and optimization steps, which are external to the model’s internal state . To manage this, we use **services**. Services are stateless operations that act on aggregates and orchestrate domain-specific tasks like training or evaluation without directly modifying the model’s internal logic.
+
+The service layer often produces data that needs to be communicated to external consumers, such as metrics, logs, or checkpoints. However, it is best not to couple services directly to any infrastructure. Events provide a clean, decoupled mechanism to notify other components of these outcomes, allowing consumers to handle persistence, monitoring, or other side effects independently of the service logic.
+
+Let's implement the service layer with `torchsystem`:
 
 ```python
-# src/services/compilation.py
-from logging import getLogger
+from typing import Iterable 
+from torch import Tensor
+from torch import inference_mode
+from torchsystem.depends import Depends, Provider
+from torchsystem.services import Service, Producer, event 
+from mltracker.ports import Models
+from src.classifier import Classifier 
+
+provider = Provider()
+producer = Producer() 
+service = Service(provider=provider)
+
+def device() -> str:...
+def models() -> Models:...
+
+@event
+class Trained:
+    model: Classifier 
+    results: dict[str, Tensor] 
+
+@event
+class Evaluated:
+    model: Classifier
+    results: dict[str, Tensor]
+
+@service.handler
+def train(model: Classifier, loader: Iterable[tuple[Tensor, Tensor]], device: str = Depends(device)):
+    model.train()
+    for inputs, targets in loader: 
+        inputs, targets = inputs.to(device), targets.to(device)  
+        loss = model.fit(inputs, targets)
+    producer.dispatch(Trained(model, {"loss": loss}))
+
+@service.handler
+def evaluate(model: Classifier, loader: Iterable[tuple[Tensor, Tensor]], device: str = Depends(device)):
+    model.eval()
+    with inference_mode():
+        for inputs, targets in loader: 
+            inputs, targets = inputs.to(device), targets.to(device)  
+            loss = model.evaluate(inputs, targets)
+        producer.dispatch(Evaluated(model, {"loss": loss})) 
+```
+
+And that's it! A simple training service. Notice that it is completely decoupled from the implementation of the domain. It's only task is to orchestrate the training process and produce events from it. It doesn't provide any storage logic or data manipulation, only stateless training logic. Now you can now build a whole data storage system, logging or any other service you need around this simple service, without modifying it further.
+
+Note: `torchsystem` uses a built-in dependency injection system to provide services with the resources they need without hardcoding them.
+
+- `Provider` manages available dependencies and allows overriding them in different contexts.
+
+- `Depends` declares that a function parameter should be automatically injected with a dependency (e.g., the device or a collection of models).
+
+Those dependencies can be overriden later.
+
+### Consumers
+
+Consumers are components that react to events produced by services. They handle side effects such as logging, metrics collection, or persisting model checkpoints, without modifying the service or aggregate logic. This keeps the system decoupled and maintainable.
+
+Let's create a consumer for our training service:
+
+```python
+from os import makedirs
+from torch import save
+from torchsystem import Depends
+from torchsystem.services import Consumer
+from src.training import provider, models
+from src.training import Trained, Evaluated 
+
+consumer = Consumer(provider=provider)
+
+@consumer.handler
+def bump_epoch(event: Trained):
+    event.model.epoch += 1 
+
+@consumer.handler
+def log_metrics(event: Trained | Evaluated):
+    print("-----------------------------------------------------------------")
+    print(
+        f"Epoch: {event.model.epoch}, "
+        f"Average loss: {event.results['loss'].item()}, "
+    )
+    print("-----------------------------------------------------------------")
+
+@consumer.handler
+def persist_model(event: Evaluated):
+    makedirs(f"data/weights", exist_ok=True)
+    path = f"data/weights/{event.model.name}-{event.model.hash}.pth"
+    checkpoint = {
+        'epoch': event.model.epoch,
+        'nn': event.model.nn.state_dict(),
+        'optimizer': event.model.optimizer.state_dict()
+    }
+    save(checkpoint, path) 
+    print(f"Saved model weights at: {path}")
+```
+
+Note: We attach the provider created in the training service because consumers also support dependency injection with the same fashion. This of course is completly optional, like everything else in the library. 
+
+Consumers rely on type annotations to determine which events their handlers should react to. Unions and generics are supported: if a handler is declared with a union as an argument, it will listen to all events included in that union. In this example, for instance, metrics are logged during both the training and evaluation phases.
+
+In this example:
+
+- The consumer reacts to a Trained event and increments the epoch counter.
+
+- When it receives either a Trained or Evaluated event, it prints the results.
+
+- Each time an Evaluated event is received, it saves a checkpoint.
+
+You can customize consumers to your needs, injecting any infrastructure you like, such as TensorBoard, a database, or other logging systems. If you prefer not to plug in infrastructure yet, you can use the pub/sub utilities provided by the library, which allow your consumer to publish messages to topics. See the documentation for more details.
+
+### Compiler
+
+The Classifier aggregate we just created can be built and compiled in a simple way. However, you will find yourself in situations where you need to pick a torch backend, create and clean multiprocessing resources, move modules to devices, pickle modules, etc., and you will need a tool to build the aggregate and compile it. 
+
+This library provides a simple implementation of the builder pattern under the name of compiler, the idea is to encapsulate all the construction and compilation process of your aggregate as a simple pipeline. Let's create one:
+
+```python
+import os
+from torch import load 
 from torch.nn import Module
 from torch.optim import Optimizer
 from torchsystem import Depends
-from torchsystem.compiler import compile
-from torchsystem.compiler import Compiler 
+from torchsystem.compiler import Compiler, compile
 from src.classifier import Classifier
+from src.training import device, provider 
 
-logger = getLogger(__name__)
-compiler = Compiler[Classifier]()
-
-def device() -> str:...
-
-def epoch() -> int:
-    return 10 # Just for the sake of the example
+compiler = Compiler[Classifier](provider=provider)
 
 @compiler.step
-def build_classifier(model: Module, criterion: Module, optimizer: Optimizer):
-    logger.info(f'Building Classifier') 
-    return Classifier(model, criterion, optimizer)
+def build_model(nn: Module, criterion: Module, optimizer: Optimizer, device: str = Depends(device)):
+    if device != 'cpu':
+        print(f"Moving classifier to device {device}...") 
+        return Classifier(nn, criterion, optimizer).to(device)
+    else:
+        return Classifier(nn, criterion, optimizer)
 
 @compiler.step
-def move_to_device(classifier: Classifier, device = Depends(device)):
-    logger.info(f'Moving classifier to device: {device}')
-    return classifier.to(device)
+def restore_weights(classifier: Classifier, device: str = Depends(device)): 
+    path = f"data/weights/{classifier.name}-{classifier.hash}.pth"
+    if os.path.exists(path):
+        (f"Restoring model weights from: {path}")   
+        checkpoint = load(path, map_location=device) 
+        classifier.epoch = checkpoint['epoch']
+        classifier.nn.load_state_dict(checkpoint['nn'])
+        classifier.optimizer.load_state_dict(checkpoint['optimizer'])
+    else:
+        print(f"No weights found at {path}, skipping restore")
+    return classifier
 
 @compiler.step
-def compile_classifier(classifier: Classifier):
-    logger.info(f'Compiling classifier')
-    return compile(classifier)
+def compile_model(classifier: Classifier, device: str = Depends(device)):
+    if device != 'cpu':
+        print("Compiling model...") 
+        return compile(classifier) 
+    else:
+        return classifier
 
 @compiler.step
-def get_current_epoch(classifier: Classifier, epoch: int = Depends(epoch)):
-    # Implement this with some database query or api call using the classifier.id
-    classifier.epoch = epoch
+def debug_model(classifier: Classifier):
+    print(
+        f"Compiled model with:\n"
+        f"Name:  {classifier.name}\n"
+        f"Hash:  {classifier.hash}\n"
+        f"Epochs: {classifier.epoch}"
+    )
+    print(classifier)
     return classifier
 ```
 
-Finally, you can put all together in the application layer as follows:
+Each time the model is "compiled," this pipeline will:
+
+- Move it to the appropriate device.
+
+- Restore its weights if a checkpoint exists and bring it to the current epoch.
+
+- Optionally compile it using PyTorch’s torch.compile.
+
+- Debug-print the model summary.
+
+You can run this pipeline easily:
 
 ```python
-# src/main.py
-
-from torch import cuda
-from torch.utils.tensorboard.writer import SummaryWriter
-
-from src.services import (
-    training,
-    tensorboard,
-    earlystopping
-)
-
-summary_writer = SummaryWriter(...)
-
-model = MLP(...)
-criterion = CrossEntropyLoss(...)
-optimizer = Adam(...)
-metrics = Metrics(...)
-loaders = [
-    ('train', DataLoader(...)),
-    ('validation', DataLoader(...))
-]
-
-def device():
-    return 'cuda' if cuda.is_available() else 'cpu'
-
-def writter():
-    yield summary_writer
-    summary_writer.flush()
-
-training.service.dependency_overrides[training.device] = device
-training.producer.register(tensorboard.consumer)
-training.producer.register(earlystopping.consumer)
-compilation.compiler.dependency_overrides[compilation.device] = device
-tensorboard.consumer.dependency_overrides[tensorboard.writer] = writer
-
-...
-
-classifier = compilation.compiler.compile(model, criterion, optimizer)
-training.service.handle('iterate', classifier, loaders, metrics)
-
-summary_writer.close()
-...
+classifier = compiler.compile(nn, criterion, optimizer)
 ```
 
-This is a simple example of how to build a training system using the framework. Since services can be called by their name, you can easily write a REST API with CQS (Command Query Segregation) or a CLI interfaces for your training system.
+### Training script
+
+Finally we put all togheter in a main file to train a simple model:
+
+```python
+from torch import cuda
+
+def device() -> str:
+    return 'cuda' if cuda.is_available() else 'cpu'
+
+if __name__ == '__main__':
+    from src import training, checkpoints
+    from src.compilation import compiler
+
+    from model import MLP
+    from dataset import Digits
+ 
+    from torch.nn import CrossEntropyLoss
+    from torch.optim import SGD
+    from torch.utils.data import DataLoader
+    from torchsystem import registry
+
+    registry.register(MLP)
+    training.provider.override(training.device, device) 
+    training.producer.register(checkpoints.consumer)
+
+    nn = MLP(input_size=784, hidden_size=256, output_size=10, dropout=0.5)
+    criterion = CrossEntropyLoss()
+    optimizer = SGD(nn.parameters(), lr=0.001)
+    classifier = compiler.compile(nn, criterion, optimizer)
+
+    datasets = {
+        'train': Digits(train=True, normalize=True),
+        'evaluation': Digits(train=False,  normalize=True),
+    }
+
+    loaders = {
+        'train': DataLoader(datasets['train'], batch_size=256, shuffle=True, pin_memory=True, pin_memory_device='cuda', num_workers=4),
+        'evaluation': DataLoader(datasets['evaluation'], batch_size=256, shuffle=False, pin_memory=True, pin_memory_device='cuda', num_workers=4) 
+    } if cuda.is_available() else {
+        'train': DataLoader(datasets['train'], batch_size=256, shuffle=True),
+        'evaluation': DataLoader(datasets['evaluation'], batch_size=256, shuffle=False) 
+    }
+
+    for epoch in range(5):
+        training.train(classifier, loaders['train'])
+        training.evaluate(classifier, loaders['evaluation'])
+```
+
+Each time you run this script:
+
+- The compiler will attempt to load existing weights and continue training from the last saved epoch.
+
+- After evaluation, the consumer will automatically store checkpoints.
+
+The hash of the model ensures that different configurations (e.g., changing hidden layer size) generate separate checkpoints, preventing overwriting previous models.
 
 ## Features
 
