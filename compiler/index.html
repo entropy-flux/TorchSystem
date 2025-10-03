@@ -333,6 +333,15 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#torchsystem.compiler.Compiler.override" class="md-nav__link">
+    <span class="md-ellipsis">
+      override
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#torchsystem.compiler.Compiler.step" class="md-nav__link">
     <span class="md-ellipsis">
       step
@@ -488,6 +497,15 @@
   <a href="#torchsystem.compiler.Compiler.compile" class="md-nav__link">
     <span class="md-ellipsis">
       compile
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#torchsystem.compiler.Compiler.override" class="md-nav__link">
+    <span class="md-ellipsis">
+      override
     </span>
   </a>
   
@@ -836,6 +854,70 @@ to the next function. The compiled AGGREGATE should be returned by the last func
               <div class="doc-md-description">
                 <p>The compiled AGGREGATE.</p>
               </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="torchsystem.compiler.Compiler.override" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">override</span><span class="p">(</span><span class="n">dependency</span><span class="p">,</span> <span class="n">implementation</span><span class="p">)</span></code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Overrides a dependency with an implementation. </p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>dependency</code>
+            </td>
+            <td>
+                  <code><span title="collections.abc.Callable">Callable</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The dependency function to override.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>implementation</code>
+            </td>
+            <td>
+                  <code><span title="collections.abc.Callable">Callable</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The implementation of the function.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
             </td>
           </tr>
       </tbody>

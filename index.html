@@ -200,6 +200,15 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#disclaimer" class="md-nav__link">
+    <span class="md-ellipsis">
+      Disclaimer:
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#table-of-contents" class="md-nav__link">
     <span class="md-ellipsis">
       Table of contents:
@@ -227,11 +236,62 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#example" class="md-nav__link">
+  <a href="#getting-started" class="md-nav__link">
     <span class="md-ellipsis">
-      Example
+      Getting Started
     </span>
   </a>
+  
+    <nav class="md-nav" aria-label="Getting Started">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#aggregates" class="md-nav__link">
+    <span class="md-ellipsis">
+      Aggregates
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#services" class="md-nav__link">
+    <span class="md-ellipsis">
+      Services
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#consumers" class="md-nav__link">
+    <span class="md-ellipsis">
+      Consumers
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#compiler" class="md-nav__link">
+    <span class="md-ellipsis">
+      Compiler
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#training-script" class="md-nav__link">
+    <span class="md-ellipsis">
+      Training script
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -443,6 +503,15 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#disclaimer" class="md-nav__link">
+    <span class="md-ellipsis">
+      Disclaimer:
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#table-of-contents" class="md-nav__link">
     <span class="md-ellipsis">
       Table of contents:
@@ -470,11 +539,62 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#example" class="md-nav__link">
+  <a href="#getting-started" class="md-nav__link">
     <span class="md-ellipsis">
-      Example
+      Getting Started
     </span>
   </a>
+  
+    <nav class="md-nav" aria-label="Getting Started">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#aggregates" class="md-nav__link">
+    <span class="md-ellipsis">
+      Aggregates
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#services" class="md-nav__link">
+    <span class="md-ellipsis">
+      Services
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#consumers" class="md-nav__link">
+    <span class="md-ellipsis">
+      Consumers
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#compiler" class="md-nav__link">
+    <span class="md-ellipsis">
+      Compiler
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#training-script" class="md-nav__link">
+    <span class="md-ellipsis">
+      Training script
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -527,12 +647,14 @@
 
 
 <h1 id="welcome-to-the-torchsystem-documentation">Welcome to the TorchSystem documentation.</h1>
-<p>This framework will help you to create powerful and scalable IA systems using the PyTorch library. It is designed under the principles of domain driven design (DDD) and includes built-in message patterns and a robust dependency injection system. It enables the creation of stateless, modular service layers and robust domain models. This design facilitates better separation of concerns, testability, and scalability, making it ideal for complex IA training systems.</p>
+<p>This framework will help you to create powerful and scalable systems using the PyTorch library. It is designed under the principles of domain driven design (DDD) and includes built-in message patterns and a robust dependency injection system. It enables the creation of stateless, modular service layers and robust domain models. This design facilitates better separation of concerns, testability, and scalability, making it ideal for complex IA training systems.</p>
+<h2 id="disclaimer">Disclaimer:</h2>
+<p>TorchSystem is an independent, open-source project and is not affiliated with, endorsed by, or sponsored by Meta or PyTorch. The name is for descriptive purposes only and does not imply any official connection.</p>
 <h2 id="table-of-contents">Table of contents:</h2>
 <ul>
 <li><a href="#introduction">Introduction</a></li>
-<li><a href="#instalation">Installation</a></li>
-<li><a href="#example">Example</a></li>
+<li><a href="#installation">Installation</a></li>
+<li><a href="#getting-started">Getting Started</a> </li>
 <li><a href="#features">Features</a></li>
 <li><a href="#license">License</a></li>
 </ul>
@@ -547,334 +669,328 @@
 <div class="highlight"><pre><span></span><code>pip<span class="w"> </span>install<span class="w"> </span>torchsystem
 </code></pre></div>
 <p>The framework is written in pure python and doesn't require any infrastructure. </p>
-<h2 id="example">Example</h2>
-<p>Let's build a simple training system using the framework. You can find a more detailed working examples <a href="https://github.com/mr-mapache/torch-system/tree/main/examples">here</a>.</p>
-<p>First, we can define our domain model with protocols, while not strictly necessary and not part of the framework, it's a good practice to define the interfaces of what you want to build first.</p>
-<div class="highlight"><pre><span></span><code><span class="c1"># src/domain.py</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Protocol</span> 
-
-<span class="kn">from</span><span class="w"> </span><span class="nn">torch</span><span class="w"> </span><span class="kn">import</span> <span class="n">Tensor</span>
+<h2 id="getting-started">Getting Started</h2>
+<h3 id="aggregates">Aggregates</h3>
+<p>Usually, a machine learning model consists of more than just a neural network. In practice, it involves a cluster of interrelated objects that need to work together to perform a specific task. For example, in a classification problem, you may need:</p>
+<ul>
+<li>
+<p>The neural network itself</p>
+</li>
+<li>
+<p>A loss function to guide training</p>
+</li>
+<li>
+<p>An optimizer to update parameters</p>
+</li>
+<li>
+<p>Metrics to evaluate performance</p>
+</li>
+<li>
+<p>Additional logic for training, evaluation, or preprocessing</p>
+</li>
+</ul>
+<p>All these components form a cohesive unit that must be managed consistently. To reflect this in our code and ensure proper encapsulation, we can define an <code>Aggregate</code>.</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">torch</span><span class="w"> </span><span class="kn">import</span> <span class="n">Tensor</span> 
 <span class="kn">from</span><span class="w"> </span><span class="nn">torch.nn</span><span class="w"> </span><span class="kn">import</span> <span class="n">Module</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">torch.optim</span><span class="w"> </span><span class="kn">import</span> <span class="n">Optimizer</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">torchsystem</span><span class="w"> </span><span class="kn">import</span> <span class="n">Events</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">torchsystem</span><span class="w"> </span><span class="kn">import</span> <span class="n">Aggregate</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">torchsystem.registry</span><span class="w"> </span><span class="kn">import</span> <span class="n">gethash</span><span class="p">,</span> <span class="n">getname</span>
 
-<span class="k">class</span><span class="w"> </span><span class="nc">Model</span><span class="p">(</span><span class="n">Protocol</span><span class="p">):</span>
-    <span class="nb">id</span><span class="p">:</span> <span class="n">Any</span>
-    <span class="n">phase</span><span class="p">:</span> <span class="nb">str</span>
-    <span class="n">epoch</span><span class="p">:</span> <span class="nb">int</span>
-    <span class="n">events</span><span class="p">:</span> <span class="n">Events</span> 
-    <span class="n">nn</span><span class="p">:</span> <span class="n">Module</span>
-    <span class="n">criterion</span><span class="p">:</span> <span class="n">Module</span>
-    <span class="n">optimizer</span><span class="p">:</span> <span class="n">Optimizer</span>
-
-    <span class="k">def</span><span class="w"> </span><span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span><span class="o">...</span>
-
-    <span class="k">def</span><span class="w"> </span><span class="nf">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span><span class="o">...</span>
-
-<span class="k">class</span><span class="w"> </span><span class="nc">Metric</span><span class="p">(</span><span class="n">Protocol</span><span class="p">):</span>
-    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span>
-    <span class="n">value</span><span class="p">:</span> <span class="n">Any</span>
-
-<span class="k">class</span><span class="w"> </span><span class="nc">Metrics</span><span class="p">(</span><span class="n">Protocol</span><span class="p">):</span>
-
-    <span class="k">def</span><span class="w"> </span><span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span><span class="o">...</span>
-
-    <span class="k">def</span><span class="w"> </span><span class="nf">compute</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Metric</span><span class="p">]:</span><span class="o">...</span>
-
-    <span class="k">def</span><span class="w"> </span><span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span><span class="o">...</span>
-
-<span class="k">class</span><span class="w"> </span><span class="nc">Loader</span><span class="p">(</span><span class="n">Protocol</span><span class="p">):</span>
-
-    <span class="k">def</span><span class="w"> </span><span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">Tensor</span><span class="p">]]:</span><span class="o">...</span>
-</code></pre></div>
-<p>Notice that we didn't define any implementation. Of course, you can just implement it right away, but let's define a training service first. Service handlers and events produced in the services should be modeled using ubiquitous language.  </p>
-<p>The training service can be implemented as follows:</p>
-<div class="highlight"><pre><span></span><code><span class="c1"># src/services/training.py</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Sequence</span> 
-
-<span class="kn">from</span><span class="w"> </span><span class="nn">torch</span><span class="w"> </span><span class="kn">import</span> <span class="n">inference_mode</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">torchsystem</span><span class="w"> </span><span class="kn">import</span> <span class="n">Depends</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">torchsystem.services</span><span class="w"> </span><span class="kn">import</span> <span class="n">Service</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">torchsystem.services</span><span class="w"> </span><span class="kn">import</span> <span class="n">Producer</span><span class="p">,</span> <span class="n">event</span>
-
-<span class="kn">from</span><span class="w"> </span><span class="nn">src.domain</span><span class="w"> </span><span class="kn">import</span> <span class="n">Model</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">src.domain</span><span class="w"> </span><span class="kn">import</span> <span class="n">Loader</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">src.domain</span><span class="w"> </span><span class="kn">import</span> <span class="n">Metric</span><span class="p">,</span> <span class="n">Metrics</span> 
-
-<span class="n">service</span> <span class="o">=</span> <span class="n">Service</span><span class="p">()</span> 
-<span class="n">producer</span> <span class="o">=</span> <span class="n">Producer</span><span class="p">()</span> 
-
-<span class="k">def</span><span class="w"> </span><span class="nf">device</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-    <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Override this dependency with a concrete implementation&quot;</span><span class="p">)</span>
-
-<span class="nd">@service</span><span class="o">.</span><span class="n">handler</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">train</span><span class="p">(</span><span class="n">model</span><span class="p">:</span> <span class="n">Model</span><span class="p">,</span> <span class="n">loader</span><span class="p">:</span> <span class="n">Loader</span><span class="p">,</span> <span class="n">metrics</span><span class="p">:</span> <span class="n">Metrics</span><span class="p">,</span> <span class="n">device</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">device</span><span class="p">)):</span>
-    <span class="n">model</span><span class="o">.</span><span class="n">phase</span> <span class="o">=</span> <span class="s1">&#39;train&#39;</span>
-    <span class="k">for</span> <span class="n">batch</span><span class="p">,</span> <span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">targets</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">loader</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
-        <span class="n">inputs</span><span class="p">,</span> <span class="n">targets</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">),</span> <span class="n">targets</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
-        <span class="n">predictions</span><span class="p">,</span> <span class="n">loss</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">targets</span><span class="p">)</span>
-        <span class="n">metrics</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">batch</span><span class="p">,</span> <span class="n">loss</span><span class="p">,</span> <span class="n">predictions</span><span class="p">,</span> <span class="n">targets</span><span class="p">)</span>
-    <span class="n">results</span> <span class="o">=</span> <span class="n">metrics</span><span class="o">.</span><span class="n">compute</span><span class="p">()</span>
-    <span class="n">producer</span><span class="o">.</span><span class="n">dispatch</span><span class="p">(</span><span class="n">Trained</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">results</span><span class="p">))</span>
-
-<span class="nd">@event</span>
-<span class="k">class</span><span class="w"> </span><span class="nc">Trained</span><span class="p">:</span>
-    <span class="n">model</span><span class="p">:</span> <span class="n">Model</span>
-    <span class="n">metrics</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Metric</span><span class="p">]</span>
-
-<span class="nd">@service</span><span class="o">.</span><span class="n">handler</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">validate</span><span class="p">(</span><span class="n">model</span><span class="p">:</span> <span class="n">Model</span><span class="p">,</span> <span class="n">loader</span><span class="p">:</span> <span class="n">Loader</span><span class="p">,</span> <span class="n">metrics</span><span class="p">:</span> <span class="n">Metrics</span><span class="p">,</span> <span class="n">device</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">device</span><span class="p">)):</span>
-    <span class="k">with</span> <span class="n">inference_mode</span><span class="p">():</span>
-        <span class="n">model</span><span class="o">.</span><span class="n">phase</span> <span class="o">=</span> <span class="s1">&#39;evaluation&#39;</span>
-        <span class="k">for</span> <span class="n">batch</span><span class="p">,</span> <span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">targets</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">loader</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
-            <span class="n">inputs</span><span class="p">,</span> <span class="n">targets</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">),</span> <span class="n">targets</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
-            <span class="n">predictions</span><span class="p">,</span> <span class="n">loss</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">targets</span><span class="p">)</span>
-            <span class="n">metrics</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">batch</span><span class="p">,</span> <span class="n">loss</span><span class="p">,</span> <span class="n">predictions</span><span class="p">,</span> <span class="n">targets</span><span class="p">)</span>
-        <span class="n">results</span> <span class="o">=</span> <span class="n">metrics</span><span class="o">.</span><span class="n">compute</span><span class="p">()</span>
-        <span class="n">producer</span><span class="o">.</span><span class="n">dispatch</span><span class="p">(</span><span class="n">Validated</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">results</span><span class="p">))</span>
-
-<span class="nd">@service</span><span class="o">.</span><span class="n">handler</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">iterate</span><span class="p">(</span><span class="n">model</span><span class="p">:</span> <span class="n">Model</span><span class="p">,</span> <span class="n">loaders</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Loader</span><span class="p">]],</span> <span class="n">metrics</span><span class="p">:</span> <span class="n">Metrics</span><span class="p">):</span>
-    <span class="k">for</span> <span class="n">phase</span><span class="p">,</span> <span class="n">loader</span> <span class="ow">in</span> <span class="n">loaders</span><span class="p">:</span>
-        <span class="n">train</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">loader</span><span class="p">,</span> <span class="n">metrics</span><span class="p">)</span> <span class="k">if</span> <span class="n">phase</span> <span class="o">==</span> <span class="s1">&#39;train&#39;</span> <span class="k">else</span> <span class="n">validate</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">loader</span><span class="p">,</span> <span class="n">metrics</span><span class="p">)</span>
-        <span class="n">metrics</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
-    <span class="n">model</span><span class="o">.</span><span class="n">epoch</span> <span class="o">+=</span> <span class="mi">1</span>
-    <span class="n">producer</span><span class="o">.</span><span class="n">dispatch</span><span class="p">(</span><span class="n">Iterated</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">loaders</span><span class="p">))</span>
-
-<span class="nd">@event</span>
-<span class="k">class</span><span class="w"> </span><span class="nc">Validated</span><span class="p">:</span>
-    <span class="n">model</span><span class="p">:</span> <span class="n">Model</span>
-    <span class="n">metrics</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Metric</span><span class="p">]</span>
-
-<span class="nd">@event</span>
-<span class="k">class</span><span class="w"> </span><span class="nc">Iterated</span><span class="p">:</span>
-    <span class="n">model</span><span class="p">:</span> <span class="n">Model</span>
-    <span class="n">loaders</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Loader</span><span class="p">]]</span>
-</code></pre></div>
-<p>And that's it! A simple training service. Notice that it is completely decoupled from the implementation of the domain. It's only task is to orchestrate the training process and produce events from it. It doesn't provide any storage logic or data manipulation, only stateless training logic. Now you can now build a whole data storage system, logging or any other service you need around this simple service. For example, you can store info about the data you used to train the model consuming the <code>loaders</code> field of the <code>Iterated</code> event, using tools from the <a href="https://mr-mapache.github.io/torch-system/registry/">registry</a> module. The <code>event</code> decorator will store fields as weakrefs in order to avoid issues with memory and unnecessary reference counting.</p>
-<p>The <code>NotImplementedError</code> doesn't mean that the <code>device</code> is just not implemented in the example, when the <code>device</code> function is passed as a dependency using the <code>Depends</code> function to a <code>Service</code> instance, it is added to a dependency map that you can override later. This will allow you to leave the dependency unimplemented and override it later using <code>dependency_overrides</code>. This is the idea behind the dependency injection system. You can read more about it <a href="https://mr-mapache.github.io/torch-system/depends/">here</a>. It will allow you to decouple your infrastructure from your services and bind them in the application layer.</p>
-<p>Let's create a simple tensorboard consumer for this service:</p>
-<div class="highlight"><pre><span></span><code><span class="c1"># src/services/tensorboard.py</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">torchsystem</span><span class="w"> </span><span class="kn">import</span> <span class="n">Depends</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">torchsystem.services</span><span class="w"> </span><span class="kn">import</span> <span class="n">Consumer</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">torch.utils.tensorboard.writer</span><span class="w"> </span><span class="kn">import</span> <span class="n">SummaryWriter</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">src.services.training</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
-    <span class="n">Trained</span><span class="p">,</span>
-    <span class="n">Validated</span>
-<span class="p">)</span>
-
-<span class="n">consumer</span> <span class="o">=</span> <span class="n">Consumer</span><span class="p">()</span>
-
-<span class="k">def</span><span class="w"> </span><span class="nf">writer</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">SummaryWriter</span><span class="p">:</span>
-    <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Will be injected later in the application layer&quot;</span><span class="p">)</span> 
-
-<span class="nd">@consumer</span><span class="o">.</span><span class="n">handler</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">deliver_metrics</span><span class="p">(</span><span class="n">event</span><span class="p">:</span> <span class="n">Trained</span> <span class="o">|</span> <span class="n">Validated</span><span class="p">,</span> <span class="n">writer</span><span class="p">:</span> <span class="n">SummaryWriter</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">writer</span><span class="p">)):</span>
-    <span class="k">for</span> <span class="n">metric</span> <span class="ow">in</span> <span class="n">event</span><span class="o">.</span><span class="n">metrics</span><span class="p">:</span>
-        <span class="n">writer</span><span class="o">.</span><span class="n">add_scalars</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">event</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="n">metric</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="p">{</span><span class="n">event</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">phase</span><span class="p">:</span> <span class="n">metric</span><span class="o">.</span><span class="n">value</span><span class="p">},</span> <span class="n">event</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">epoch</span><span class="p">)</span>
-
-    <span class="c1"># When you pass an Union of types as annotation, the consumer will register the handler for all types in the Union</span>
-    <span class="c1"># automatically. This is a good way to handle events that share the same logic.</span>
-</code></pre></div>
-<p>Since several consumers can consume from the same producer, you can plug any service you want to the training system. The service don't need to know who is consuming the events it produces. This is known a dependency inversion principle. You can now build a whole system around this simple training service. All kind of logic can be implemented from here, from weights storage to early stopping. Let's create an early stopping service:</p>
-<div class="highlight"><pre><span></span><code><span class="c1"># src/services/earlystopping.py</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">torchsystem.services</span><span class="w"> </span><span class="kn">import</span> <span class="n">Subscriber</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">torchsystem.services</span><span class="w"> </span><span class="kn">import</span> <span class="n">Consumer</span>
-
-<span class="kn">from</span><span class="w"> </span><span class="nn">src.services.training</span><span class="w"> </span><span class="kn">import</span> <span class="n">Metric</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">src.services.training</span><span class="w"> </span><span class="kn">import</span> <span class="n">Trained</span><span class="p">,</span> <span class="n">Validated</span>
-
-<span class="n">subscriber</span> <span class="o">=</span> <span class="n">Subscriber</span><span class="p">()</span>
-<span class="n">consumer</span> <span class="o">=</span> <span class="n">Consumer</span><span class="p">()</span>
-
-<span class="nd">@consumer</span><span class="o">.</span><span class="n">handler</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">deliver_metrics</span><span class="p">(</span><span class="n">event</span><span class="p">:</span> <span class="n">Trained</span> <span class="o">|</span> <span class="n">Validated</span><span class="p">):</span>
-    <span class="k">for</span> <span class="n">metric</span> <span class="ow">in</span> <span class="n">event</span><span class="o">.</span><span class="n">metrics</span><span class="p">:</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">subscriber</span><span class="o">.</span><span class="n">receive</span><span class="p">(</span><span class="n">metric</span><span class="p">,</span> <span class="n">metric</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
-        <span class="k">except</span> <span class="ne">StopIteration</span><span class="p">:</span>
-            <span class="n">event</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">events</span><span class="o">.</span><span class="n">enqueue</span><span class="p">(</span><span class="ne">StopIteration</span><span class="p">)</span> 
-            <span class="c1"># Exceptions are also supported as domain events</span>
-            <span class="c1"># If you prefer you can create a domain event for this</span>
-            <span class="c1"># and enqueue it here.</span>
-
-<span class="nd">@subscriber</span><span class="o">.</span><span class="n">subscribe</span><span class="p">(</span><span class="s1">&#39;loss&#39;</span><span class="p">)</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">on_low_loss</span><span class="p">(</span><span class="n">metric</span><span class="p">:</span> <span class="n">Metric</span><span class="p">):</span>
-    <span class="k">if</span> <span class="n">metric</span><span class="o">.</span><span class="n">value</span> <span class="o">&lt;</span> <span class="mf">0.001</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">StopIteration</span> <span class="c1"># Built-in exception from Python</span>
-
-<span class="nd">@subscriber</span><span class="o">.</span><span class="n">subscribe</span><span class="p">(</span><span class="s1">&#39;accuracy&#39;</span><span class="p">)</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">on_high_accuracy</span><span class="p">(</span><span class="n">metric</span><span class="p">:</span> <span class="n">Metric</span><span class="p">):</span>
-    <span class="k">if</span> <span class="n">metric</span><span class="o">.</span><span class="n">value</span> <span class="o">&gt;</span> <span class="mf">0.995</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">StopIteration</span>  
-</code></pre></div>
-<p>This is a simple early stopping service. It listens to the metrics produced by the training service and raises a <code>StopIteration</code> exception when the loss is low enough or the accuracy is high. The exception is enqueued in the model events and can be raised again when needed, for example in a <code>onepoch</code> hook in the aggregate. A <code>Publisher</code> could also be used to send the messages to the subscribers, but it wasn't necessary in this case.</p>
-<p>Now we are going to implement a simple classifier aggregate in order to train a neural network for image classification tasks.</p>
-<div class="highlight"><pre><span></span><code><span class="c1"># src/classifier.py</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">torch</span><span class="w"> </span><span class="kn">import</span> <span class="n">argmax</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">torch</span><span class="w"> </span><span class="kn">import</span> <span class="n">Tensor</span> 
-<span class="kn">from</span><span class="w"> </span><span class="nn">torch.nn</span><span class="w"> </span><span class="kn">import</span> <span class="n">Module</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">torch.nn</span><span class="w"> </span><span class="kn">import</span> <span class="n">Flatten</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">torch.optim</span><span class="w"> </span><span class="kn">import</span> <span class="n">Optimizer</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">torchsystem.domain</span><span class="w"> </span><span class="kn">import</span> <span class="n">Event</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">torchsystem.domain</span><span class="w"> </span><span class="kn">import</span> <span class="n">Aggregate</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">torchsystem.registry</span><span class="w"> </span><span class="kn">import</span> <span class="n">gethash</span>
-
-<span class="k">class</span><span class="w"> </span><span class="nc">Classifier</span><span class="p">(</span><span class="n">Aggregate</span><span class="p">):</span> 
+<span class="k">class</span><span class="w"> </span><span class="nc">Classifier</span><span class="p">(</span><span class="n">Aggregate</span><span class="p">):</span>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nn</span><span class="p">:</span> <span class="n">Module</span><span class="p">,</span> <span class="n">criterion</span><span class="p">:</span> <span class="n">Module</span><span class="p">,</span> <span class="n">optimizer</span><span class="p">:</span> <span class="n">Optimizer</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">epoch</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">nn</span> <span class="o">=</span> <span class="n">nn</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">criterion</span> <span class="o">=</span> <span class="n">criterion</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span> <span class="o">=</span> <span class="n">optimizer</span> 
-        <span class="bp">self</span><span class="o">.</span><span class="n">flatten</span> <span class="o">=</span> <span class="n">Flatten</span><span class="p">()</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">id</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">gethash</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nn</span><span class="p">)</span> <span class="c1"># This will return an identifier for the aggregate root </span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span> <span class="o">=</span> <span class="n">optimizer</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">getname</span><span class="p">(</span><span class="n">nn</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hash</span> <span class="o">=</span> <span class="n">gethash</span><span class="p">(</span><span class="n">nn</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">input</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tensor</span><span class="p">:</span>
-        <span class="nb">input</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">flatten</span><span class="p">(</span><span class="nb">input</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">nn</span><span class="p">(</span><span class="nb">input</span><span class="p">)</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">loss</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">output</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span> <span class="n">target</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tensor</span><span class="p">:</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">criterion</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="n">target</span><span class="p">)</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">loss</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">outputs</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span> <span class="n">targets</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tensor</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">criterion</span><span class="p">(</span><span class="n">outputs</span><span class="p">,</span> <span class="n">targets</span><span class="p">)</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">input</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span> <span class="n">target</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">Tensor</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span> <span class="n">targets</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tensor</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">()</span>
-        <span class="n">output</span> <span class="o">=</span> <span class="bp">self</span><span class="p">(</span><span class="nb">input</span><span class="p">)</span>
-        <span class="n">loss</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">loss</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="n">target</span><span class="p">)</span>
+        <span class="n">outputs</span> <span class="o">=</span> <span class="bp">self</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
+        <span class="n">loss</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">loss</span><span class="p">(</span><span class="n">outputs</span><span class="p">,</span> <span class="n">targets</span><span class="p">)</span>
         <span class="n">loss</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
-        <span class="k">return</span> <span class="n">argmax</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span> <span class="n">loss</span> <span class="c1"># returns classification predictions and their loss</span>
+        <span class="k">return</span> <span class="n">loss</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">input</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span> <span class="n">target</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">Tensor</span><span class="p">]:</span>
-        <span class="n">output</span> <span class="o">=</span> <span class="bp">self</span><span class="p">(</span><span class="nb">input</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">argmax</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">loss</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="n">target</span><span class="p">)</span> 
+    <span class="k">def</span><span class="w"> </span><span class="nf">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span> <span class="n">targets</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tensor</span><span class="p">:</span> 
+        <span class="n">outputs</span> <span class="o">=</span> <span class="bp">self</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">loss</span><span class="p">(</span><span class="n">outputs</span><span class="p">,</span> <span class="n">targets</span><span class="p">)</span>
 </code></pre></div>
-<p>As you see, aggregates is just a simple facade to encapsulate things you already knew. You also can give the aggregates the capability to handle domain events or domain exceptions. </p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">torchsystem.domain</span><span class="w"> </span><span class="kn">import</span> <span class="n">Aggregate</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">torchsystem.domain</span><span class="w"> </span><span class="kn">import</span> <span class="n">Event</span><span class="p">,</span> <span class="n">Events</span>
+<p>This aggregate wraps all the essential components of a classification model and exposes clear methods (fit and evaluate) for performing domain-specific tasks. </p>
+<p>By using an aggregate:</p>
+<ul>
+<li>
+<p>State changes are managed consistently.</p>
+</li>
+<li>
+<p>Training and evaluation logic is encapsulated within the model itself.</p>
+</li>
+<li>
+<p>Additional components, such as metrics or logging, can be easily integrated.</p>
+</li>
+</ul>
+<p>This approach ensures that your model is more than just a network—it’s a self-contained, manageable unit ready to interact with services and pipelines.</p>
+<p>Note: We imported two utility functions from the registry module: <code>gethash</code> and <code>getname</code>.</p>
+<ul>
+<li>
+<p><code>gethash(nn)</code> provides a locally unique identifier for the neural network.</p>
+</li>
+<li>
+<p><code>getname(nn)</code> provides a human-readable, non-unique name for the network.</p>
+</li>
+</ul>
+<p>These attributes are part of the model’s overall identity, helping to distinguish and reference the model in logs, checkpoints, and tracking systems. </p>
+<p>To use functions from the registry module, you first need to register your neural network with the framework. For example:</p>
+<p><div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">model</span><span class="w"> </span><span class="kn">import</span> <span class="n">MLP</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">torchsystem</span><span class="w"> </span><span class="kn">import</span> <span class="n">registry</span>
 
-<span class="k">class</span><span class="w"> </span><span class="nc">SomeDomainEvent</span><span class="p">(</span><span class="n">Event</span><span class="p">):</span><span class="o">...</span>
-<span class="c1"># A simple class can represent a domain event.</span>
-
-<span class="k">class</span><span class="w"> </span><span class="nc">DomainException</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span><span class="o">...</span>
-<span class="c1"># Exceptions are also supported as domain events.</span>
-<span class="c1"># If no handler is found, they will be raised when the event queue is commited.</span>
-
-<span class="k">class</span><span class="w"> </span><span class="nc">DomainEventWithData</span><span class="p">(</span><span class="n">Event</span><span class="p">):</span>
-    <span class="c1"># They also can carry data</span>
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Any</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">data</span>
-
-<span class="k">class</span><span class="w"> </span><span class="nc">DomainEventWithIgnoredData</span><span class="p">(</span><span class="n">Event</span><span class="p">):</span>
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Any</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">data</span>
-
-<span class="k">class</span><span class="w"> </span><span class="nc">Classifier</span><span class="p">(</span><span class="n">Aggregate</span><span class="p">):</span> 
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nn</span><span class="p">:</span> <span class="n">Module</span><span class="p">,</span> <span class="n">criterion</span><span class="p">:</span> <span class="n">Module</span><span class="p">,</span> <span class="n">optimizer</span><span class="p">:</span> <span class="n">Optimizer</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>        
-        <span class="bp">self</span><span class="o">.</span><span class="n">events</span> <span class="o">=</span> <span class="n">Events</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">events</span><span class="o">.</span><span class="n">handlers</span><span class="p">[</span><span class="n">SomeDomainEvent</span><span class="p">]</span> <span class="o">=</span> <span class="k">lambda</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;SomeDomainEvent handled!&#39;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">events</span><span class="o">.</span><span class="n">handlers</span><span class="p">[</span><span class="n">DomainException</span><span class="p">]</span> <span class="o">=</span> <span class="k">lambda</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;DomainException handled!&#39;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">events</span><span class="o">.</span><span class="n">handlers</span><span class="p">[</span><span class="n">DomainEventWithData</span><span class="p">]</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">event</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;DomainEventWithData handled with data: </span><span class="si">{</span><span class="n">event</span><span class="o">.</span><span class="n">data</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">events</span><span class="o">.</span><span class="n">handlers</span><span class="p">[</span><span class="n">DomainEventWithIgnoredData</span><span class="p">]</span> <span class="o">=</span> <span class="k">lambda</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;DomainEventWithIgnoredData handled&#39;</span><span class="p">)</span>
-        <span class="c1"># Usually you need to define the handlers outside the aggregate and pass them in the building process. But</span>
-        <span class="c1"># This is an example of how you can handle complex domain logic within the aggregate.</span>
-        <span class="o">...</span>
-
-    <span class="k">def</span><span class="w"> </span><span class="nf">onepoch</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="c1"># Hook that will be called after the epoch attribute is updated. The aggregate handle this</span>
-        <span class="c1"># automatically for epochs and phase.</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">events</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span> <span class="c1"># This will raise the StopIteration exception enqueued before when the epoch is over</span>
+<span class="n">registry</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">MLP</span><span class="p">)</span>
 </code></pre></div>
-<p>The <code>Classifier</code> aggregate we just created can be built and compiled in a simple way. However, you will find yourself in situations where you need to pick a torch backend, create and clean multiprocessing resources, pickle modules, etc., and you will need a tool to build the aggregate and compile it. </p>
-<p>I will implement a compilation pipeline, just to show you how to use the compiler:</p>
-<div class="highlight"><pre><span></span><code><span class="c1"># src/services/compilation.py</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">logging</span><span class="w"> </span><span class="kn">import</span> <span class="n">getLogger</span>
+For more details and advanced usage, see the full documentation.</p>
+<h3 id="services">Services</h3>
+<p>Let's now train our aggregate. The training process involves orchestrating data, batching, and optimization steps, which are external to the model’s internal state . To manage this, we use <strong>services</strong>. Services are stateless operations that act on aggregates and orchestrate domain-specific tasks like training or evaluation without directly modifying the model’s internal logic.</p>
+<p>The service layer often produces data that needs to be communicated to external consumers, such as metrics, logs, or checkpoints. However, it is best not to couple services directly to any infrastructure. Events provide a clean, decoupled mechanism to notify other components of these outcomes, allowing consumers to handle persistence, monitoring, or other side effects independently of the service logic.</p>
+<p>Let's implement the service layer with <code>torchsystem</code>:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Iterable</span> 
+<span class="kn">from</span><span class="w"> </span><span class="nn">torch</span><span class="w"> </span><span class="kn">import</span> <span class="n">Tensor</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">torch</span><span class="w"> </span><span class="kn">import</span> <span class="n">inference_mode</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">torchsystem.depends</span><span class="w"> </span><span class="kn">import</span> <span class="n">Depends</span><span class="p">,</span> <span class="n">Provider</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">torchsystem.services</span><span class="w"> </span><span class="kn">import</span> <span class="n">Service</span><span class="p">,</span> <span class="n">Producer</span><span class="p">,</span> <span class="n">event</span> 
+<span class="kn">from</span><span class="w"> </span><span class="nn">mltracker.ports</span><span class="w"> </span><span class="kn">import</span> <span class="n">Models</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">src.classifier</span><span class="w"> </span><span class="kn">import</span> <span class="n">Classifier</span> 
+
+<span class="n">provider</span> <span class="o">=</span> <span class="n">Provider</span><span class="p">()</span>
+<span class="n">producer</span> <span class="o">=</span> <span class="n">Producer</span><span class="p">()</span> 
+<span class="n">service</span> <span class="o">=</span> <span class="n">Service</span><span class="p">(</span><span class="n">provider</span><span class="o">=</span><span class="n">provider</span><span class="p">)</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">device</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span><span class="o">...</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">models</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Models</span><span class="p">:</span><span class="o">...</span>
+
+<span class="nd">@event</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Trained</span><span class="p">:</span>
+    <span class="n">model</span><span class="p">:</span> <span class="n">Classifier</span> 
+    <span class="n">results</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Tensor</span><span class="p">]</span> 
+
+<span class="nd">@event</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Evaluated</span><span class="p">:</span>
+    <span class="n">model</span><span class="p">:</span> <span class="n">Classifier</span>
+    <span class="n">results</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Tensor</span><span class="p">]</span>
+
+<span class="nd">@service</span><span class="o">.</span><span class="n">handler</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">train</span><span class="p">(</span><span class="n">model</span><span class="p">:</span> <span class="n">Classifier</span><span class="p">,</span> <span class="n">loader</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">Tensor</span><span class="p">]],</span> <span class="n">device</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">device</span><span class="p">)):</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">train</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">inputs</span><span class="p">,</span> <span class="n">targets</span> <span class="ow">in</span> <span class="n">loader</span><span class="p">:</span> 
+        <span class="n">inputs</span><span class="p">,</span> <span class="n">targets</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">),</span> <span class="n">targets</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>  
+        <span class="n">loss</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">targets</span><span class="p">)</span>
+    <span class="n">producer</span><span class="o">.</span><span class="n">dispatch</span><span class="p">(</span><span class="n">Trained</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;loss&quot;</span><span class="p">:</span> <span class="n">loss</span><span class="p">}))</span>
+
+<span class="nd">@service</span><span class="o">.</span><span class="n">handler</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">evaluate</span><span class="p">(</span><span class="n">model</span><span class="p">:</span> <span class="n">Classifier</span><span class="p">,</span> <span class="n">loader</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">Tensor</span><span class="p">]],</span> <span class="n">device</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">device</span><span class="p">)):</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
+    <span class="k">with</span> <span class="n">inference_mode</span><span class="p">():</span>
+        <span class="k">for</span> <span class="n">inputs</span><span class="p">,</span> <span class="n">targets</span> <span class="ow">in</span> <span class="n">loader</span><span class="p">:</span> 
+            <span class="n">inputs</span><span class="p">,</span> <span class="n">targets</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">),</span> <span class="n">targets</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>  
+            <span class="n">loss</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">targets</span><span class="p">)</span>
+        <span class="n">producer</span><span class="o">.</span><span class="n">dispatch</span><span class="p">(</span><span class="n">Evaluated</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;loss&quot;</span><span class="p">:</span> <span class="n">loss</span><span class="p">}))</span> 
+</code></pre></div>
+<p>Notice that the service it is completely decoupled from the implementation of the domain. It's only task is to orchestrate the training process and produce events from it. It doesn't provide any storage logic or data manipulation, only stateless training logic. Now you can now build a whole data storage system, logging or any other service you need around this simple service, without modifying it further.</p>
+<p>Note: <code>torchsystem</code> uses a built-in dependency injection system to provide services with the resources they need without hardcoding them.</p>
+<ul>
+<li>
+<p><code>Provider</code> manages available dependencies and allows overriding them in different contexts.</p>
+</li>
+<li>
+<p><code>Depends</code> declares that a function parameter should be automatically injected with a dependency (e.g., the device or a collection of models).</p>
+</li>
+</ul>
+<p>Those dependencies can be overriden later.</p>
+<h3 id="consumers">Consumers</h3>
+<p>Consumers are components that react to events produced by services. They handle side effects such as logging, metrics collection, or persisting model checkpoints, without modifying the service or aggregate logic. This keeps the system decoupled and maintainable.</p>
+<p>Let's create a consumer for our training service:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">os</span><span class="w"> </span><span class="kn">import</span> <span class="n">makedirs</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">torch</span><span class="w"> </span><span class="kn">import</span> <span class="n">save</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">torchsystem</span><span class="w"> </span><span class="kn">import</span> <span class="n">Depends</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">torchsystem.services</span><span class="w"> </span><span class="kn">import</span> <span class="n">Consumer</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">src.training</span><span class="w"> </span><span class="kn">import</span> <span class="n">provider</span><span class="p">,</span> <span class="n">models</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">src.training</span><span class="w"> </span><span class="kn">import</span> <span class="n">Trained</span><span class="p">,</span> <span class="n">Evaluated</span> 
+
+<span class="n">consumer</span> <span class="o">=</span> <span class="n">Consumer</span><span class="p">(</span><span class="n">provider</span><span class="o">=</span><span class="n">provider</span><span class="p">)</span>
+
+<span class="nd">@consumer</span><span class="o">.</span><span class="n">handler</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">bump_epoch</span><span class="p">(</span><span class="n">event</span><span class="p">:</span> <span class="n">Trained</span><span class="p">):</span>
+    <span class="n">event</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">epoch</span> <span class="o">+=</span> <span class="mi">1</span> 
+
+<span class="nd">@consumer</span><span class="o">.</span><span class="n">handler</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">log_metrics</span><span class="p">(</span><span class="n">event</span><span class="p">:</span> <span class="n">Trained</span> <span class="o">|</span> <span class="n">Evaluated</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;-----------------------------------------------------------------&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span>
+        <span class="sa">f</span><span class="s2">&quot;Epoch: </span><span class="si">{</span><span class="n">event</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">epoch</span><span class="si">}</span><span class="s2">, &quot;</span>
+        <span class="sa">f</span><span class="s2">&quot;Average loss: </span><span class="si">{</span><span class="n">event</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="s1">&#39;loss&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">item</span><span class="p">()</span><span class="si">}</span><span class="s2">, &quot;</span>
+    <span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;-----------------------------------------------------------------&quot;</span><span class="p">)</span>
+
+<span class="nd">@consumer</span><span class="o">.</span><span class="n">handler</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">persist_model</span><span class="p">(</span><span class="n">event</span><span class="p">:</span> <span class="n">Evaluated</span><span class="p">):</span>
+    <span class="n">makedirs</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;data/weights&quot;</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">path</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;data/weights/</span><span class="si">{</span><span class="n">event</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">-</span><span class="si">{</span><span class="n">event</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">hash</span><span class="si">}</span><span class="s2">.pth&quot;</span>
+    <span class="n">checkpoint</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;epoch&#39;</span><span class="p">:</span> <span class="n">event</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">epoch</span><span class="p">,</span>
+        <span class="s1">&#39;nn&#39;</span><span class="p">:</span> <span class="n">event</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">state_dict</span><span class="p">(),</span>
+        <span class="s1">&#39;optimizer&#39;</span><span class="p">:</span> <span class="n">event</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">optimizer</span><span class="o">.</span><span class="n">state_dict</span><span class="p">()</span>
+    <span class="p">}</span>
+    <span class="n">save</span><span class="p">(</span><span class="n">checkpoint</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span> 
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Saved model weights at: </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</code></pre></div>
+<p>Note: We attach the provider created in the training service because consumers also support dependency injection with the same fashion. This of course is completly optional, like everything else in the library. </p>
+<p>Consumers rely on type annotations to determine which events their handlers should react to. Unions and generics are supported: if a handler is declared with a union as an argument, it will listen to all events included in that union. In this example, for instance, metrics are logged during both the training and evaluation phases.</p>
+<p>In this example:</p>
+<ul>
+<li>
+<p>The consumer reacts to a Trained event and increments the epoch counter.</p>
+</li>
+<li>
+<p>When it receives either a Trained or Evaluated event, it prints the results.</p>
+</li>
+<li>
+<p>Each time an Evaluated event is received, it saves a checkpoint.</p>
+</li>
+</ul>
+<p>You can customize consumers to your needs, injecting any infrastructure you like, such as TensorBoard, a database, or other logging systems. If you prefer not to plug in infrastructure yet, you can use the pub/sub utilities provided by the library, which allow your consumer to publish messages to topics. See the documentation for more details.</p>
+<h3 id="compiler">Compiler</h3>
+<p>The Classifier aggregate we just created can be built and compiled in a simple way. However, you will find yourself in situations where you need to pick a torch backend, create and clean multiprocessing resources, move modules to devices, pickle modules, etc., and you will need a tool to build the aggregate and compile it. </p>
+<p>This library provides a simple implementation of the builder pattern under the name of compiler, the idea is to encapsulate all the construction and compilation process of your aggregate as a simple pipeline. Let's create one:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">torch</span><span class="w"> </span><span class="kn">import</span> <span class="n">load</span> 
 <span class="kn">from</span><span class="w"> </span><span class="nn">torch.nn</span><span class="w"> </span><span class="kn">import</span> <span class="n">Module</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">torch.optim</span><span class="w"> </span><span class="kn">import</span> <span class="n">Optimizer</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">torchsystem</span><span class="w"> </span><span class="kn">import</span> <span class="n">Depends</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">torchsystem.compiler</span><span class="w"> </span><span class="kn">import</span> <span class="nb">compile</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">torchsystem.compiler</span><span class="w"> </span><span class="kn">import</span> <span class="n">Compiler</span> 
+<span class="kn">from</span><span class="w"> </span><span class="nn">torchsystem.compiler</span><span class="w"> </span><span class="kn">import</span> <span class="n">Compiler</span><span class="p">,</span> <span class="nb">compile</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">src.classifier</span><span class="w"> </span><span class="kn">import</span> <span class="n">Classifier</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">src.training</span><span class="w"> </span><span class="kn">import</span> <span class="n">device</span><span class="p">,</span> <span class="n">provider</span> 
 
-<span class="n">logger</span> <span class="o">=</span> <span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
-<span class="n">compiler</span> <span class="o">=</span> <span class="n">Compiler</span><span class="p">[</span><span class="n">Classifier</span><span class="p">]()</span>
-
-<span class="k">def</span><span class="w"> </span><span class="nf">device</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span><span class="o">...</span>
-
-<span class="k">def</span><span class="w"> </span><span class="nf">epoch</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-    <span class="k">return</span> <span class="mi">10</span> <span class="c1"># Just for the sake of the example</span>
+<span class="n">compiler</span> <span class="o">=</span> <span class="n">Compiler</span><span class="p">[</span><span class="n">Classifier</span><span class="p">](</span><span class="n">provider</span><span class="o">=</span><span class="n">provider</span><span class="p">)</span>
 
 <span class="nd">@compiler</span><span class="o">.</span><span class="n">step</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">build_classifier</span><span class="p">(</span><span class="n">model</span><span class="p">:</span> <span class="n">Module</span><span class="p">,</span> <span class="n">criterion</span><span class="p">:</span> <span class="n">Module</span><span class="p">,</span> <span class="n">optimizer</span><span class="p">:</span> <span class="n">Optimizer</span><span class="p">):</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Building Classifier&#39;</span><span class="p">)</span> 
-    <span class="k">return</span> <span class="n">Classifier</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">criterion</span><span class="p">,</span> <span class="n">optimizer</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">build_model</span><span class="p">(</span><span class="n">nn</span><span class="p">:</span> <span class="n">Module</span><span class="p">,</span> <span class="n">criterion</span><span class="p">:</span> <span class="n">Module</span><span class="p">,</span> <span class="n">optimizer</span><span class="p">:</span> <span class="n">Optimizer</span><span class="p">,</span> <span class="n">device</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">device</span><span class="p">)):</span>
+    <span class="k">if</span> <span class="n">device</span> <span class="o">!=</span> <span class="s1">&#39;cpu&#39;</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Moving classifier to device </span><span class="si">{</span><span class="n">device</span><span class="si">}</span><span class="s2">...&quot;</span><span class="p">)</span> 
+        <span class="k">return</span> <span class="n">Classifier</span><span class="p">(</span><span class="n">nn</span><span class="p">,</span> <span class="n">criterion</span><span class="p">,</span> <span class="n">optimizer</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">Classifier</span><span class="p">(</span><span class="n">nn</span><span class="p">,</span> <span class="n">criterion</span><span class="p">,</span> <span class="n">optimizer</span><span class="p">)</span>
 
 <span class="nd">@compiler</span><span class="o">.</span><span class="n">step</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">move_to_device</span><span class="p">(</span><span class="n">classifier</span><span class="p">:</span> <span class="n">Classifier</span><span class="p">,</span> <span class="n">device</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">device</span><span class="p">)):</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Moving classifier to device: </span><span class="si">{</span><span class="n">device</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">classifier</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">restore_weights</span><span class="p">(</span><span class="n">classifier</span><span class="p">:</span> <span class="n">Classifier</span><span class="p">,</span> <span class="n">device</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">device</span><span class="p">)):</span> 
+    <span class="n">path</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;data/weights/</span><span class="si">{</span><span class="n">classifier</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">-</span><span class="si">{</span><span class="n">classifier</span><span class="o">.</span><span class="n">hash</span><span class="si">}</span><span class="s2">.pth&quot;</span>
+    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+        <span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Restoring model weights from: </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>   
+        <span class="n">checkpoint</span> <span class="o">=</span> <span class="n">load</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">map_location</span><span class="o">=</span><span class="n">device</span><span class="p">)</span> 
+        <span class="n">classifier</span><span class="o">.</span><span class="n">epoch</span> <span class="o">=</span> <span class="n">checkpoint</span><span class="p">[</span><span class="s1">&#39;epoch&#39;</span><span class="p">]</span>
+        <span class="n">classifier</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">load_state_dict</span><span class="p">(</span><span class="n">checkpoint</span><span class="p">[</span><span class="s1">&#39;nn&#39;</span><span class="p">])</span>
+        <span class="n">classifier</span><span class="o">.</span><span class="n">optimizer</span><span class="o">.</span><span class="n">load_state_dict</span><span class="p">(</span><span class="n">checkpoint</span><span class="p">[</span><span class="s1">&#39;optimizer&#39;</span><span class="p">])</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;No weights found at </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">, skipping restore&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">classifier</span>
 
 <span class="nd">@compiler</span><span class="o">.</span><span class="n">step</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">compile_classifier</span><span class="p">(</span><span class="n">classifier</span><span class="p">:</span> <span class="n">Classifier</span><span class="p">):</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Compiling classifier&#39;</span><span class="p">)</span>
-    <span class="k">return</span> <span class="nb">compile</span><span class="p">(</span><span class="n">classifier</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">compile_model</span><span class="p">(</span><span class="n">classifier</span><span class="p">:</span> <span class="n">Classifier</span><span class="p">,</span> <span class="n">device</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">device</span><span class="p">)):</span>
+    <span class="k">if</span> <span class="n">device</span> <span class="o">!=</span> <span class="s1">&#39;cpu&#39;</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Compiling model...&quot;</span><span class="p">)</span> 
+        <span class="k">return</span> <span class="nb">compile</span><span class="p">(</span><span class="n">classifier</span><span class="p">)</span> 
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">classifier</span>
 
 <span class="nd">@compiler</span><span class="o">.</span><span class="n">step</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">get_current_epoch</span><span class="p">(</span><span class="n">classifier</span><span class="p">:</span> <span class="n">Classifier</span><span class="p">,</span> <span class="n">epoch</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">epoch</span><span class="p">)):</span>
-    <span class="c1"># Implement this with some database query or api call using the classifier.id</span>
-    <span class="n">classifier</span><span class="o">.</span><span class="n">epoch</span> <span class="o">=</span> <span class="n">epoch</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">debug_model</span><span class="p">(</span><span class="n">classifier</span><span class="p">:</span> <span class="n">Classifier</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span>
+        <span class="sa">f</span><span class="s2">&quot;Compiled model with:</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="sa">f</span><span class="s2">&quot;Name:  </span><span class="si">{</span><span class="n">classifier</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="sa">f</span><span class="s2">&quot;Hash:  </span><span class="si">{</span><span class="n">classifier</span><span class="o">.</span><span class="n">hash</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="sa">f</span><span class="s2">&quot;Epochs: </span><span class="si">{</span><span class="n">classifier</span><span class="o">.</span><span class="n">epoch</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">classifier</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">classifier</span>
 </code></pre></div>
-<p>Finally, you can put all together in the application layer as follows:</p>
-<div class="highlight"><pre><span></span><code><span class="c1"># src/main.py</span>
+<p>Each time the model is "compiled," this pipeline will:</p>
+<ul>
+<li>
+<p>Move it to the appropriate device.</p>
+</li>
+<li>
+<p>Restore its weights if a checkpoint exists and bring it to the current epoch.</p>
+</li>
+<li>
+<p>Optionally compile it using PyTorch’s torch.compile.</p>
+</li>
+<li>
+<p>Debug-print the model summary.</p>
+</li>
+</ul>
+<p>You can run this pipeline easily:</p>
+<div class="highlight"><pre><span></span><code><span class="n">classifier</span> <span class="o">=</span> <span class="n">compiler</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">nn</span><span class="p">,</span> <span class="n">criterion</span><span class="p">,</span> <span class="n">optimizer</span><span class="p">)</span>
+</code></pre></div>
+<h3 id="training-script">Training script</h3>
+<p>Finally we put all togheter in a main file to train a simple model:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">torch</span><span class="w"> </span><span class="kn">import</span> <span class="n">cuda</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">torch</span><span class="w"> </span><span class="kn">import</span> <span class="n">cuda</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">torch.utils.tensorboard.writer</span><span class="w"> </span><span class="kn">import</span> <span class="n">SummaryWriter</span>
-
-<span class="kn">from</span><span class="w"> </span><span class="nn">src.services</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
-    <span class="n">training</span><span class="p">,</span>
-    <span class="n">tensorboard</span><span class="p">,</span>
-    <span class="n">earlystopping</span>
-<span class="p">)</span>
-
-<span class="n">summary_writer</span> <span class="o">=</span> <span class="n">SummaryWriter</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
-
-<span class="n">model</span> <span class="o">=</span> <span class="n">MLP</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
-<span class="n">criterion</span> <span class="o">=</span> <span class="n">CrossEntropyLoss</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
-<span class="n">optimizer</span> <span class="o">=</span> <span class="n">Adam</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
-<span class="n">metrics</span> <span class="o">=</span> <span class="n">Metrics</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
-<span class="n">loaders</span> <span class="o">=</span> <span class="p">[</span>
-    <span class="p">(</span><span class="s1">&#39;train&#39;</span><span class="p">,</span> <span class="n">DataLoader</span><span class="p">(</span><span class="o">...</span><span class="p">)),</span>
-    <span class="p">(</span><span class="s1">&#39;validation&#39;</span><span class="p">,</span> <span class="n">DataLoader</span><span class="p">(</span><span class="o">...</span><span class="p">))</span>
-<span class="p">]</span>
-
-<span class="k">def</span><span class="w"> </span><span class="nf">device</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">device</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
     <span class="k">return</span> <span class="s1">&#39;cuda&#39;</span> <span class="k">if</span> <span class="n">cuda</span><span class="o">.</span><span class="n">is_available</span><span class="p">()</span> <span class="k">else</span> <span class="s1">&#39;cpu&#39;</span>
 
-<span class="k">def</span><span class="w"> </span><span class="nf">writter</span><span class="p">():</span>
-    <span class="k">yield</span> <span class="n">summary_writer</span>
-    <span class="n">summary_writer</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">src</span><span class="w"> </span><span class="kn">import</span> <span class="n">training</span><span class="p">,</span> <span class="n">checkpoints</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">src.compilation</span><span class="w"> </span><span class="kn">import</span> <span class="n">compiler</span>
 
-<span class="n">training</span><span class="o">.</span><span class="n">service</span><span class="o">.</span><span class="n">dependency_overrides</span><span class="p">[</span><span class="n">training</span><span class="o">.</span><span class="n">device</span><span class="p">]</span> <span class="o">=</span> <span class="n">device</span>
-<span class="n">training</span><span class="o">.</span><span class="n">producer</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">tensorboard</span><span class="o">.</span><span class="n">consumer</span><span class="p">)</span>
-<span class="n">training</span><span class="o">.</span><span class="n">producer</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">earlystopping</span><span class="o">.</span><span class="n">consumer</span><span class="p">)</span>
-<span class="n">compilation</span><span class="o">.</span><span class="n">compiler</span><span class="o">.</span><span class="n">dependency_overrides</span><span class="p">[</span><span class="n">compilation</span><span class="o">.</span><span class="n">device</span><span class="p">]</span> <span class="o">=</span> <span class="n">device</span>
-<span class="n">tensorboard</span><span class="o">.</span><span class="n">consumer</span><span class="o">.</span><span class="n">dependency_overrides</span><span class="p">[</span><span class="n">tensorboard</span><span class="o">.</span><span class="n">writer</span><span class="p">]</span> <span class="o">=</span> <span class="n">writer</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">model</span><span class="w"> </span><span class="kn">import</span> <span class="n">MLP</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">dataset</span><span class="w"> </span><span class="kn">import</span> <span class="n">Digits</span>
 
-<span class="o">...</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">torch.nn</span><span class="w"> </span><span class="kn">import</span> <span class="n">CrossEntropyLoss</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">torch.optim</span><span class="w"> </span><span class="kn">import</span> <span class="n">SGD</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">torch.utils.data</span><span class="w"> </span><span class="kn">import</span> <span class="n">DataLoader</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">torchsystem</span><span class="w"> </span><span class="kn">import</span> <span class="n">registry</span>
 
-<span class="n">classifier</span> <span class="o">=</span> <span class="n">compilation</span><span class="o">.</span><span class="n">compiler</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">criterion</span><span class="p">,</span> <span class="n">optimizer</span><span class="p">)</span>
-<span class="n">training</span><span class="o">.</span><span class="n">service</span><span class="o">.</span><span class="n">handle</span><span class="p">(</span><span class="s1">&#39;iterate&#39;</span><span class="p">,</span> <span class="n">classifier</span><span class="p">,</span> <span class="n">loaders</span><span class="p">,</span> <span class="n">metrics</span><span class="p">)</span>
+    <span class="n">registry</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">MLP</span><span class="p">)</span>
+    <span class="n">training</span><span class="o">.</span><span class="n">provider</span><span class="o">.</span><span class="n">override</span><span class="p">(</span><span class="n">training</span><span class="o">.</span><span class="n">device</span><span class="p">,</span> <span class="n">device</span><span class="p">)</span> 
+    <span class="n">training</span><span class="o">.</span><span class="n">producer</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">checkpoints</span><span class="o">.</span><span class="n">consumer</span><span class="p">)</span>
 
-<span class="n">summary_writer</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-<span class="o">...</span>
+    <span class="n">nn</span> <span class="o">=</span> <span class="n">MLP</span><span class="p">(</span><span class="n">input_size</span><span class="o">=</span><span class="mi">784</span><span class="p">,</span> <span class="n">hidden_size</span><span class="o">=</span><span class="mi">256</span><span class="p">,</span> <span class="n">output_size</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">dropout</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+    <span class="n">criterion</span> <span class="o">=</span> <span class="n">CrossEntropyLoss</span><span class="p">()</span>
+    <span class="n">optimizer</span> <span class="o">=</span> <span class="n">SGD</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="n">lr</span><span class="o">=</span><span class="mf">0.001</span><span class="p">)</span>
+    <span class="n">classifier</span> <span class="o">=</span> <span class="n">compiler</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">nn</span><span class="p">,</span> <span class="n">criterion</span><span class="p">,</span> <span class="n">optimizer</span><span class="p">)</span>
+
+    <span class="n">datasets</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;train&#39;</span><span class="p">:</span> <span class="n">Digits</span><span class="p">(</span><span class="n">train</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">normalize</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
+        <span class="s1">&#39;evaluation&#39;</span><span class="p">:</span> <span class="n">Digits</span><span class="p">(</span><span class="n">train</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>  <span class="n">normalize</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
+    <span class="p">}</span>
+
+    <span class="n">loaders</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;train&#39;</span><span class="p">:</span> <span class="n">DataLoader</span><span class="p">(</span><span class="n">datasets</span><span class="p">[</span><span class="s1">&#39;train&#39;</span><span class="p">],</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">256</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">pin_memory</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">pin_memory_device</span><span class="o">=</span><span class="s1">&#39;cuda&#39;</span><span class="p">,</span> <span class="n">num_workers</span><span class="o">=</span><span class="mi">4</span><span class="p">),</span>
+        <span class="s1">&#39;evaluation&#39;</span><span class="p">:</span> <span class="n">DataLoader</span><span class="p">(</span><span class="n">datasets</span><span class="p">[</span><span class="s1">&#39;evaluation&#39;</span><span class="p">],</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">256</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">pin_memory</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">pin_memory_device</span><span class="o">=</span><span class="s1">&#39;cuda&#39;</span><span class="p">,</span> <span class="n">num_workers</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span> 
+    <span class="p">}</span> <span class="k">if</span> <span class="n">cuda</span><span class="o">.</span><span class="n">is_available</span><span class="p">()</span> <span class="k">else</span> <span class="p">{</span>
+        <span class="s1">&#39;train&#39;</span><span class="p">:</span> <span class="n">DataLoader</span><span class="p">(</span><span class="n">datasets</span><span class="p">[</span><span class="s1">&#39;train&#39;</span><span class="p">],</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">256</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
+        <span class="s1">&#39;evaluation&#39;</span><span class="p">:</span> <span class="n">DataLoader</span><span class="p">(</span><span class="n">datasets</span><span class="p">[</span><span class="s1">&#39;evaluation&#39;</span><span class="p">],</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">256</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> 
+    <span class="p">}</span>
+
+    <span class="k">for</span> <span class="n">epoch</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">):</span>
+        <span class="n">training</span><span class="o">.</span><span class="n">train</span><span class="p">(</span><span class="n">classifier</span><span class="p">,</span> <span class="n">loaders</span><span class="p">[</span><span class="s1">&#39;train&#39;</span><span class="p">])</span>
+        <span class="n">training</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">classifier</span><span class="p">,</span> <span class="n">loaders</span><span class="p">[</span><span class="s1">&#39;evaluation&#39;</span><span class="p">])</span>
 </code></pre></div>
-<p>This is a simple example of how to build a training system using the framework. Since services can be called by their name, you can easily write a REST API with CQS (Command Query Segregation) or a CLI interfaces for your training system. </p>
+<p>Each time you run this script:</p>
+<ul>
+<li>
+<p>The compiler will attempt to load existing weights and continue training from the last saved epoch.</p>
+</li>
+<li>
+<p>After evaluation, the consumer will automatically store checkpoints.</p>
+</li>
+</ul>
+<p>The hash of the model ensures that different configurations (e.g., changing hidden layer size) generate separate checkpoints, preventing overwriting previous models.</p>
 <h2 id="features">Features</h2>
 <p>Here is a more detailed list of features with links to their documentation.</p>
 <ul>

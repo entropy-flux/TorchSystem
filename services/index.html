@@ -352,6 +352,15 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#torchsystem.services.service.Service.override" class="md-nav__link">
+    <span class="md-ellipsis">
+      override
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -479,6 +488,15 @@
   <a href="#torchsystem.services.service.Service.handler" class="md-nav__link">
     <span class="md-ellipsis">
       handler
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#torchsystem.services.service.Service.override" class="md-nav__link">
+    <span class="md-ellipsis">
+      override
     </span>
   </a>
   
@@ -869,6 +887,70 @@ with the dependencies provided by the service.</p>
               <div class="doc-md-description">
                 <p>Callable[..., Any]: The injected handler function.</p>
               </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="torchsystem.services.service.Service.override" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">override</span><span class="p">(</span><span class="n">dependency</span><span class="p">,</span> <span class="n">implementation</span><span class="p">)</span></code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Overrides a dependency with an implementation. </p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>dependency</code>
+            </td>
+            <td>
+                  <code><span title="collections.abc.Callable">Callable</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The dependency function to override.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>implementation</code>
+            </td>
+            <td>
+                  <code><span title="collections.abc.Callable">Callable</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The implementation of the function.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
             </td>
           </tr>
       </tbody>
