@@ -4,7 +4,7 @@ This framework will help you to create powerful and scalable systems using the P
 
 ## Disclaimer:
 
-torchsystem is an independent, open-source project and is not affiliated with, endorsed by, or sponsored by Meta or PyTorch. The name is for descriptive purposes only and does not imply any official connection.
+TorchSystem is an independent, open-source project and is not affiliated with, endorsed by, or sponsored by Meta or PyTorch. The name is for descriptive purposes only and does not imply any official connection.
 
 
 ## Table of contents:
