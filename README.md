@@ -4,7 +4,7 @@ This framework will help you to create powerful and scalable systems using the P
 
 ## Disclaimer:
 
-torchsystem is an independent, open-source project and is not affiliated with, endorsed by, or sponsored by Meta or PyTorch. The name is for descriptive purposes only and does not imply any official connection.
+TorchSystem is an independent, open-source project and is not affiliated with, endorsed by, or sponsored by Meta or PyTorch. The name is for descriptive purposes only and does not imply any official connection.
 
 ## Table of contents:
 
@@ -172,7 +172,7 @@ def evaluate(model: Classifier, loader: Iterable[tuple[Tensor, Tensor]], device:
         producer.dispatch(Evaluated(model, {"loss": loss})) 
 ```
 
-And that's it! A simple training service. Notice that it is completely decoupled from the implementation of the domain. It's only task is to orchestrate the training process and produce events from it. It doesn't provide any storage logic or data manipulation, only stateless training logic. Now you can now build a whole data storage system, logging or any other service you need around this simple service, without modifying it further.
+Notice that the training service is completely decoupled from the implementation of the domain. It's only task is to orchestrate the training process and produce events from it. It doesn't provide any storage logic or data manipulation, only stateless training logic. Now you can now build a whole data storage system, logging or any other service you need around this simple service, without modifying it further.
 
 Note: `torchsystem` uses a built-in dependency injection system to provide services with the resources they need without hardcoding them.
 
@@ -368,7 +368,7 @@ Each time you run this script:
 
 - After evaluation, the consumer will automatically store checkpoints.
 
-The hash of the model ensures that different configurations (e.g., changing hidden layer size) generate separate checkpoints, preventing overwriting previous models.
+The hash of the model ensures that different configurations (e.g., changing hidden layer size) generate separate checkpoints, preventing overwriting previous models. You can find the full example in the [examples](/examples/mnist-mlp/) folder. 
 
 ## Features
 
