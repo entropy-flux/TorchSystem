@@ -375,21 +375,21 @@ The hash of the model ensures that different configurations (e.g., changing hidd
 
 Here is a more detailed list of features with links to their documentation.
 
-- [**Aggregates**](https://mr-mapache.github.io/torch-system/domain/): Define the structure of your domain by grouping related entities and enforcing consistency within their boundaries. They encapsulate both data and behavior, ensuring that all modifications occur through controlled operations.
+- [**Aggregates**](https://entropy-flux.github.io/TorchSystem/domain/): Define the structure of your domain by grouping related entities and enforcing consistency within their boundaries. They encapsulate both data and behavior, ensuring that all modifications occur through controlled operations.
 
-- [**Domain Events**](https://mr-mapache.github.io/torch-system/domain/): Aggregates can produce and consume domain events, which signal meaningful changes in the system or trigger actions elsewhere. Exceptions are supported to be treated as domain events, allowing them to be enqueued and handled or raised as needed. This makes it trivial to implement features like early stopping (Just enqueue an exception and raise it when needed).
+- [**Domain Events**](https://entropy-flux.github.io/TorchSystem/domain/): Aggregates can produce and consume domain events, which signal meaningful changes in the system or trigger actions elsewhere. Exceptions are supported to be treated as domain events, allowing them to be enqueued and handled or raised as needed. This makes it trivial to implement features like early stopping (Just enqueue an exception and raise it when needed).
 
-- [**Registry**](https://mr-mapache.github.io/torch-system/registry/): The registry module allows you to treat your models as entities by providing a way to calculate locally unique hashes for them that can act as their identifier. This module also provides several other utilities to help you handle the data from your domain.
+- [**Registry**](https://entropy-flux.github.io/TorchSystem/registry/): The registry module allows you to treat your models as entities by providing a way to calculate locally unique hashes for them that can act as their identifier. This module also provides several other utilities to help you handle the data from your domain.
 
-- [**Dependency Injection**](https://mr-mapache.github.io/torch-system/depends/): The framework provides a robust dependency injection system that allows you to define and inject dependencies. This enables you to define your logic in terms of interfaces and inject implementations later. 
+- [**Dependency Injection**](https://entropy-flux.github.io/TorchSystem/depends/): The framework provides a robust dependency injection system that allows you to define and inject dependencies. This enables you to define your logic in terms of interfaces and inject implementations later. 
 
-- [**Compilers**](https://mr-mapache.github.io/torch-system/compiler/): Building aggregates can be a complex process. In the context of deep learning, aggregates not only need to be built but also compiled, making compilation an integral part of the construction process. This framework provides a Compiler class to help define and manage the compilation process for your aggregates
+- [**Compilers**](https://entropy-flux.github.io/TorchSystem/compiler/): Building aggregates can be a complex process. In the context of deep learning, aggregates not only need to be built but also compiled, making compilation an integral part of the construction process. This framework provides a Compiler class to help define and manage the compilation process for your aggregates
 
-- [**Services**](https://mr-mapache.github.io/torch-system/services/): Define stateless operations that fulfill domain-specific tasks using ubiquitous language. 
+- [**Services**](https://entropy-flux.github.io/TorchSystem/services/): Define stateless operations that fulfill domain-specific tasks using ubiquitous language. 
 
-- [**Producers/Consumers**](https://mr-mapache.github.io/torch-system/prodcon/): Events produced by services can be delivered by producers to several consumers. This allows you to decouple services and define complex interactions between them. 
+- [**Producers/Consumers**](https://entropy-flux.github.io/TorchSystem/prodcon/): Events produced by services can be delivered by producers to several consumers. This allows you to decouple services and define complex interactions between them. 
 
-- [**Publisher/Subscriber**](https://mr-mapache.github.io/torch-system/pubsub/): Data also can be delivered with the publisher/subscriber pattern. Publishers can send data to subscribers using a topic-based system.
+- [**Publisher/Subscriber**](https://entropy-flux.github.io/TorchSystem/pubsub/): Data also can be delivered with the publisher/subscriber pattern. Publishers can send data to subscribers using a topic-based system.
 
 ## License
 
