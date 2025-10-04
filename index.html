@@ -764,7 +764,6 @@ For more details and advanced usage, see the full documentation.</p>
 <span class="kn">from</span><span class="w"> </span><span class="nn">torch</span><span class="w"> </span><span class="kn">import</span> <span class="n">inference_mode</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">torchsystem.depends</span><span class="w"> </span><span class="kn">import</span> <span class="n">Depends</span><span class="p">,</span> <span class="n">Provider</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">torchsystem.services</span><span class="w"> </span><span class="kn">import</span> <span class="n">Service</span><span class="p">,</span> <span class="n">Producer</span><span class="p">,</span> <span class="n">event</span> 
-<span class="kn">from</span><span class="w"> </span><span class="nn">mltracker.ports</span><span class="w"> </span><span class="kn">import</span> <span class="n">Models</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">src.classifier</span><span class="w"> </span><span class="kn">import</span> <span class="n">Classifier</span> 
 
 <span class="n">provider</span> <span class="o">=</span> <span class="n">Provider</span><span class="p">()</span>
@@ -772,7 +771,6 @@ For more details and advanced usage, see the full documentation.</p>
 <span class="n">service</span> <span class="o">=</span> <span class="n">Service</span><span class="p">(</span><span class="n">provider</span><span class="o">=</span><span class="n">provider</span><span class="p">)</span>
 
 <span class="k">def</span><span class="w"> </span><span class="nf">device</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span><span class="o">...</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">models</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Models</span><span class="p">:</span><span class="o">...</span>
 
 <span class="nd">@event</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">Trained</span><span class="p">:</span>
