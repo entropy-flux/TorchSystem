@@ -191,7 +191,7 @@ from os import makedirs
 from torch import save
 from torchsystem import Depends
 from torchsystem.services import Consumer
-from src.training import provider, models
+from src.training import provider
 from src.training import Trained, Evaluated 
 
 consumer = Consumer(provider=provider)

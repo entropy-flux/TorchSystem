@@ -135,7 +135,6 @@ from torch import Tensor
 from torch import inference_mode
 from torchsystem.depends import Depends, Provider
 from torchsystem.services import Service, Producer, event 
-from mltracker.ports import Models
 from src.classifier import Classifier 
 
 provider = Provider()
@@ -143,7 +142,6 @@ producer = Producer()
 service = Service(provider=provider)
 
 def device() -> str:...
-def models() -> Models:...
 
 @event
 class Trained:
@@ -194,7 +192,7 @@ from os import makedirs
 from torch import save
 from torchsystem import Depends
 from torchsystem.services import Consumer
-from src.training import provider, models
+from src.training import provider
 from src.training import Trained, Evaluated 
 
 consumer = Consumer(provider=provider)
