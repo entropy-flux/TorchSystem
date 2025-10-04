@@ -98,18 +98,75 @@ class Aggregate(Module, ABC):
     
     def __init__(self):
         super().__init__()
+        self.__id = None
+
 
     @property
     def id(self) -> Any:
         """
-        The id of the AGGREGATE ROOT. It should be unique within the AGGREGATE boundary. It's up to the
-        user to define the id of the AGGREGATE ROOT and how it should be generated.
-          
-        The `gethash` function from the `torchsystem.registry` module can usefull for generating unique
-        ids from registered pytorch objects.
-        """
-        raise NotImplementedError("The id property must be implemented.")
+        The identity of the AGGREGATE ROOT.
+
+        In Domain-Driven Design, the AGGREGATE ROOT is the single entry point 
+        to a cluster of domain objects, and its identity uniquely distinguishes 
+        the AGGREGATE within its boundary. This property returns that identity.
+
+        Key points:
+            - Immutable once assigned to preserve AGGREGATE consistency and invariants.
+            - Accessing the ID before initialization raises an error to prevent 
+            unsafe operations on an uninitialized AGGREGATE ROOT.
+            - Ensures that all domain operations relying on identity are deterministic 
+            and safe.
+
+        Raises:
+            ValueError: If the AGGREGATE ROOT's ID has not been initialized.
         
+        Returns:
+            Any: The unique identifier of the AGGREGATE ROOT within its boundary.
+        """
+        if self.__id is None:
+            raise ValueError("Aggregate ID is not initialized")
+        return self.__id
+
+
+    def initialize(self, id: Any):
+        """
+        Initializes the identity of the AGGREGATE ROOT.
+
+        This method allows deferred assignment of identity when the creation of 
+        the AGGREGATE depends on external factors (e.g., database-generated IDs, 
+        hashes of components). Once set, the ID is immutable to uphold the AGGREGATE's 
+        invariants and consistency rules.
+
+        Args:
+            id (Any): A unique identifier for the AGGREGATE ROOT.
+
+        Raises:
+            ValueError: If the AGGREGATE ROOT already has an initialized identity.
+        """
+        if self.__id is not None:
+            raise ValueError("Aggregate ID already initialized")
+        self.__id = id
+
+
+    def is_initialized(self) -> bool:
+        """
+        Checks whether the AGGREGATE ROOT has an assigned identity.
+
+        Some domain operations require that the AGGREGATE ROOT has a valid identity 
+        before executing (e.g., persisting the aggregate, emitting domain events). 
+        This method allows the domain logic to verify readiness safely.
+
+        Returns:
+            bool: True if the AGGREGATE ROOT has an initialized identity, False otherwise.
+
+        Warning:
+            If the `id` property is overridden in a subclass (e.g., computed dynamically 
+            instead of stored in `self.__id`), this method may return False even if the 
+            aggregate has a valid identity.
+        """
+        return self.__id is not None
+
+
     @property
     def phase(self) -> Literal['train', 'evaluation']:
         """

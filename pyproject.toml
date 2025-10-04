@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "torchsystem"
-version = "1.4.6"
+version = "1.4.7"
 description = "A framework for creating message-driven machine learning systems with PyTorch"
 authors = ["Eric Hermosis <eric.hermosis@gmail.com>"]
 license = "Apache-2.0"
