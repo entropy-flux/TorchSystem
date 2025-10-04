@@ -264,6 +264,24 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#torchsystem.domain.aggregate.Aggregate.initialize" class="md-nav__link">
+    <span class="md-ellipsis">
+      initialize
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#torchsystem.domain.aggregate.Aggregate.is_initialized" class="md-nav__link">
+    <span class="md-ellipsis">
+      is_initialized
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#torchsystem.domain.aggregate.Aggregate.onepoch" class="md-nav__link">
     <span class="md-ellipsis">
       onepoch
@@ -539,6 +557,24 @@
   <a href="#torchsystem.domain.aggregate.Aggregate.phase" class="md-nav__link">
     <span class="md-ellipsis">
       phase
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#torchsystem.domain.aggregate.Aggregate.initialize" class="md-nav__link">
+    <span class="md-ellipsis">
+      initialize
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#torchsystem.domain.aggregate.Aggregate.is_initialized" class="md-nav__link">
+    <span class="md-ellipsis">
+      is_initialized
     </span>
   </a>
   
@@ -852,10 +888,67 @@ is responsible for coordinating the interactions between these components.</p>
 
     <div class="doc doc-contents ">
 
-        <p>The id of the AGGREGATE ROOT. It should be unique within the AGGREGATE boundary. It's up to the
-user to define the id of the AGGREGATE ROOT and how it should be generated.</p>
-<p>The <code>gethash</code> function from the <code>torchsystem.registry</code> module can usefull for generating unique
-ids from registered pytorch objects.</p>
+        <p>The identity of the AGGREGATE ROOT.</p>
+<p>In Domain-Driven Design, the AGGREGATE ROOT is the single entry point 
+to a cluster of domain objects, and its identity uniquely distinguishes 
+the AGGREGATE within its boundary. This property returns that identity.</p>
+
+
+<details class="key-points" open>
+  <summary>Key points</summary>
+  <ul>
+<li>Immutable once assigned to preserve AGGREGATE consistency and invariants.</li>
+<li>Accessing the ID before initialization raises an error to prevent 
+unsafe operations on an uninitialized AGGREGATE ROOT.</li>
+<li>Ensures that all domain operations relying on identity are deterministic 
+and safe.</li>
+</ul>
+</details>
+
+<p><span class="doc-section-title">Raises:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code>ValueError</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>If the AGGREGATE ROOT's ID has not been initialized.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+<th>Name</th>          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+<td><code>Any</code></td>            <td>
+                  <code><span title="typing.Any">Any</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The unique identifier of the AGGREGATE ROOT within its boundary.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
     </div>
 
 </div>
@@ -910,6 +1003,131 @@ of the weights and biases, and does not update the weights and biases.</p>
 </div>
 
 
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="torchsystem.domain.aggregate.Aggregate.initialize" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">initialize</span><span class="p">(</span><span class="nb">id</span><span class="p">)</span></code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Initializes the identity of the AGGREGATE ROOT.</p>
+<p>This method allows deferred assignment of identity when the creation of 
+the AGGREGATE depends on external factors (e.g., database-generated IDs, 
+hashes of components). Once set, the ID is immutable to uphold the AGGREGATE's 
+invariants and consistency rules.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>id</code>
+            </td>
+            <td>
+                  <code><span title="typing.Any">Any</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>A unique identifier for the AGGREGATE ROOT.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+<p><span class="doc-section-title">Raises:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code>ValueError</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>If the AGGREGATE ROOT already has an initialized identity.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="torchsystem.domain.aggregate.Aggregate.is_initialized" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">is_initialized</span><span class="p">()</span></code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Checks whether the AGGREGATE ROOT has an assigned identity.</p>
+<p>Some domain operations require that the AGGREGATE ROOT has a valid identity 
+before executing (e.g., persisting the aggregate, emitting domain events). 
+This method allows the domain logic to verify readiness safely.</p>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+<th>Name</th>          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+<td><code>bool</code></td>            <td>
+                  <code>bool</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>True if the AGGREGATE ROOT has an initialized identity, False otherwise.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+<details class="warning" open>
+  <summary>Warning</summary>
+  <p>If the <code>id</code> property is overridden in a subclass (e.g., computed dynamically 
+instead of stored in <code>self.__id</code>), this method may return False even if the 
+aggregate has a valid identity.</p>
+</details>
+    </div>
+
+</div>
 
 <div class="doc doc-object doc-function">
 
