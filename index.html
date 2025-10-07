@@ -273,6 +273,15 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#pubsub" class="md-nav__link">
+    <span class="md-ellipsis">
+      Pubsub
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#compiler" class="md-nav__link">
     <span class="md-ellipsis">
       Compiler
@@ -576,6 +585,15 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#pubsub" class="md-nav__link">
+    <span class="md-ellipsis">
+      Pubsub
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#compiler" class="md-nav__link">
     <span class="md-ellipsis">
       Compiler
@@ -861,7 +879,39 @@ For more details and advanced usage, see the full documentation.</p>
 <p>Each time an Evaluated event is received, it saves a checkpoint.</p>
 </li>
 </ul>
-<p>You can customize consumers to your needs, injecting any infrastructure you like, such as TensorBoard, a database, or other logging systems. If you prefer not to plug in infrastructure yet, you can use the pub/sub utilities provided by the library, which allow your consumer to publish messages to topics. See the documentation for more details.</p>
+<p>You can customize consumers to your needs, injecting any infrastructure you like, such as TensorBoard, a database, or other logging systems. If you prefer not to plug in infrastructure yet, you can use the pub/sub utilities provided by the library.</p>
+<h3 id="pubsub">Pubsub</h3>
+<p>Let's say you haven't decided which infrastructure you want to use for logging metrics when writing the consumer. Let's see how we can solve this issue using the Pub/Sub pattern. We'll add a publisher and an additional handler to the consumer.</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">dataclass</span>
+
+<span class="n">publisher</span> <span class="o">=</span> <span class="n">Publisher</span><span class="p">()</span>
+
+<span class="nd">@dataclass</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Metric</span><span class="p">:</span>
+    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">value</span><span class="p">:</span> <span class="nb">float</span>
+
+<span class="nd">@consumer</span><span class="o">.</span><span class="n">handler</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">deliver_metrics</span><span class="p">(</span><span class="n">event</span><span class="p">:</span> <span class="n">Trained</span> <span class="o">|</span> <span class="n">Evaluated</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">event</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">publisher</span><span class="o">.</span><span class="n">publish</span><span class="p">(</span><span class="n">Metric</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
+            <span class="n">value</span><span class="o">=</span><span class="n">value</span><span class="o">.</span><span class="n">item</span><span class="p">(),</span>
+        <span class="p">),</span> <span class="s1">&#39;metrics&#39;</span><span class="p">)</span>
+</code></pre></div>
+<p>Next, we can create a subscriber to handle the metrics:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">logging</span><span class="w"> </span><span class="kn">import</span> <span class="n">getLogger</span> 
+<span class="kn">from</span><span class="w"> </span><span class="nn">torchsystem.services</span><span class="w"> </span><span class="kn">import</span> <span class="n">Subscriber</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">src.checkpoints</span><span class="w"> </span><span class="kn">import</span> <span class="n">Metric</span><span class="p">,</span> <span class="n">provider</span>
+
+<span class="n">subscriber</span> <span class="o">=</span> <span class="n">Subscriber</span><span class="p">(</span><span class="n">provider</span><span class="o">=</span><span class="n">provider</span><span class="p">)</span>
+<span class="n">logger</span> <span class="o">=</span> <span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+<span class="nd">@subscriber</span><span class="o">.</span><span class="n">subscribe</span><span class="p">(</span><span class="s1">&#39;metrics&#39;</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">log_metrics</span><span class="p">(</span><span class="n">metric</span><span class="p">:</span> <span class="n">Metric</span><span class="p">):</span>  
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Average </span><span class="si">{</span><span class="n">metric</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">metric</span><span class="o">.</span><span class="n">value</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>  
+</code></pre></div>
+<p>Here, we are using Python's logger for simplicity, but you can plug in any logging or monitoring solution you want using dependency injection. </p>
 <h3 id="compiler">Compiler</h3>
 <p>The Classifier aggregate we just created can be built and compiled in a simple way. However, you will find yourself in situations where you need to pick a torch backend, create and clean multiprocessing resources, move modules to devices, pickle modules, etc., and you will need a tool to build the aggregate and compile it. </p>
 <p>This library provides a simple implementation of the builder pattern under the name of compiler, the idea is to encapsulate all the construction and compilation process of your aggregate as a simple pipeline. Let's create one:</p>
@@ -942,7 +992,7 @@ For more details and advanced usage, see the full documentation.</p>
     <span class="k">return</span> <span class="s1">&#39;cuda&#39;</span> <span class="k">if</span> <span class="n">cuda</span><span class="o">.</span><span class="n">is_available</span><span class="p">()</span> <span class="k">else</span> <span class="s1">&#39;cpu&#39;</span>
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
-    <span class="kn">from</span><span class="w"> </span><span class="nn">src</span><span class="w"> </span><span class="kn">import</span> <span class="n">training</span><span class="p">,</span> <span class="n">checkpoints</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">src</span><span class="w"> </span><span class="kn">import</span> <span class="n">training</span><span class="p">,</span> <span class="n">checkpoints</span><span class="p">,</span> <span class="n">logs</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">src.compilation</span><span class="w"> </span><span class="kn">import</span> <span class="n">compiler</span>
 
     <span class="kn">from</span><span class="w"> </span><span class="nn">model</span><span class="w"> </span><span class="kn">import</span> <span class="n">MLP</span>
@@ -956,6 +1006,7 @@ For more details and advanced usage, see the full documentation.</p>
     <span class="n">registry</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">MLP</span><span class="p">)</span>
     <span class="n">training</span><span class="o">.</span><span class="n">provider</span><span class="o">.</span><span class="n">override</span><span class="p">(</span><span class="n">training</span><span class="o">.</span><span class="n">device</span><span class="p">,</span> <span class="n">device</span><span class="p">)</span> 
     <span class="n">training</span><span class="o">.</span><span class="n">producer</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">checkpoints</span><span class="o">.</span><span class="n">consumer</span><span class="p">)</span>
+    <span class="n">checkpoints</span><span class="o">.</span><span class="n">publisher</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">logs</span><span class="o">.</span><span class="n">subscriber</span><span class="p">)</span>
 
     <span class="n">nn</span> <span class="o">=</span> <span class="n">MLP</span><span class="p">(</span><span class="n">input_size</span><span class="o">=</span><span class="mi">784</span><span class="p">,</span> <span class="n">hidden_size</span><span class="o">=</span><span class="mi">256</span><span class="p">,</span> <span class="n">output_size</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">dropout</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
     <span class="n">criterion</span> <span class="o">=</span> <span class="n">CrossEntropyLoss</span><span class="p">()</span>
@@ -988,7 +1039,7 @@ For more details and advanced usage, see the full documentation.</p>
 <p>After evaluation, the consumer will automatically store checkpoints.</p>
 </li>
 </ul>
-<p>The hash of the model ensures that different configurations (e.g., changing hidden layer size) generate separate checkpoints, preventing overwriting previous models.</p>
+<p>The hash of the model ensures that different configurations (e.g., changing hidden layer size) generate separate checkpoints, preventing overwriting previous models. You can find the full example <a href="https://github.com/entropy-flux/TorchSystem/tree/main/examples/mnist-mlp">here</a>. Make sure you have torch, torchvision, and torchsystem installed to run it. Simply execute python main.py, and it will download the dataset and start training.</p>
 <h2 id="features">Features</h2>
 <p>Here is a more detailed list of features with links to their documentation.</p>
 <ul>
