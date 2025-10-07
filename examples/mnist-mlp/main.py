@@ -4,7 +4,7 @@ def device() -> str:
     return 'cuda' if cuda.is_available() else 'cpu'
 
 if __name__ == '__main__':
-    from src import training, checkpoints
+    from src import training, checkpoints, logs
     from src.compilation import compiler
 
     from model import MLP
@@ -18,6 +18,7 @@ if __name__ == '__main__':
     registry.register(MLP)
     training.provider.override(training.device, device) 
     training.producer.register(checkpoints.consumer)
+    checkpoints.publisher.register(logs.subscriber)
 
     nn = MLP(input_size=784, hidden_size=256, output_size=10, dropout=0.5)
     criterion = CrossEntropyLoss()

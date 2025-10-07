@@ -234,7 +234,47 @@ In this example:
 
 - Each time an Evaluated event is received, it saves a checkpoint.
 
-You can customize consumers to your needs, injecting any infrastructure you like, such as TensorBoard, a database, or other logging systems. If you prefer not to plug in infrastructure yet, you can use the pub/sub utilities provided by the library, which allow your consumer to publish messages to topics. See the documentation for more details.
+You can customize consumers to your needs, injecting any infrastructure you like, such as TensorBoard, a database, or other logging systems. If you prefer not to plug in infrastructure yet, you can use the pub/sub utilities provided by the library.
+
+### Pubsub
+
+Let's say you haven't decided which infrastructure you want to use for logging metrics when writing the consumer. Let's see how we can solve this issue using the Pub/Sub pattern. We'll add a publisher and an additional handler to the consumer.
+
+```python
+from dataclasses import dataclass
+
+publisher = Publisher()
+
+@dataclass
+class Metric:
+    name: str
+    value: float
+
+@consumer.handler
+def deliver_metrics(event: Trained | Evaluated):
+    for name, value in event.results.items():
+        publisher.publish(Metric(
+            name=name,
+            value=value.item(),
+        ), 'metrics')
+```
+
+Next, we can create a subscriber to handle the metrics:
+
+```python
+from logging import getLogger 
+from torchsystem.services import Subscriber
+from src.checkpoints import Metric, provider
+
+subscriber = Subscriber(provider=provider)
+logger = getLogger(__name__)
+
+@subscriber.subscribe('metrics')
+def log_metrics(metric: Metric):  
+    logger.info(f"Average {metric.name}: {metric.value}")  
+```
+
+Here, we are using Python's logger for simplicity, but you can plug in any logging or monitoring solution you want using dependency injection.
 
 ### Compiler
 
@@ -322,7 +362,7 @@ def device() -> str:
     return 'cuda' if cuda.is_available() else 'cpu'
 
 if __name__ == '__main__':
-    from src import training, checkpoints
+    from src import training, checkpoints, logs
     from src.compilation import compiler
 
     from model import MLP
@@ -336,6 +376,7 @@ if __name__ == '__main__':
     registry.register(MLP)
     training.provider.override(training.device, device) 
     training.producer.register(checkpoints.consumer)
+    checkpoints.publisher.register(logs.subscriber)
 
     nn = MLP(input_size=784, hidden_size=256, output_size=10, dropout=0.5)
     criterion = CrossEntropyLoss()
@@ -366,7 +407,7 @@ Each time you run this script:
 
 - After evaluation, the consumer will automatically store checkpoints.
 
-The hash of the model ensures that different configurations (e.g., changing hidden layer size) generate separate checkpoints, preventing overwriting previous models. You can find the full example in the [examples](/examples/mnist-mlp/) folder. 
+The hash of the model ensures that different configurations (e.g., changing hidden layer size) generate separate checkpoints, preventing overwriting previous models. You can find the full example [here](https://github.com/entropy-flux/TorchSystem/tree/main/examples/mnist-mlp). Make sure you have torch, torchvision, and torchsystem installed to run it. Simply execute python main.py, and it will download the dataset and start training.
 
 ## Features
 
